@@ -59,7 +59,7 @@ public:
 	void displayClicked(Event *event)
 	{
 		//user clicked to button
-		_text->setText("clicked!");
+		_text->setText("Artur!");
 
 		//lets create and run sprite with animation
 		runSprite();
