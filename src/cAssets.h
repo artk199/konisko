@@ -2,10 +2,10 @@
 #include "oxygine-framework.h"
 using namespace oxygine;
 
-class cAssets{
+static class cAssets{
 	public:
-		 Resources gameResources;
+		 static Resources gameResources;
 		
-		 void LoadResources();
+		 static void LoadResources();
 };
 

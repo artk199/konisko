@@ -14,10 +14,7 @@ Resources gameResources;
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
 	//wczytanie danych
-	assets = new cAssets;
-
-	//load xml file with resources definition
-	assets->LoadResources();
+	cAssets::LoadResources();
 
 	//wystartowanie testowej aplikacji
 	start();
