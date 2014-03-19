@@ -1,18 +1,39 @@
-#include "oxygine-framework.h"
 #include "cGame.h"
+#include "oxygine-framework.h"
 #include "cAssets.h"
+#include "Actor.h"
+#include "Button.h"
+#include "RenderState.h"
+#include "core/STDFileSystem.h"
+#include "cNotify.h"
+
+#ifdef __S3E__
+#include "s3eKeyboard.h"
+#endif
 
 using namespace oxygine;
 
 //DECLARE_SMART is helper, it does forward declaration and declares intrusive_ptr typedef for your class
 DECLARE_SMART(cGame, spcGame);
 
-
-Resources gameResources;
-
+file::STDFileSystem extfs(true);
 
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
+	setSize(getRoot()->getSize());
+
+	//ustawienia wyswietlania informacji na ekranie
+	memset(cNotify::notifies, 0, sizeof(cNotify::notifies));
+	cNotify::ui = new Actor;
+	cNotify::parent = new cNotify;
+	addChild(cNotify::ui);
+
+	content = new Content;
+	content->setSize(getSize());
+
+	addChild(content);
+	
+
 	//wczytanie danych
 	cAssets::LoadResources();
 
@@ -34,7 +55,8 @@ void cGame::Game_Initialize(){
 
 //---Funkcja czysci pamiec po zakonczeniu zycia klasy
 void cGame::Game_Destroy(){
-	gameResources.free();
+	cAssets::gameResources.free();
+	delete cNotify::parent;
 }
 
 //---Funkcja aktualizujaca czynnosci klasy
@@ -42,24 +64,26 @@ void cGame::Game_Update(){
 	
 }
 
+
 //---************************************************FUNKCJE TESTOWE DLA APLIKACJI (Z SZABLONU)
 void cGame::displayClicked(Event *event){
 		//user clicked to button
 		_text->setText("wtf5!");
 
+		cNotify::notify("dsa");
 		//lets create and run sprite with animation
 		runSprite();
 };
 
 void cGame::start(){	
-		//create Button actor
+	//create Button actor
 		spButton button = new Button();
 		//add it as child to current actor
 		addChild(button);
 
 		//you will find 'button' resource definition in res.xml
 		//button has 3 columns for each state: Normal, Pressed, Overed
-		button->setResAnim(assets->gameResources.getResAnim("button"));
+		button->setResAnim(cAssets::gameResources.getResAnim("button"));
 		//centered button at screen	
 		Vector2 pos = getRoot()->getSize()/2 - button->getSize()/2;
 		button->setPosition(pos);
@@ -80,7 +104,7 @@ void cGame::start(){
 		//initialize text style
 		//it would be centered and colored
 		TextStyle style;
-		style.font = assets->gameResources.getResFont("main")->getFont();
+		style.font = cAssets::gameResources.getResFont("main")->getFont();
 		style.color = Color(72, 61, 139, 255);
 		style.vAlign = TextStyle::VALIGN_MIDDLE;
 		style.hAlign = TextStyle::HALIGN_CENTER;
@@ -90,6 +114,7 @@ void cGame::start(){
 
 		//we will change text later
 		_text = text; 
+
 };
 
 void cGame::runSprite(){
@@ -100,7 +125,7 @@ void cGame::runSprite(){
 		int loops = -1;//infinity loops
 
 		//animation has 7 columns, check res.xml
-		ResAnim *animation = assets->gameResources.getResAnim("anim");
+		ResAnim *animation = cAssets::gameResources.getResAnim("anim");
 
 		//add animation tween to sprite
 		//TweenAnim would change animation frames
@@ -126,5 +151,4 @@ void cGame::runSprite(){
 		//if you don't hold any references to sprite it would be deleted automatically
 		tweenQueue->setDetachActor(true);		
 };
-
 
