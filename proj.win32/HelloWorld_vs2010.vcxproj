@@ -92,10 +92,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="../src/entry_point.cpp" /><ClCompile Include="../src/example.cpp" />
+    <ClCompile Include="..\src\cAssets.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\cGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../src/example.h" />
+    <ClInclude Include="..\src\cAssets.h" />
+    <ClInclude Include="..\src\cGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

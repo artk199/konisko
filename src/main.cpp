@@ -1,15 +1,8 @@
-/**
-Attention!
-This file has Oxygine initialization stuff.
-If you just started you don't need to understand it exactly you could check it later. 
-You could start from example.cpp and example.h it has main functions being called from there
-*/
 #include <stdio.h>
 #include "core/Renderer.h"
 #include "RootActor.h"
 #include "DebugActor.h"
-
-#include "example.h"
+#include "cGame.h"
 
 
 using namespace oxygine;
@@ -20,30 +13,20 @@ Rect viewport;
 
 class ExampleRootActor: public RootActor
 {
-public:
-	ExampleRootActor()
-	{
-		//each mobile application should handle focus lost
-		//and free/restore GPU resources
-		addEventListener(RootActor::DEACTIVATE, CLOSURE(this, &ExampleRootActor::onDeactivate));
-		addEventListener(RootActor::ACTIVATE, CLOSURE(this, &ExampleRootActor::onActivate));
-	}
-
-	void onDeactivate(Event *)
-	{
-		core::reset();
-	}
-
-	void onActivate(Event *)
-	{
-		core::restore();
-	}
+	public:
+		ExampleRootActor(){
+			//each mobile application should handle focus lost
+			//and free/restore GPU resources
+			addEventListener(RootActor::DEACTIVATE, CLOSURE(this, &ExampleRootActor::onDeactivate));
+			addEventListener(RootActor::ACTIVATE, CLOSURE(this, &ExampleRootActor::onActivate));
+		}
+		void onDeactivate(Event *){core::reset();}
+		void onActivate(Event *){core::restore();}
 };
 
 //called each frame
-int mainloop()
-{
-	example_update();
+int mainloop(){
+	cGame::Game_Update();
 	//update our rootActor
 	//Actor::update would be called also for children
 	getRoot()->update();
@@ -70,8 +53,7 @@ int mainloop()
 }
 
 //it is application entry point
-void run()
-{	
+void run(){	
 	//initialize oxygine's internal stuff
 	core::init_desc desc;
 
@@ -83,7 +65,6 @@ void run()
 #endif
 
 	core::init(&desc);	
-	example_preinit();
 	
 	//create RootActor. RootActor is a root node
 	RootActor::instance = new ExampleRootActor();	
@@ -96,8 +77,6 @@ void run()
 	//create and add new DebugActor to root actor as child
 	getRoot()->addChild(new DebugActor());
 
-
-	
 	Matrix view = makeViewMatrix(size.x, size.y); 
 
 	viewport = Rect(0, 0, size.x, size.y);
@@ -115,13 +94,12 @@ void run()
 	renderer.initCoordinateSystem(size.x, size.y);
 
 	//initialize this example stuff. see example.cpp
-	example_init();
+	cGame::Game_Initialize();
 
 	bool done = false;	
 
 	//here is main game loop
-    while (1)
-    {
+    while (1){
 		int done = mainloop();
 		if (done)
 			break;
@@ -137,8 +115,7 @@ void run()
 	//all actors/sprites are smart pointer objects and actually you don't need it remove them by hands
 	//but now we want delete it by hands
 
-	//check example.cpp
-	example_destroy();	
+	cGame::Game_Destroy();	
 	
 
 	renderer.cleanup();
@@ -159,7 +136,6 @@ int main(int argc, char* argv[])
     return 0;
 }
 #endif
-
 
 #ifdef OXYGINE_SDL
 #include "SDL_main.h"
