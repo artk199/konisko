@@ -4,7 +4,7 @@
 #include "RenderState.h"
 
 #include "oxygine-framework.h"
-#include "cAssets.h"
+#include "Assets.h"
 
 using namespace oxygine;
 
@@ -35,18 +35,23 @@ class cGame: public Actor
 	public:
 		cGame();
 
-		static void Game_Initialize(); // - Funkcja ustawia wartosci poczatkowe dla klasy
-		static void Game_Destroy(); // - Funkcja czysci pamiec po zakonczeniu zycia klasy
-		static void Game_Update(); // - Funkcja aktualizujaca czynnosci klasy
+		void init();		// - Funkcja ustawia wartosci poczatkowe dla klasy
+		void destroy();		// - Funkcja czysci pamiec po zakonczeniu zycia klasy
 
 		cNotify *notifies;
 	
 	private:
+		//Dane
 		Content *content;
+		float delta;
 		
-		void start();//testowa aplikacja
-		void displayClicked(Event *event);//testowa aplikacja
-		void runSprite();//testowa aplikacja
+		//Metody
+		void doUpdate(const UpdateState &us);	//Overload metody wywo³ywana 
+
+
+		void start();							//testowa aplikacja
+		void displayClicked(Event *event);		//testowa aplikacja
+		void runSprite();						//testowa aplikacja
 };
 
 

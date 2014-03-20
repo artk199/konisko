@@ -1,6 +1,6 @@
 #include "oxygine-framework.h"
 #include "cNotify.h"
-#include "cAssets.h"
+#include "Assets.h"
 #include "cGame.h"
 #include "cUI.h"
 

@@ -1,6 +1,6 @@
 #include "oxygine-framework.h"
 #include "cUI.h"
-#include "cAssets.h"
+#include "Assets.h"
 
 using namespace oxygine;
 
@@ -8,7 +8,7 @@ using namespace oxygine;
 spButton cUI::addButton(int x, int y, string text, EventCallback cb, string buttonStyle){
 	spButton button = new Button();
 	//pobranie grafiki ze stylow
-	button->setResAnim(cAssets::gameResources.getResAnim(buttonStyle));
+	button->setResAnim(Assets::gameResources.getResAnim(buttonStyle));
 	//ustawienie pozycji
 	Vector2 pos;
 	pos.x=x;
@@ -33,7 +33,7 @@ spTextActor cUI::createText(string txt, Color fcolor, string fontName){
 	spTextActor text = new TextActor();
 
 	TextStyle style;
-	style.font = cAssets::gameResources.getResFont(fontName)->getFont();
+	style.font = Assets::gameResources.getResFont(fontName)->getFont();
 	style.color = fcolor;
 	style.vAlign = TextStyle::VALIGN_MIDDLE;
 	style.hAlign = TextStyle::HALIGN_CENTER;

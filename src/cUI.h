@@ -3,7 +3,7 @@
 using namespace oxygine;
 
 //---KLASA ODPOWIEDZIALNA ZA INTERFEJS U¯YTKOWNIKA
-static class cUI{
+class cUI{
 	public:
 		//-v-Tworzy i zwraca przycisk (styl z XML) z okreslonym tekstem 
 		static spButton addButton(int x, int y, string text, EventCallback cb, string buttonStyle="button"); 

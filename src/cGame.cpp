@@ -1,6 +1,6 @@
 #include "cGame.h"
 #include "oxygine-framework.h"
-#include "cAssets.h"
+#include "Assets.h"
 #include "Actor.h"
 #include "Button.h"
 #include "RenderState.h"
@@ -22,46 +22,41 @@ file::STDFileSystem extfs(true);
 
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
-	notifies = new cNotify;
-	setSize(getRoot()->getSize());
+	//Wczytanie assetów
+	Assets::load();
 
+	notifies = new cNotify;
 	//ustawienia wyswietlania informacji na ekranie
 	memset(notifies->notifies, 0, sizeof(notifies->notifies));
 	notifies->ui = new Actor;
 	addChild(notifies->ui);
-	
-	//content = new Content;
-	//content->setSize(getSize());
 
-	//addChild(content);
-
-	//wczytanie danych
-	cAssets::LoadResources();
-
+	setSize(getRoot()->getSize());
+	delta = 0;
 	//wystartowanie testowej aplikacji
 	start();
 };
 
 
 //---Funkcja ustawia wartosci poczatkowe dla klasy
-void cGame::Game_Initialize(){
+void cGame::init(){
 
-	//lets create our client code simple actor
-	//prefix 'sp' here means it is intrusive Smart Pointer
-	//it would be deleted automatically when you lost ref to it	
-	spcGame actor = new cGame;
-	//and add it to RootActor as child
-	getRoot()->addChild(actor);
 }
 
 //---Funkcja czysci pamiec po zakonczeniu zycia klasy
-void cGame::Game_Destroy(){
-	cAssets::gameResources.free();
+void cGame::destroy(){
+	Assets::free();
 }
 
 //---Funkcja aktualizujaca czynnosci klasy
-void cGame::Game_Update(){
-	
+void cGame::doUpdate(const UpdateState &us)
+{
+	delta += us.dt;
+	if (delta > 1000){
+		delta = 0;
+		displayClicked(NULL);
+	}
+
 }
 
 //---************************************************FUNKCJE TESTOWE DLA APLIKACJI (Z SZABLONU)
@@ -85,7 +80,7 @@ void cGame::runSprite(){
 		int loops = -1;//infinity loops
 
 		//animation has 7 columns, check res.xml
-		ResAnim *animation = cAssets::gameResources.getResAnim("anim");
+		ResAnim *animation = Assets::gameResources.getResAnim("anim");
 
 		//add animation tween to sprite
 		//TweenAnim would change animation frames

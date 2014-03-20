@@ -13,66 +13,57 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Player">
-      <UniqueIdentifier>{a1fe5f8d-8464-4bf4-8533-e149a821ad5d}</UniqueIdentifier>
+    <Filter Include="Header Files\Unit">
+      <UniqueIdentifier>{bd49cd6e-0968-4b06-977a-c7f3a5ef3d55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Player">
-      <UniqueIdentifier>{7858a83c-e716-481b-9b48-074612af8055}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Map">
-      <UniqueIdentifier>{eb29242b-e9e9-4584-99fd-9a788a06d3f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Map">
-      <UniqueIdentifier>{bafa13fc-4186-451d-bf02-4f361b83c1c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Screen">
-      <UniqueIdentifier>{b75c8c27-c477-4578-af2d-b2cc66608a4c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Screen">
-      <UniqueIdentifier>{660210ad-4ac7-4ea8-9823-082bc9639234}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Settings">
-      <UniqueIdentifier>{f1a8cd06-b752-4517-93e0-5f8f7b454074}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Settings">
-      <UniqueIdentifier>{5215f2cc-90a5-4bc9-b878-413606ec4419}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Game">
-      <UniqueIdentifier>{c480126a-bf6a-4304-9dd7-7d2b6e728a50}</UniqueIdentifier>
+    <Filter Include="Source Files\Unit">
+      <UniqueIdentifier>{cdd2827b-2f9d-49a5-85a2-d11d402378f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Game">
-      <UniqueIdentifier>{203cadc3-c085-4abb-90e6-e476b964d53d}</UniqueIdentifier>
+      <UniqueIdentifier>{721d09cc-f76a-4003-8172-a2b75ca90fb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Settings">
+      <UniqueIdentifier>{04dd8af7-7367-4cbb-89f7-8279b9a7597d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{3ed6e568-225b-4fee-b419-769ccb05aff0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\cUI.cpp">
-      <Filter>Source Files\Screen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cAssets.cpp">
-      <Filter>Source Files\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cNotify.cpp">
-      <Filter>Source Files\Screen</Filter>
+    <ClCompile Include="..\src\cUnit.cpp">
+      <Filter>Source Files\Unit</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cGame.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Assets.cpp">
+      <Filter>Source Files\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cNotify.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cUI.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\cUI.h">
-      <Filter>Header Files\Screen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cAssets.h">
-      <Filter>Header Files\Settings</Filter>
+    <ClInclude Include="..\src\cGame.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cNotify.h">
-      <Filter>Header Files\Screen</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cGame.h">
-      <Filter>Header Files\Game</Filter>
+    <ClInclude Include="..\src\cUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Assets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cUnit.h">
+      <Filter>Header Files\Unit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

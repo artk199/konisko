@@ -26,7 +26,7 @@ class ExampleRootActor: public RootActor
 
 //called each frame
 int mainloop(){
-	cGame::Game_Update();
+	
 	//update our rootActor
 	//Actor::update would be called also for children
 	getRoot()->update();
@@ -94,7 +94,9 @@ void run(){
 	renderer.initCoordinateSystem(size.x, size.y);
 
 	//initialize this example stuff. see example.cpp
-	cGame::Game_Initialize();
+	cGame *game = new cGame;
+	game->init();
+	game->attachTo(getRoot());
 
 	bool done = false;	
 
@@ -115,8 +117,7 @@ void run(){
 	//all actors/sprites are smart pointer objects and actually you don't need it remove them by hands
 	//but now we want delete it by hands
 
-	cGame::Game_Destroy();	
-	
+	game->destroy();
 
 	renderer.cleanup();
 
