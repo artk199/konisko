@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\cAssets.cpp" />
     <ClCompile Include="..\src\cNotify.cpp" />
+    <ClCompile Include="..\src\cUI.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\cGame.cpp" />
   </ItemGroup>
@@ -101,6 +102,7 @@
     <ClInclude Include="..\src\cAssets.h" />
     <ClInclude Include="..\src\cGame.h" />
     <ClInclude Include="..\src\cNotify.h" />
+    <ClInclude Include="..\src\cUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

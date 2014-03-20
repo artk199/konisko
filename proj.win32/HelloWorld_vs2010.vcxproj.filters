@@ -13,30 +13,66 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Player">
+      <UniqueIdentifier>{a1fe5f8d-8464-4bf4-8533-e149a821ad5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{7858a83c-e716-481b-9b48-074612af8055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Map">
+      <UniqueIdentifier>{eb29242b-e9e9-4584-99fd-9a788a06d3f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Map">
+      <UniqueIdentifier>{bafa13fc-4186-451d-bf02-4f361b83c1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Screen">
+      <UniqueIdentifier>{b75c8c27-c477-4578-af2d-b2cc66608a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Screen">
+      <UniqueIdentifier>{660210ad-4ac7-4ea8-9823-082bc9639234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Settings">
+      <UniqueIdentifier>{f1a8cd06-b752-4517-93e0-5f8f7b454074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Settings">
+      <UniqueIdentifier>{5215f2cc-90a5-4bc9-b878-413606ec4419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{c480126a-bf6a-4304-9dd7-7d2b6e728a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{203cadc3-c085-4abb-90e6-e476b964d53d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\cGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cUI.cpp">
+      <Filter>Source Files\Screen</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\cAssets.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cNotify.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cGame.cpp">
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\cGame.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\src\cUI.h">
+      <Filter>Header Files\Screen</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cAssets.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cNotify.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cGame.h">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

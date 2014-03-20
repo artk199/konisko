@@ -8,6 +8,7 @@
 
 using namespace oxygine;
 
+class cNotify;
 
 class Content: public Actor{
 public:
@@ -26,6 +27,7 @@ public:
 	}
 };
 
+typedef void (*handler) (Event);
 
 
 class cGame: public Actor
@@ -37,13 +39,12 @@ class cGame: public Actor
 		static void Game_Destroy(); // - Funkcja czysci pamiec po zakonczeniu zycia klasy
 		static void Game_Update(); // - Funkcja aktualizujaca czynnosci klasy
 
-		spTextActor _text;//testowa aplikacja
-		void start();//testowa aplikacja
-
+		cNotify *notifies;
+	
 	private:
 		Content *content;
 		
-		
+		void start();//testowa aplikacja
 		void displayClicked(Event *event);//testowa aplikacja
 		void runSprite();//testowa aplikacja
 };

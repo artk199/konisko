@@ -6,6 +6,7 @@
 #include "RenderState.h"
 #include "core/STDFileSystem.h"
 #include "cNotify.h"
+#include "cUI.h"
 
 #ifdef __S3E__
 #include "s3eKeyboard.h"
@@ -18,21 +19,21 @@ DECLARE_SMART(cGame, spcGame);
 
 file::STDFileSystem extfs(true);
 
+
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
+	notifies = new cNotify;
 	setSize(getRoot()->getSize());
 
 	//ustawienia wyswietlania informacji na ekranie
-	memset(cNotify::notifies, 0, sizeof(cNotify::notifies));
-	cNotify::ui = new Actor;
-	cNotify::parent = new cNotify;
-	addChild(cNotify::ui);
-
-	content = new Content;
-	content->setSize(getSize());
-
-	addChild(content);
+	memset(notifies->notifies, 0, sizeof(notifies->notifies));
+	notifies->ui = new Actor;
+	addChild(notifies->ui);
 	
+	//content = new Content;
+	//content->setSize(getSize());
+
+	//addChild(content);
 
 	//wczytanie danych
 	cAssets::LoadResources();
@@ -56,7 +57,6 @@ void cGame::Game_Initialize(){
 //---Funkcja czysci pamiec po zakonczeniu zycia klasy
 void cGame::Game_Destroy(){
 	cAssets::gameResources.free();
-	delete cNotify::parent;
 }
 
 //---Funkcja aktualizujaca czynnosci klasy
@@ -64,57 +64,17 @@ void cGame::Game_Update(){
 	
 }
 
-
 //---************************************************FUNKCJE TESTOWE DLA APLIKACJI (Z SZABLONU)
 void cGame::displayClicked(Event *event){
-		//user clicked to button
-		_text->setText("wtf5!");
-
-		cNotify::notify("dsa");
+		notifies->notify("Jakies dluzsze informacje\n nawet w dwoch liniach Trolololololololololo");
 		//lets create and run sprite with animation
 		runSprite();
 };
 
 void cGame::start(){	
-	//create Button actor
-		spButton button = new Button();
-		//add it as child to current actor
-		addChild(button);
-
-		//you will find 'button' resource definition in res.xml
-		//button has 3 columns for each state: Normal, Pressed, Overed
-		button->setResAnim(cAssets::gameResources.getResAnim("button"));
-		//centered button at screen	
-		Vector2 pos = getRoot()->getSize()/2 - button->getSize()/2;
-		button->setPosition(pos);
-		button->setInputChildrenEnabled(false);
-
-		//handle click to button
-		EventCallback cb = CLOSURE(this, &cGame::displayClicked);
-		button->addEventListener(TouchEvent::CLICK, cb);
-
-		//second part
-
-		//create Actor with Text and it to button as child
-		spTextActor text = new TextActor();
-		text->attachTo(button);
-		//centered in button
-		text->setPosition(button->getSize()/2);
-
-		//initialize text style
-		//it would be centered and colored
-		TextStyle style;
-		style.font = cAssets::gameResources.getResFont("main")->getFont();
-		style.color = Color(72, 61, 139, 255);
-		style.vAlign = TextStyle::VALIGN_MIDDLE;
-		style.hAlign = TextStyle::HALIGN_CENTER;
-
-		text->setStyle(style);
-		text->setText("click\nme!");
-
-		//we will change text later
-		_text = text; 
-
+	EventCallback c = CLOSURE(this, &cGame::displayClicked);
+	addChild(cUI::addButton(400,400, "trololo", c));
+	addChild(cUI::addButton(400,500, "Trolololo2", c));
 };
 
 void cGame::runSprite(){
