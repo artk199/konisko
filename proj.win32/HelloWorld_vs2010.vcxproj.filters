@@ -28,6 +28,12 @@
     <Filter Include="Source Files\UI">
       <UniqueIdentifier>{3ed6e568-225b-4fee-b419-769ccb05aff0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Map">
+      <UniqueIdentifier>{8e21cdbf-88f7-4c51-ae42-32259a4b365b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{83cc9e5c-eaff-4012-98d5-f58f6e5d8dbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -48,6 +54,15 @@
     <ClCompile Include="..\src\cUI.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cMap.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cTile.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cPlayer.cpp">
+      <Filter>Source Files\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cGame.h">
@@ -64,6 +79,15 @@
     </ClInclude>
     <ClInclude Include="..\src\cUnit.h">
       <Filter>Header Files\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cTile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cPlayer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

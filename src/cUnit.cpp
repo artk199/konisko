@@ -13,7 +13,7 @@ void cUnit::init(cGame *game)
 	_view = new Actor;
 	_view->attachTo(game);
 
-	//virtual method was overload in Player
+	//virtual method
 	_init();
 }
 

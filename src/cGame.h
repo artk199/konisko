@@ -2,7 +2,8 @@
 #include "Actor.h"
 #include "Button.h"
 #include "RenderState.h"
-
+#include "cMap.h"
+#include "cPlayer.h"
 #include "oxygine-framework.h"
 #include "Assets.h"
 
@@ -44,11 +45,16 @@ class cGame: public Actor
 		//Dane
 		Content *content;
 		float delta;
+		cMap* _map;
+		cPlayer* _player;
 		
+		//
+		SDL_Event event;
+
 		//Metody
 		void doUpdate(const UpdateState &us);	//Overload metody wywo³ywana 
-
-
+		int _onSDLEvent(SDL_Event *event);
+		void _onPlatform(Event *event);
 		void start();							//testowa aplikacja
 		void displayClicked(Event *event);		//testowa aplikacja
 		void runSprite();						//testowa aplikacja

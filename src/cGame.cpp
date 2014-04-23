@@ -7,6 +7,8 @@
 #include "core/STDFileSystem.h"
 #include "cNotify.h"
 #include "cUI.h"
+#include <iostream>
+
 
 #ifdef __S3E__
 #include "s3eKeyboard.h"
@@ -33,6 +35,21 @@ cGame::cGame(){
 
 	setSize(getRoot()->getSize());
 	delta = 0;
+
+	//Dodanie mapy 
+	_map = new cMap(this);
+
+	//Dodanie gracza
+	_player = new cPlayer(Vector2(0,0));
+	_player->init(this);
+	
+
+	Input::instance.addEventListener(Input::event_platform, CLOSURE(this, &cGame::_onPlatform));
+
+
+
+
+
 	//wystartowanie testowej aplikacji
 	start();
 };
@@ -42,10 +59,41 @@ cGame::cGame(){
 void cGame::init(){
 
 }
+void cGame::_onPlatform(Event *event)
+	{
+		_onSDLEvent((SDL_Event*)event->userData);
+	}
+int cGame::_onSDLEvent(SDL_Event *event)
+	{
+		switch(event->type)
+		{
+		case SDL_KEYDOWN:
+			switch( event->key.keysym.sym ){
+                    case SDLK_LEFT:
+                        _player->move(Vector2(-64,0));
+                        break;
+                    case SDLK_RIGHT:
+                        _player->move(Vector2(64,0));
+                        break;
+                    case SDLK_UP:
+                        _player->move(Vector2(0,-64));
+                        break;
+                    case SDLK_DOWN:
+                        _player->move(Vector2(0,64));
+                        break;
+                    default:
+                        break;
+                }
+			break;
+		}
+	return 0;
+}
 
 //---Funkcja czysci pamiec po zakonczeniu zycia klasy
 void cGame::destroy(){
 	Assets::free();
+	delete _map;
+	delete _player;
 }
 
 //---Funkcja aktualizujaca czynnosci klasy
@@ -56,7 +104,6 @@ void cGame::doUpdate(const UpdateState &us)
 		delta = 0;
 		displayClicked(NULL);
 	}
-
 }
 
 //---************************************************FUNKCJE TESTOWE DLA APLIKACJI (Z SZABLONU)
@@ -80,7 +127,7 @@ void cGame::runSprite(){
 		int loops = -1;//infinity loops
 
 		//animation has 7 columns, check res.xml
-		ResAnim *animation = Assets::gameResources.getResAnim("anim");
+		ResAnim *animation = Assets::gameResources.getResAnim("tile1");
 
 		//add animation tween to sprite
 		//TweenAnim would change animation frames

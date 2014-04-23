@@ -54,7 +54,7 @@
       <AdditionalIncludeDirectories>../../../..//oxygine-framework/oxygine/src;../../../..//oxygine-framework/oxygine/third_party/win32/glew;../../../..//SDL/include;../../../..//oxygine-framework/oxygine/third_party/win32/pthreads/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32.lib;libjpeg.lib;libpng.lib;libzlib.lib;opengl32.lib;pthreadVCE2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../../..//oxygine-framework/oxygine/third_party/win32/libraries;../../../..//oxygine-framework/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -93,7 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Assets.cpp" />
+    <ClCompile Include="..\src\cMap.cpp" />
     <ClCompile Include="..\src\cNotify.cpp" />
+    <ClCompile Include="..\src\cPlayer.cpp" />
+    <ClCompile Include="..\src\cTile.cpp" />
     <ClCompile Include="..\src\cUI.cpp" />
     <ClCompile Include="..\src\cUnit.cpp" />
     <ClCompile Include="..\src\main.cpp" />
@@ -102,7 +105,10 @@
   <ItemGroup>
     <ClInclude Include="..\src\Assets.h" />
     <ClInclude Include="..\src\cGame.h" />
+    <ClInclude Include="..\src\cMap.h" />
     <ClInclude Include="..\src\cNotify.h" />
+    <ClInclude Include="..\src\cPlayer.h" />
+    <ClInclude Include="..\src\cTile.h" />
     <ClInclude Include="..\src\cUI.h" />
     <ClInclude Include="..\src\cUnit.h" />
   </ItemGroup>
