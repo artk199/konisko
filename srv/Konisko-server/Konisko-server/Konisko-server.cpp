@@ -37,12 +37,12 @@ DWORD WINAPI odbieraj(void* a){
 			closesocket(c->ClientSocket);
 			return 0;
 		}
-
+		printf("\n%s",buf);
 	};
 	n_of_conn--;
 	c->ClientSocket = INVALID_SOCKET;
 	printf("ZAKONCZONO POLACZENIE %d\n",c->id);
-	printf("\n%s",buf);
+	
 	return 0;
 }
 int __cdecl main(void) 
@@ -121,14 +121,13 @@ int __cdecl main(void)
 					connections[i].ClientSocket = ClientSocket;
 					connections[i].id = i;
 					printf("Polaczono! czekam na wiadomosci\n");
-
-						connections[i].watek = CreateThread(
-							NULL,						// atrybuty bezpieczeñstwa
-							0,							// inicjalna wielkoœæ stosu
-							odbieraj,					// funkcja w¹tku
-							(void *)&connections[i],	// dane dla funkcji w¹tku
-							0,							// flagi utworzenia
-							&id );
+					connections[i].watek = CreateThread(
+						NULL,						// atrybuty bezpieczeñstwa
+						0,							// inicjalna wielkoœæ stosu
+						odbieraj,					// funkcja w¹tku
+						(void *)&connections[i],	// dane dla funkcji w¹tku
+						0,							// flagi utworzenia
+						&id );
 					if( connections[i].watek != INVALID_HANDLE_VALUE )
 					{ 
 						printf( "Utworzylem watek o identyfikatorze %d\n",i);

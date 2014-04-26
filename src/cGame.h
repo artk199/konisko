@@ -6,6 +6,9 @@
 #include "cPlayer.h"
 #include "oxygine-framework.h"
 #include "Assets.h"
+#include <ws2tcpip.h>
+#include <windows.h>
+#include <winsock2.h>
 
 using namespace oxygine;
 
@@ -40,20 +43,25 @@ class cGame: public Actor
 		void destroy();		// - Funkcja czysci pamiec po zakonczeniu zycia klasy
 
 		cNotify *notifies;
-	
+		//Thread odpowiedzialny za wysy³anie operacji
+		DWORD connection(void);
+
 	private:
 		//Dane
 		Content *content;
 		float delta;
 		cMap* _map;
 		cPlayer* _player;
-		
+		SOCKET ConnectSocket;
 		//
 		SDL_Event event;
+		HANDLE send_message;
 
 		//Metody
 		void doUpdate(const UpdateState &us);	//Overload metody wywo³ywana 
 		int _onSDLEvent(SDL_Event *event);
+		void connectToServer();							//£¹czenie z serwerem
+		void disconnect();						//Roz³¹czenie z serwerem
 		void _onPlatform(Event *event);
 		void start();							//testowa aplikacja
 		void displayClicked(Event *event);		//testowa aplikacja

@@ -1,3 +1,7 @@
+#undef UNICODE
+
+#define WIN32_LEAN_AND_MEAN
+
 #include "cGame.h"
 #include "oxygine-framework.h"
 #include "Assets.h"
@@ -7,8 +11,14 @@
 #include "core/STDFileSystem.h"
 #include "cNotify.h"
 #include "cUI.h"
+#include <stdlib.h>
 #include <iostream>
 
+
+// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
 
 #ifdef __S3E__
 #include "s3eKeyboard.h"
@@ -55,10 +65,100 @@ cGame::cGame(){
 };
 
 
+//---Metody odpowiedzialne za po³¹czenie z serwerem
+static DWORD WINAPI startConnection(void* param)
+{
+    cGame* This = (cGame*) param;
+    return This->connection();
+}
+DWORD cGame::connection()
+{   
+	int iResult;
+	while(1){
+		WaitForSingleObject(send_message, INFINITE);
+		char sendbuf[255];
+		sprintf (sendbuf, "%f", delta);
+ 		iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
+		if (iResult == SOCKET_ERROR) {
+			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
+			closesocket(ConnectSocket);
+			WSACleanup();
+			return 1;
+		}
+		std::cout<<sendbuf<<endl;
+		ResetEvent(send_message);
+	}
+	return 0;
+}
+void cGame::connectToServer()
+{	   
+	WSADATA wsaData;
+    struct addrinfo *result = NULL,
+                    *ptr = NULL,
+                    hints;
+    char sendbuf[128];
+    char recvbuf[128];
+    int iResult;
+    int recvbuflen = 128;
+
+
+	WSAStartup(MAKEWORD(2,2), &wsaData);
+    ZeroMemory( &hints, sizeof(hints) );
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+
+	getaddrinfo("localhost", "27015", &hints, &result);
+
+	    // Attempt to connect to an address until one succeeds
+    for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
+
+        // Create a SOCKET for connecting to server
+        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, 
+            ptr->ai_protocol);
+        if (ConnectSocket == INVALID_SOCKET) {
+            printf("socket failed with error: %ld\n", WSAGetLastError());
+            WSACleanup();
+            return;
+        }
+
+        // Connect to server.
+        iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        if (iResult == SOCKET_ERROR) {
+            closesocket(ConnectSocket);
+            ConnectSocket = INVALID_SOCKET;
+            continue;
+        }
+        break;
+    }
+
+    freeaddrinfo(result);
+
+    if (ConnectSocket == INVALID_SOCKET) {
+        printf("Unable to connect to server!\n");
+        WSACleanup();
+        return;
+    }
+	send_message=CreateEvent(0,1,0,0); /*No security descriptor, Manual Reset, initially 0, no name*/
+	DWORD ThreadID;
+	CreateThread(NULL, 0, startConnection, (void*) this, 0, &ThreadID);
+}
+void cGame::disconnect()
+{
+	closesocket(ConnectSocket);
+	WSACleanup();
+}
+
 //---Funkcja ustawia wartosci poczatkowe dla klasy
 void cGame::init(){
 
+	cout<<"TRWA £¥CZENIE Z SERWEREM"<<endl;
+	this->connectToServer();
+	cout<<"PO£¥CZONO"<<endl;
+
 }
+
+//---Metody odpowiedzialne za ob³ugê klawiatury
 void cGame::_onPlatform(Event *event)
 	{
 		_onSDLEvent((SDL_Event*)event->userData);
@@ -94,6 +194,7 @@ void cGame::destroy(){
 	Assets::free();
 	delete _map;
 	delete _player;
+	this->disconnect();
 }
 
 //---Funkcja aktualizujaca czynnosci klasy
@@ -104,6 +205,7 @@ void cGame::doUpdate(const UpdateState &us)
 		delta = 0;
 		displayClicked(NULL);
 	}
+	SetEvent(send_message);
 }
 
 //---************************************************FUNKCJE TESTOWE DLA APLIKACJI (Z SZABLONU)
