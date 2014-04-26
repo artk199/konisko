@@ -44,8 +44,8 @@ class cGame: public Actor
 
 		cNotify *notifies;
 		//Thread odpowiedzialny za wysy³anie operacji
-		DWORD connection(void);
-
+		DWORD sender(void);
+		DWORD reciever(void);
 	private:
 		//Dane
 		Content *content;
@@ -53,6 +53,7 @@ class cGame: public Actor
 		cMap* _map;
 		cPlayer* _player;
 		SOCKET ConnectSocket;
+		int przes;
 		//
 		SDL_Event event;
 		HANDLE send_message;

@@ -57,7 +57,7 @@ cGame::cGame(){
 	Input::instance.addEventListener(Input::event_platform, CLOSURE(this, &cGame::_onPlatform));
 
 
-
+	przes = 0;
 
 
 	//wystartowanie testowej aplikacji
@@ -66,28 +66,55 @@ cGame::cGame(){
 
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
-static DWORD WINAPI startConnection(void* param)
+static DWORD WINAPI startSending(void* param)
 {
     cGame* This = (cGame*) param;
-    return This->connection();
+    return This->sender();
 }
-DWORD cGame::connection()
+static DWORD WINAPI startRecieving(void* param)
+{
+    cGame* This = (cGame*) param;
+    return This->reciever();
+}
+DWORD cGame::sender()
 {   
 	int iResult;
 	while(1){
 		WaitForSingleObject(send_message, INFINITE);
 		char sendbuf[255];
-		sprintf (sendbuf, "%f", delta);
- 		iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
+		if (przes != 0){
+			sprintf (sendbuf, "%d", przes);
+			przes = 0;
+		}else{
+			sprintf (sendbuf, "daj");
+		}
+ 		iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf)+1, 0 );
 		if (iResult == SOCKET_ERROR) {
 			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
 			closesocket(ConnectSocket);
 			WSACleanup();
 			return 1;
 		}
-		std::cout<<sendbuf<<endl;
+		//std::cout<<"ping: "<<ping<<endl;
 		ResetEvent(send_message);
 	}
+	return 0;
+}
+DWORD cGame::reciever()
+{   
+	int iResult;
+	char buf[80];
+	while (recv (ConnectSocket, buf, 80, 0) > 0)
+	{
+		if (strcmp(buf, "KONIEC") == 0)
+		{
+			printf("koncze polaczenie\n");
+			return 0;
+		}
+		_player->move(Vector2(atoi(buf)*2,atoi(buf)*2));
+		
+		//printf("\n%d",atoi(buf));
+	};
 	return 0;
 }
 void cGame::connectToServer()
@@ -96,10 +123,7 @@ void cGame::connectToServer()
     struct addrinfo *result = NULL,
                     *ptr = NULL,
                     hints;
-    char sendbuf[128];
-    char recvbuf[128];
     int iResult;
-    int recvbuflen = 128;
 
 
 	WSAStartup(MAKEWORD(2,2), &wsaData);
@@ -141,7 +165,8 @@ void cGame::connectToServer()
     }
 	send_message=CreateEvent(0,1,0,0); /*No security descriptor, Manual Reset, initially 0, no name*/
 	DWORD ThreadID;
-	CreateThread(NULL, 0, startConnection, (void*) this, 0, &ThreadID);
+	CreateThread(NULL, 0, startSending, (void*) this, 0, &ThreadID);
+	CreateThread(NULL, 0, startRecieving, (void*) this, 0, &ThreadID);
 }
 void cGame::disconnect()
 {
@@ -170,20 +195,21 @@ int cGame::_onSDLEvent(SDL_Event *event)
 		case SDL_KEYDOWN:
 			switch( event->key.keysym.sym ){
                     case SDLK_LEFT:
-                        _player->move(Vector2(-64,0));
+                        przes-=1;
                         break;
                     case SDLK_RIGHT:
-                        _player->move(Vector2(64,0));
+                        przes+=1;
                         break;
                     case SDLK_UP:
-                        _player->move(Vector2(0,-64));
+						 przes+=1;
                         break;
                     case SDLK_DOWN:
-                        _player->move(Vector2(0,64));
+                        przes-=1;
                         break;
                     default:
                         break;
                 }
+			SetEvent(send_message);
 			break;
 		}
 	return 0;
@@ -213,6 +239,7 @@ void cGame::displayClicked(Event *event){
 		notifies->notify("Jakies dluzsze informacje\n nawet w dwoch liniach Trolololololololololo");
 		//lets create and run sprite with animation
 		runSprite();
+		SetEvent(send_message);
 };
 
 void cGame::start(){	

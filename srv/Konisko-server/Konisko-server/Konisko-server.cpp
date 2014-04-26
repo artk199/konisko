@@ -18,16 +18,21 @@
 
 int n_of_conn = 0;
 
+int dana;
+
 struct connection{
 	char nazwa[128];
 	int id;
 	SOCKET ClientSocket;
 	HANDLE watek;
+	int dana;
 } connections[MAX_CONN];
 
 DWORD WINAPI odbieraj(void* a){
 	connection* c = (connection*)a;
-	char buf [80];
+	char buf[80];
+	char sendbuf[255];
+	c->dana = 0;
 	while (recv (c->ClientSocket, buf, 80, 0) > 0)
 	{
 		if (strcmp(buf, "KONIEC") == 0)
@@ -37,7 +42,21 @@ DWORD WINAPI odbieraj(void* a){
 			closesocket(c->ClientSocket);
 			return 0;
 		}
-		printf("\n%s",buf);
+		if (strcmp(buf, "daj") == 0)
+		{
+			//Je¿eli coœ siê zmieni³o to wysy³am delte
+			if(dana-c->dana != 0){
+				sprintf(sendbuf,"%d",dana-c->dana);
+				send(c->ClientSocket, sendbuf, (int)strlen(sendbuf)+1, 0 );
+				c->dana = dana;
+			}
+		}
+		else
+		{
+			dana += atoi(buf);
+		}
+
+		//printf("\n%d",(int)strlen(buf));
 	};
 	n_of_conn--;
 	c->ClientSocket = INVALID_SOCKET;
@@ -50,7 +69,7 @@ int __cdecl main(void)
 	for(int i=0;i<MAX_CONN;i++){
 		connections[i].ClientSocket = INVALID_SOCKET;
 	}
-
+	dana = 0;
     WSADATA wsaData;
     int iResult;
 
