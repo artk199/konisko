@@ -34,6 +34,9 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{83cc9e5c-eaff-4012-98d5-f58f6e5d8dbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Screen">
+      <UniqueIdentifier>{75c69ffe-c41f-445e-b41e-0a7cfa434b4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -63,6 +66,12 @@
     <ClCompile Include="..\src\cPlayer.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cMenu.cpp">
+      <Filter>Source Files\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cLevel.cpp">
+      <Filter>Source Files\Screen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cGame.h">
@@ -87,6 +96,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -63,6 +63,7 @@ cGame::cGame(){
 	start();
 };
 
+
 //---Metody odpowiedzialne za po³¹czenie z serwerem
 static DWORD WINAPI startSending(void* param){
     cGame* This = (cGame*) param;
