@@ -227,6 +227,7 @@ void cGame::doUpdate(const UpdateState &us)
 	delta += us.dt;
 	if (delta > 1000){
 		delta = 0;
+		printf("UN: %s, SN: %s\n",Assets::userNick.c_str(),Assets::serverName.c_str());
 		//displayClicked(NULL);
 	}
 	SetEvent(send_message);

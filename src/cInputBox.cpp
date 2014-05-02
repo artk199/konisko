@@ -1,53 +1,57 @@
-/*#pragma once
-#include "cUI.h"
-#include "InputText.h"
-#include "Actor.h"
-#include "Button.h"
-#include "RenderState.h"
-#include "cMap.h"
-#include "cPlayer.h"
-#include "oxygine-framework.h"
-#include "Assets.h"
-#include "cGame.h"
 #include "cInputBox.h"
 
-cInputBox::cInputBox()	{
-	_input = new InputText;
-	//_input->setAllowedSymbols("1234567890");
-	//_input->setDisallowedSymbols("0");
-	_input->addEventListener(Event::COMPLETE, CLOSURE(this, &cInputBox::onComplete));
-}
+cInputBox::cInputBox( int x, int y, string &t, string tlabel){
+	noEdit = Color::Chocolate;//RGB(48,68,72);
+	edited = Color::DarkViolet;//RGB(72,48,48);
 
+	napis = &t;
+
+	//tworzenie labelki
+	label = cUI::createText(tlabel);
+	label->setHAlign(TextStyle::HALIGN_LEFT);
+	label->setX(x);
+	label->setY(y+10);
+	label->attachTo(this);
+
+	if(tlabel.length()>0) x+=200;
+
+	//tworzenie ramki
+	ramka = new ColorRectSprite();
+	ramka->setX(x);
+	ramka->setY(y);
+	ramka->setWidth(200);
+	ramka->setHeight(30);
+	ramka->setColor(noEdit);
+	ramka->attachTo(this);
+
+	//tworzenie tekstu
+	text = cUI::createText(t);
+	text->setHAlign(TextStyle::HALIGN_LEFT);
+	text->setX(x+5);
+	text->setY(y+10);
+	text->attachTo(this);
+
+	//dodanie eventow
+	ramka->addEventListener(TouchEvent::CLICK, CLOSURE(this, &cInputBox::onClick));
+	text->addEventListener(TouchEvent::CLICK, CLOSURE(this, &cInputBox::onClick));
+	input = new InputText;
+	input->addEventListener(Event::COMPLETE, CLOSURE(this, &cInputBox::onComplete));
+};
+
+//---Event po zaakceptowaniu wprowadzonych zmian
+void cInputBox::onComplete(Event *ev){
+	ramka->setColor(noEdit);
+	string pom=text->getText();
+	*napis = pom;
+	InputText::stopAnyInput();
+};
+
+//---Event nasluchiwania na klikniecie 
 void cInputBox::onClick(Event *ev){
-	if (_current) _current->setColor(Color::White);
-	
-
-	//_current = safeSpCast<spTextActor>(ev->currentTarget);
-	_input->start(_current);
-	_current->setColor(Color::Red);
+	ramka->setColor(noEdit);
+	input->start(text);
+	ramka->setColor(edited);
 };
 
-void cInputBox::onComplete(Event *ev)
-{
-	if (_current) _current->setColor(Color::White);
-	
-	_current = 0;
-	InputText::stopAnyInput();
-}
-
-cInputBox::~cInputBox(){
-	InputText::stopAnyInput();
-}
-
-void cInputBox::clicked(string id){		
-		
-}
-
-void cInputBox::Ustaw(string &nap, int x, int y){
-	spTextActor t = cUI::createText(nap, Color::Black);
-
-	t->setPosition(x - t->getWidth()/2,y);
-	t->attachTo(this);
-	t->addEventListener(TouchEvent::CLICK, CLOSURE(this, &cInputBox::onClick));
-};
-*/
+//---Pobiera aktualnie zapisany tekst na labelce
+string cInputBox::getText(){return text->getText();};

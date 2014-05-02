@@ -72,6 +72,9 @@
     <ClCompile Include="..\src\cLevel.cpp">
       <Filter>Source Files\Screen</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cInputBox.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cGame.h">
@@ -102,6 +105,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cInputBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

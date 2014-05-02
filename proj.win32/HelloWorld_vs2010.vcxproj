@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Assets.cpp" />
+    <ClCompile Include="..\src\cInputBox.cpp" />
     <ClCompile Include="..\src\cLevel.cpp" />
     <ClCompile Include="..\src\cMap.cpp" />
     <ClCompile Include="..\src\cMenu.cpp" />
@@ -107,6 +108,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\Assets.h" />
     <ClInclude Include="..\src\cGame.h" />
+    <ClInclude Include="..\src\cInputBox.h" />
     <ClInclude Include="..\src\cLevel.h" />
     <ClInclude Include="..\src\cMap.h" />
     <ClInclude Include="..\src\cMenu.h" />

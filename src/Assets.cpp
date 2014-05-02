@@ -10,6 +10,9 @@ namespace Assets
 	Resources gameResources;
 	vector<string> mapString;		
 	Vector2 windowSize;
+	string userNick = "New player";
+	string serverName = "localhost";
+
 	void load()
 	{
 		//load our resources

@@ -1,9 +1,10 @@
 #pragma once
 #include "oxygine-framework.h"
 #include "TextActor.h"
-#include "cInputBox.h"
 
 using namespace oxygine;
+
+
 
 //---KLASA ODPOWIEDZIALNA ZA INTERFEJS U¯YTKOWNIKA
 class cUI{
