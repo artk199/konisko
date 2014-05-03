@@ -5,7 +5,6 @@ DECLARE_SMART(cMenu, spcMenu);
 #include "InputText.h"
 #include "cInputBox.h"
 
-
 void cMenu::render(const RenderState &parentRS){
 	parentRS.renderer->drawBatch();
 
@@ -19,6 +18,11 @@ void cMenu::render(const RenderState &parentRS){
 
 //---Pokazuje na ekranie opcje menu glownego
 void cMenu::menuMain(Event *event){
+	if(game!=NULL){
+		game->setVisible(false);
+		game->map->clear();
+	}
+
 	setVisible(true);
 	this->removeChildren(); //czyszczenie wszystkich dzieci
 
@@ -49,7 +53,6 @@ void cMenu::menuMultiplayer(Event *event){
 	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start game", c1));
 	EventCallback c2 = CLOSURE(this, &cMenu::menuMain);
 	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-150, "back", c2));
-
 };
 
 //---Zapisuje wskaznik na klase zarzadzajaca wyswietlaniem gry

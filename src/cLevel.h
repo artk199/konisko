@@ -8,6 +8,7 @@
 #include "Assets.h"
 #include "cUI.h"
 #include "cGame.h"
+#include "cMap.h"
 
 class cMenu;
 
@@ -16,6 +17,7 @@ class cLevel: public Actor{
 	public:
 		cLevel():driver(0){setVisible(false);}
 		IVideoDriver *driver;
+		cMap *map;
 
 		void render(const RenderState &parentRS);
 
@@ -23,4 +25,5 @@ class cLevel: public Actor{
 		void setMenu(cMenu *m);// - Zapisanie wskaznika na klase wyswietlania menu na ekranie
 	private:
 		cMenu *menu;
+		
 };

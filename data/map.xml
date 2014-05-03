@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<resources>
+	<set path = "images/map" />
+  <atlas>
+		<image type ="tile1" file="tile1.png" y="0" x="0" walkable="true" destroyable="true"/>
+    <image type ="tile2" file="tile1.png" y="0" x="1" walkable="true"  destroyable="false"/>
+    <image type ="tile1" file="tile2.png" y="0" x="2" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile1.png" y="0" x="3" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile1.png" y="0" x="4" walkable="true" destroyable="false"/>
+    <image type ="tile1" file="tile1.png" y="1" x="0" walkable="true" destroyable="true"/>
+    <image type ="tile2" file="tile1.png" y="1" x="1" walkable="true"  destroyable="false"/>
+    <image type ="tile1" file="tile2.png" y="1" x="2" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile1.png" y="1" x="3" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile1.png" y="1" x="4" walkable="true" destroyable="false"/>
+    <image type ="tile1" file="tile1.png" y="2" x="0" walkable="true" destroyable="true"/>
+    <image type ="tile2" file="tile1.png" y="2" x="1" walkable="true"  destroyable="false"/>
+    <image type ="tile1" file="tile2.png" y="2" x="2" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile1.png" y="2" x="3" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile1.png" y="2" x="4" walkable="true" destroyable="false"/>
+    <image type ="tile1" file="tile2.png" y="3" x="0" walkable="true" destroyable="true"/>
+    <image type ="tile2" file="tile2.png" y="3" x="1" walkable="true"  destroyable="false"/>
+    <image type ="tile1" file="tile2.png" y="3" x="2" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile2.png" y="3" x="3" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile2.png" y="3" x="4" walkable="true" destroyable="false"/>
+    <image type ="tile1" file="tile2.png" y="4" x="0" walkable="true" destroyable="true"/>
+    <image type ="tile2" file="tile2.png" y="4" x="1" walkable="true"  destroyable="false"/>
+    <image type ="tile1" file="tile1.png" y="4" x="2" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile2.png" y="4" x="3" walkable="true" destroyable="false"/>
+    <image type ="tile2" file="tile2.png" y="4" x="4" walkable="true" destroyable="false"/>
+  </atlas>
+</resources>

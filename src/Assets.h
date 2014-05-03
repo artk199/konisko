@@ -5,6 +5,7 @@ using namespace oxygine;
 
 namespace Assets{
 	extern Resources gameResources;
+	extern Resources gameMap;
 	extern vector<std::string> mapString;
 	extern Vector2 windowSize;
 	extern string userNick;

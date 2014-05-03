@@ -4,8 +4,6 @@
 
 using namespace oxygine;
 
-
-
 //---KLASA ODPOWIEDZIALNA ZA INTERFEJS U¯YTKOWNIKA
 class cUI{
 	public:

@@ -8,6 +8,7 @@ using namespace oxygine;
 namespace Assets
 {
 	Resources gameResources;
+	Resources gameMap;
 	vector<string> mapString;		
 	Vector2 windowSize;
 	string userNick = "New player";
@@ -18,7 +19,8 @@ namespace Assets
 		//load our resources
 		gameResources.loadXML("res.xml");
 
-
+		//zaladowanie mapy
+		gameMap.loadXML("map.xml");
 
 		//load map from file
 		ifstream file;
@@ -45,5 +47,6 @@ namespace Assets
 	{
 		//unload
 		gameResources.free();
+		gameMap.free();
 	}
 }

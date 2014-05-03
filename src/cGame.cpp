@@ -15,6 +15,8 @@
 #include <iostream>
 #include "cMenu.h"
 #include "cLevel.h"
+#include "oxygine-framework.h"
+
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -30,7 +32,7 @@ using namespace oxygine;
 DECLARE_SMART(cGame, spcGame);
 
 file::STDFileSystem extfs(true);
-
+cNotify * cGame::notifies;
 
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
@@ -47,7 +49,7 @@ cGame::cGame(){
 	delta = 0;
 
 	//Dodanie mapy 
-	_map = new cMap(this);
+	//_map = new cMap(this);
 
 	//Dodanie gracza
 	_player = new cPlayer(Vector2(0,0));
@@ -172,13 +174,12 @@ void cGame::disconnect()
 	WSACleanup();
 }
 
+
 //---Funkcja ustawia wartosci poczatkowe dla klasy
 void cGame::init(){
-
 	cout<<"TRWA £¥CZENIE Z SERWEREM"<<endl;
 	this->connectToServer();
 	cout<<"PO£¥CZONO"<<endl;
-
 }
 
 //---Metody odpowiedzialne za ob³ugê klawiatury
@@ -216,18 +217,16 @@ int cGame::_onSDLEvent(SDL_Event *event)
 //---Funkcja czysci pamiec po zakonczeniu zycia klasy
 void cGame::destroy(){
 	Assets::free();
-	delete _map;
+	//delete _map;
 	delete _player;
 	this->disconnect();
 }
 
 //---Funkcja aktualizujaca czynnosci klasy
-void cGame::doUpdate(const UpdateState &us)
-{
+void cGame::doUpdate(const UpdateState &us){
 	delta += us.dt;
 	if (delta > 1000){
 		delta = 0;
-		printf("UN: %s, SN: %s\n",Assets::userNick.c_str(),Assets::serverName.c_str());
 		//displayClicked(NULL);
 	}
 	SetEvent(send_message);
@@ -249,10 +248,7 @@ void cGame::start(){
 	menu->setGame(level);
 	level->setMenu(menu);
 	addChild(menu);
-	//EventCallback c = CLOSURE(this, &cGame::displayClicked);
-	//content->addChild(cUI::addButton(400,400, "trololo", c));
-	//content->addChild(cUI::addButton(400,500, "Trolololo2", c));
-	
+	addChild(level);
 };
 
 void cGame::runSprite(){

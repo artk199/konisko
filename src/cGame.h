@@ -27,7 +27,7 @@ class cGame: public Actor
 		void init();		// - Funkcja ustawia wartosci poczatkowe dla klasy
 		void destroy();		// - Funkcja czysci pamiec po zakonczeniu zycia klasy
 
-		cNotify *notifies;
+		static cNotify *notifies;
 		//Thread odpowiedzialny za wysy³anie operacji
 		DWORD sender(void);
 		DWORD reciever(void);
