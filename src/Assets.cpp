@@ -9,44 +9,33 @@ namespace Assets
 {
 	Resources gameResources;
 	Resources gameMap;
-	vector<string> mapString;		
 	Vector2 windowSize;
 	string userNick = "New player";
 	string serverName = "localhost";
+	map <int, string> errors;
 
-	void load()
-	{
+	void load(){
 		//load our resources
 		gameResources.loadXML("res.xml");
 
 		//zaladowanie mapy
 		gameMap.loadXML("map.xml");
 
-		//load map from file
-		ifstream file;
-		file.open("map.dat");
-		if (!file.is_open()){
-			cout<< "Blad podczas ladowania danych mapy z pliku." <<endl;
-			return;
-		}
-	
-		while(!file.eof()){
-			string temp;
-			file>>temp;
-			mapString.push_back(temp);
-		}
-
-
-		file.close();
-
 		//Wpisze siê tutaj rozmiar okna
-		windowSize = Vector2(100,100);
-	}
+		windowSize = Vector2(600,800);
 
-	void free()
-	{
+		loadErrors();
+	};
+
+	void free(){
 		//unload
 		gameResources.free();
 		gameMap.free();
-	}
-}
+	};
+		
+
+	void loadErrors(){
+		errors[0] = "Invalid server adress. Use IP or localhost!";
+		errors[1] = "Unable to connect to server. Check server adress!";
+	};
+};

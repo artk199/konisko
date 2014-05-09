@@ -3,7 +3,12 @@
 #include "cNotify.h"
 
 
-DECLARE_SMART(cLevel, spcLevel);
+cLevel::cLevel():driver(0){
+	setVisible(false);
+	game=NULL;
+	menu=NULL;
+	map=NULL;
+};
 
 void cLevel::render(const RenderState &parentRS){
 	parentRS.renderer->drawBatch();
@@ -18,17 +23,30 @@ void cLevel::render(const RenderState &parentRS){
 
 //---Zainicjalizowanie rysowania rozgrywki na ekranie
 void cLevel::drawGame(Event *event){
-	menu->setVisible(false);
-	setVisible(true);
-	removeChildren();
+	//proba polaczenia z serwerem
+	try{
+		game->tryConnectToServer();
+	
+		//proba zakonczyla sie powodzeniem
+		menu->setVisible(false);
+		setVisible(true);
+		removeChildren();
+	
+		map = new cMap();
+		addChild(map);
 
-	cGame::notifies->notify("test");
-	map = new cMap();
-	addChild(map);
-
-	EventCallback c1 = CLOSURE(menu, &cMenu::menuMain);
-	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Main Menu", c1));
+		panel = new cLeftPanel(this,players,menu);	
+		panel->attachTo(this);
+	}
+	//wyswietlenie wyjatku na ekranie
+	catch(int e){cGame::notifies->notify(Assets::errors[e].c_str());}	
 };
 
 //---Zapisanie wskaznika na klase wyswietlania menu na ekranie
-void cLevel::setMenu(cMenu *m){menu=m;}
+void cLevel::setMenu(spcMenu m){menu=m;}
+
+//---Zapisanie wskaznika na klase glowna programu
+void cLevel::setGame(spcGame g){game=g;};
+
+//---Zapisanie wskaznika na wektor z graczami
+void cLevel::setPlayers(vector <spcPlayer> *p){players=p;};

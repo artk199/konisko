@@ -9,6 +9,20 @@
 		<image file="button.png" cols = "3" />		
 	</atlas>
 	
+	<set path = "images/map" />
+	<atlas>
+		<image file="grass1.png"/> 
+		<image file="grass2.png"/> 
+		<image file="grass3.png"/> 
+		<image file="grass4.png"/> 
+		<image file="grass5.png"/> 		
+		<image file="grass6.png"/> 
+		<image file="wall1.png"/> 
+		<image file="wall2.png"/> 
+		<image file="wall3.png"/> 
+		<image file="wall4.png"/> 
+	</atlas>
+	
 	<set path = "fonts" />
 	<font file="main.fnt"  id="main"/>
 	<font file="notify.fnt"  id="notify"/>

@@ -1,7 +1,5 @@
 #include "cMenu.h"
 #include "cLevel.h"
-
-DECLARE_SMART(cMenu, spcMenu);
 #include "InputText.h"
 #include "cInputBox.h"
 
@@ -18,10 +16,10 @@ void cMenu::render(const RenderState &parentRS){
 
 //---Pokazuje na ekranie opcje menu glownego
 void cMenu::menuMain(Event *event){
-	if(game!=NULL){
-		game->setVisible(false);
-		game->map->clear();
-	}
+	if(level!=NULL)
+		level->setVisible(false);
+	
+	game->disconnect();
 
 	setVisible(true);
 	this->removeChildren(); //czyszczenie wszystkich dzieci
@@ -49,11 +47,11 @@ void cMenu::menuMultiplayer(Event *event){
 	addChild(new cInputBox(50,50,Assets::userNick,"Nick:"));
 	addChild(new cInputBox(50,100,Assets::serverName,"Nazwa serwera:"));
 
-	EventCallback c1 = CLOSURE(game, &cLevel::drawGame);
-	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start game", c1));
+	EventCallback c1 = CLOSURE(level.get(), &cLevel::drawGame);
+	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start level", c1));
 	EventCallback c2 = CLOSURE(this, &cMenu::menuMain);
 	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-150, "back", c2));
 };
 
 //---Zapisuje wskaznik na klase zarzadzajaca wyswietlaniem gry
-void cMenu::setGame(cLevel *g){game=g;};
+void cMenu::setLevel(spcLevel g){level=g;};

@@ -34,7 +34,7 @@ void cNotify::notify(string txt, int time, Color tcolor){
 	tq->add(Actor::TweenAlpha(0), 300, 1, false, 1200);
 	tq->setDetachActor(true);
 	tq->setDoneCallback(CLOSURE(this, &cNotify::endNotify));
-
+	ui->setPriority(1000);
 	sprite->addTween(tq);
 	sprite->attachTo(ui);
 	sprite->setPosition(getRoot()->getWidth()/2.0f - szer/2, 30.0f + N * sprite->getHeight() * 1.1f);

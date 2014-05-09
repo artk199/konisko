@@ -29,7 +29,7 @@ class cInputBox: public Actor{
 		string *napis;
 
 
-		void cInputBox::onComplete(Event *ev);// - Event po zaakceptowaniu wprowadzonych zmian
+		void onComplete(Event *ev);// - Event po zaakceptowaniu wprowadzonych zmian
 		void onClick(Event *ev);// - Event nasluchiwania na klikniecie 
 };
 

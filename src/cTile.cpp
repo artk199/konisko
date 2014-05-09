@@ -3,22 +3,30 @@
 #include <iostream>
 
 
-cTile::cTile(string n, Vector2 p, Actor *par){
+cTile::cTile(string n, Vector2 p, spActor par){
 	name = n;
 	pos = p;
 	_view = par;
 
 	//stworzenie sprite'a
 	sprite = new Sprite;
-	sprite->setResAnim(Assets::gameMap.getResAnim(name));
+	sprite->setResAnim(Assets::gameResources.getResAnim(name));
 	sprite->setPosition(pos.x,pos.y);
 	sprite->attachTo(_view);
+
+	//ustawienie parametrow domyslnych
+	walkable = false;
+	destroyable = false;
 };
 
-cTile::~cTile(){
+void cTile::clear(){
 	sprite->releaseRef();
 };
 
+cTile::~cTile(){
+	clear();
+};
+
 void cTile::_init(){
 	sprite = new Sprite;
 	sprite->setResAnim(Assets::gameMap.getResAnim(name));
@@ -27,29 +35,9 @@ void cTile::_init(){
 	sprite->attachTo(_view);
 };
 
-/*KOD ARTURA
-cTile::cTile(Vector2 pos){
-	this->pos = pos;
-}
-void cTile::setType(tileType type){
-	this->type = type;
-}
-void cTile::_init(){
-	sprite = new Sprite;
-	switch(type){
-		case dirt:
-			sprite->setResAnim(Assets::gameResources.getResAnim("tile1"));
-			break;
-		case obsydian:
-			sprite->setResAnim(Assets::gameResources.getResAnim("tile2"));
-			break;
-		default:
-			sprite->setResAnim(Assets::gameResources.getResAnim("tile1"));
-	}
-	sprite->setPosition(pos.x,pos.y);
-	sprite->attachTo(_view);
-}
-cTile::~cTile()
-{
-}
-KOD ARTURA*/
+//---FUNKCJE DOSTEPU
+void cTile::setWalkable(bool s){walkable = s;};
+void cTile::setDestroyable(bool s){destroyable = s;};
+bool cTile::isWalkable(){return walkable;};
+bool cTile::isDestroyable(){return destroyable;};
+spSprite cTile::getSprite(){return sprite;};

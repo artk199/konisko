@@ -9,19 +9,19 @@
 #include <ws2tcpip.h>
 #include <windows.h>
 #include <winsock2.h>
-class cMenu;
-class cLevel;
+#include "cLevel.h"
+#include "cMenu.h"
+
 using namespace oxygine;
 
 class cNotify;
-
-
 typedef void (*handler) (Event);
 
+DECLARE_SMART(cGame, spcGame);
 
-class cGame: public Actor
-{
-	public:
+
+class cGame: public Actor{
+	public: 
 		cGame();
 
 		void init();		// - Funkcja ustawia wartosci poczatkowe dla klasy
@@ -32,29 +32,28 @@ class cGame: public Actor
 		DWORD sender(void);
 		DWORD reciever(void);
 
+		bool checkServerName(string n); // - Zwraca informacje, czy podana nazwa serwera jest poprawna (IP lub localhost)
+		bool tryConnectToServer(); // - Zwraca informacje, czy udalo sie polaczyc do serwera (rzuca wyjatkiem, jesli nie)
+		void disconnect();		   // - Roz³¹czenie z serwerem
+
 	private:
 		//Dane
 		float delta;
-		cMap* _map;
-		cPlayer* _player;
+		spcPlayer _player;
 		SOCKET ConnectSocket;
 		int przes;
+		vector <spcPlayer> players;//wektor z graczami
 		//
 		SDL_Event event;
 		HANDLE send_message;
-		cMenu *menu;
-		cLevel *level;
+		spcMenu menu;
+		spcLevel level;
 
 		//Metody
 		void doUpdate(const UpdateState &us);	//Overload metody wywo³ywana 
 		int _onSDLEvent(SDL_Event *event);
-		void connectToServer();							//£¹czenie z serwerem
-		void disconnect();						//Roz³¹czenie z serwerem
+		bool connectToServer();							//£¹czenie z serwerem
 		void _onPlatform(Event *event);
-		void start();							//testowa aplikacja
-
-		void runSprite();						//testowa aplikacja
-	    void displayClicked(Event *event);		//testowa aplikacja
 };
 
 

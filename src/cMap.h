@@ -6,13 +6,16 @@
 
 using namespace std;
 
+DECLARE_SMART(cMap, spcMap);
+
 class cMap: public Actor{
 	public:
 		cMap();
-		void clear(); // - znaleziono wyciek pamieci przy kilkukrotnym uruchomieniu nowej gry, sprawdzic
-		//cMap(cGame *game);
+		void clear();
+
+		map<pair<int,int>, spcTile> tiles; // kontener ze wszystkimi polami
 	private:
-		map<pair<int,int>, cTile *> tiles;
-		pair<int,int> size;
-		Vector2 przes;
+		
+		pair<int,int> size; // rozmiary wczytanej mapy
+		Vector2 przes; // wektor przesuniecia mapy wzgledem okna (margines lewy i gorny)
 };

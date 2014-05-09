@@ -2,30 +2,80 @@
 <resources>
 	<set path = "images/map" />
   <atlas>
-		<image type ="tile1" file="tile1.png" y="0" x="0" walkable="true" destroyable="true"/>
-    <image type ="tile2" file="tile1.png" y="0" x="1" walkable="true"  destroyable="false"/>
-    <image type ="tile1" file="tile2.png" y="0" x="2" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile1.png" y="0" x="3" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile1.png" y="0" x="4" walkable="true" destroyable="false"/>
-    <image type ="tile1" file="tile1.png" y="1" x="0" walkable="true" destroyable="true"/>
-    <image type ="tile2" file="tile1.png" y="1" x="1" walkable="true"  destroyable="false"/>
-    <image type ="tile1" file="tile2.png" y="1" x="2" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile1.png" y="1" x="3" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile1.png" y="1" x="4" walkable="true" destroyable="false"/>
-    <image type ="tile1" file="tile1.png" y="2" x="0" walkable="true" destroyable="true"/>
-    <image type ="tile2" file="tile1.png" y="2" x="1" walkable="true"  destroyable="false"/>
-    <image type ="tile1" file="tile2.png" y="2" x="2" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile1.png" y="2" x="3" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile1.png" y="2" x="4" walkable="true" destroyable="false"/>
-    <image type ="tile1" file="tile2.png" y="3" x="0" walkable="true" destroyable="true"/>
-    <image type ="tile2" file="tile2.png" y="3" x="1" walkable="true"  destroyable="false"/>
-    <image type ="tile1" file="tile2.png" y="3" x="2" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile2.png" y="3" x="3" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile2.png" y="3" x="4" walkable="true" destroyable="false"/>
-    <image type ="tile1" file="tile2.png" y="4" x="0" walkable="true" destroyable="true"/>
-    <image type ="tile2" file="tile2.png" y="4" x="1" walkable="true"  destroyable="false"/>
-    <image type ="tile1" file="tile1.png" y="4" x="2" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile2.png" y="4" x="3" walkable="true" destroyable="false"/>
-    <image type ="tile2" file="tile2.png" y="4" x="4" walkable="true" destroyable="false"/>
+	<image type="grass1" y="1" x="1" walkable="true" destroyable="false"/>
+    <image type="grass2" y="1" x="2" walkable="true" destroyable="false"/>
+    <image type="grass5" y="1" x="3" walkable="true" destroyable="false"/>
+    <image type="grass4" y="1" x="4" walkable="true" destroyable="false"/>
+    <image type="grass2" y="1" x="5" walkable="true" destroyable="false"/>
+    <image type="grass1" y="1" x="6" walkable="true" destroyable="false"/>
+    <image type="grass3" y="1" x="7" walkable="true" destroyable="false"/>
+    <image type="grass4" y="1" x="8" walkable="true" destroyable="false"/>
+    <image type="grass2" y="1" x="9" walkable="true" destroyable="false"/>
+    <image type="grass2" y="1" x="10" walkable="true" destroyable="false"/>
+    <image type="grass5" y="1" x="11" walkable="true" destroyable="false"/>
+    <image type="grass2" y="1" x="12" walkable="true" destroyable="false"/>
+    <image type="grass6" y="1" x="13" walkable="true" destroyable="false"/>
+
+    
+    <image type="grass2" y="2" x="1" walkable="true" destroyable="false"/>
+    
+    <image type="wall1" y="2" x="3" walkable="false" destroyable="true"/>
+
+    <image type="wall2" y="2" x="5" walkable="false" destroyable="true"/>
+   
+    <image type="wall1" y="2" x="7" walkable="false" destroyable="true"/>
+
+    <image type="wall4" y="2" x="9" walkable="false" destroyable="true"/>
+    
+    <image type="wall3" y="2" x="11" walkable="false" destroyable="true"/>
+
+    <image type="grass1" y="2" x="13" walkable="true" destroyable="false"/>
+
+    
+    <image type="wall2" y="3" x="1" walkable="false" destroyable="true"/>
+    <image type="wall1" y="3" x="2" walkable="false" destroyable="true"/>
+    <image type="wall3" y="3" x="3" walkable="false" destroyable="true"/>
+    <image type="wall2" y="3" x="4" walkable="false" destroyable="true"/>
+    <image type="wall1" y="3" x="5" walkable="false" destroyable="true"/>
+    <image type="wall4" y="3" x="6" walkable="false" destroyable="true"/>
+    <image type="wall3" y="3" x="7" walkable="false" destroyable="true"/>
+    <image type="wall2" y="3" x="8" walkable="false" destroyable="true"/>
+    <image type="wall3" y="3" x="9" walkable="false" destroyable="true"/>
+    <image type="wall1" y="3" x="10" walkable="false" destroyable="true"/>
+    <image type="wall3" y="3" x="11" walkable="false" destroyable="true"/>
+    <image type="wall2" y="3" x="12" walkable="false" destroyable="true"/>
+    <image type="wall4" y="3" x="5" walkable="false" destroyable="true"/>
+    <image type="wall1" y="3" x="13" walkable="false" destroyable="true"/>
+
+
+    <image type="wall1" y="4" x="1" walkable="false" destroyable="true"/>
+
+    <image type="wall3" y="4" x="3" walkable="false" destroyable="true"/>
+
+    <image type="wall2" y="4" x="5" walkable="false" destroyable="true"/>
+
+    <image type="wall1" y="4" x="7" walkable="false" destroyable="true"/>
+
+    <image type="wall4" y="4" x="9" walkable="false" destroyable="true"/>
+
+    <image type="wall3" y="4" x="11" walkable="false" destroyable="true"/>
+
+    <image type="wall1" y="4" x="13" walkable="false" destroyable="true"/>
+
+
+    <image type="wall2" y="5" x="1" walkable="false" destroyable="true"/>
+    <image type="wall1" y="5" x="2" walkable="false" destroyable="true"/>
+    <image type="wall3" y="5" x="3" walkable="false" destroyable="true"/>
+    <image type="wall2" y="5" x="4" walkable="false" destroyable="true"/>
+    <image type="wall1" y="5" x="5" walkable="false" destroyable="true"/>
+    <image type="wall4" y="5" x="6" walkable="false" destroyable="true"/>
+    <image type="wall3" y="5" x="7" walkable="false" destroyable="true"/>
+    <image type="wall2" y="5" x="8" walkable="false" destroyable="true"/>
+    <image type="wall3" y="5" x="9" walkable="false" destroyable="true"/>
+    <image type="wall1" y="5" x="10" walkable="false" destroyable="true"/>
+    <image type="wall3" y="5" x="11" walkable="false" destroyable="true"/>
+    <image type="wall2" y="5" x="12" walkable="false" destroyable="true"/>
+    <image type="wall4" y="5" x="5" walkable="false" destroyable="true"/>
+    <image type="wall1" y="5" x="13" walkable="false" destroyable="true"/>
   </atlas>
 </resources>

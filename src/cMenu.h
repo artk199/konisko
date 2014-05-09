@@ -8,13 +8,16 @@
 #include "Assets.h"
 #include "cUI.h"
 #include "cGame.h"
+
 class cLevel;
 
+DECLARE_SMART(cLevel, spcLevel);
+DECLARE_SMART(cMenu, spcMenu);
 
 //---KLASA ZARZADZAJACA WSZYSTKIMI MENU W GRZE
 class cMenu: public Actor{
 	public:
-		cMenu():driver(0){game=NULL;menuMain(NULL);}
+		cMenu(spcGame g):driver(0){game=g;level=NULL;menuMain(NULL);}
 		IVideoDriver *driver;
 
 		void render(const RenderState &parentRS);
@@ -22,8 +25,9 @@ class cMenu: public Actor{
 		void menuMain(Event *event);// - Pokazuje na ekranie opcje menu glownego
 		void menuOptions(Event *event);// - Pokazuje na ekranie opcje menu zwiazanego z ustawieniami
 		void menuMultiplayer(Event *event);// - Pokazuje na ekranie opcje gry w sieci
-		void setGame(cLevel *g);// - Zapisuje wskaznik na klase zarzadzajaca wyswietlaniem gry
+		void setLevel(spcLevel g);// - Zapisuje wskaznik na klase zarzadzajaca wyswietlaniem gry
 
 	private:
-		cLevel *game;
+		spcLevel level;
+		spcGame game;
 };
