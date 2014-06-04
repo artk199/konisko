@@ -1,30 +1,13 @@
 #include "oxygine-framework.h"
 #include "cUI.h"
 #include "Assets.h"
+#include "cButton.h"
 
 using namespace oxygine;
 
 //---Zwraca przycisk z okreslonym tekstem
-spButton cUI::addButton(int x, int y, string text, EventCallback cb, string buttonStyle){
-	spButton button = new Button();
-	//pobranie grafiki ze stylow
-	button->setResAnim(Assets::gameResources.getResAnim(buttonStyle));
-	//ustawienie pozycji
-	Vector2 pos;
-	pos.x=x;
-	pos.y=y;
-	button->setPosition(pos);
-	button->setInputChildrenEnabled(false);
-
-	//funkcja obslugujaca przycisk
-	button->addEventListener(TouchEvent::CLICK, cb);
-
-
-	//przypisanie tekstu do przycisku
-	spTextActor napis = cUI::createText(text, Color::White, "main");
-	napis->attachTo(button);
-	napis->setPosition(button->getSize()/2);
-
+spcButton cUI::addButton(int x, int y, string text, EventCallback cb, string buttonName, string buttonStyle){
+	spcButton button = new cButton(x,y,text,cb,buttonName);
 	return button;
 };
 

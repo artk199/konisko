@@ -21,7 +21,7 @@ cMap::cMap(){
 		if(y>maxy) maxy=y;
 		if(x>maxx) maxx=x;
 
-		if( name.length()>0){
+		if(name.length()>0){
 			//stworzenie nowego pola
 			spcTile nowy = new cTile(name,Vector2(x*64+przes.x,y*64+przes.y),this);
 			nowy->setDestroyable(destroyable);

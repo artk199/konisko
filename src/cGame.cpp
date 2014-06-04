@@ -16,11 +16,10 @@
 #ifdef __S3E__
 #include "s3eKeyboard.h"
 #endif
-#include "cCheckBox.h"
+
+
 
 using namespace oxygine;
-
-//DECLARE_SMART is helper, it does forward declaration and declares intrusive_ptr typedef for your class
 
 
 file::STDFileSystem extfs(true);
@@ -31,8 +30,8 @@ cGame::cGame(){
 	//Wczytanie assetów
 	Assets::load();
 
-	notifies = new cNotify;
 	//ustawienia wyswietlania informacji na ekranie
+	notifies = new cNotify;
 	memset(notifies->notifies, 0, sizeof(notifies->notifies));
 	notifies->ui = new Actor;
 	addChild(notifies->ui);
@@ -66,43 +65,49 @@ static DWORD WINAPI startRecieving(void* param){
 DWORD cGame::sender(){   
 	int iResult;
 	while(1){
-		WaitForSingleObject(send_message, INFINITE);
-		char sendbuf[255];
+		if(ConnectSocket == INVALID_SOCKET) break;
+		
+		//zapytanie o przesuniecie gracza
 		if (przes != 0){
-			sprintf (sendbuf, "%d", przes);
+			askServer(Assets::PLAYER_POSITION, to_string(long double(przes)));
 			przes = 0;
-		}else{
-			sprintf (sendbuf, "daj");
 		}
- 		iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf)+1, 0 );
-		if (iResult == SOCKET_ERROR) {
-			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
-			closesocket(ConnectSocket);
-			WSACleanup();
-			return 1;
-		}
-		//std::cout<<"ping: "<<ping<<endl;
-		ResetEvent(send_message);
+		//pobieranie delty
+		else
+			askServer(Assets::DELTA);
 	}
 	return 0;
 }
-DWORD cGame::reciever()
-{   
+
+DWORD cGame::reciever(){   
 	int iResult;
 	char buf[80];
-	while (recv (ConnectSocket, buf, 80, 0) > 0)
+	while (recv (ConnectSocket, buf, 80, 0 ) > 0)
 	{
-		if (strcmp(buf, "KONIEC") == 0)
-		{
-			printf("koncze polaczenie\n");
-			return 0;
+		if(ConnectSocket == INVALID_SOCKET) printf("JESTEM w\n");
+
+		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
+		switch(com){
+			case Assets::KONIEC:
+				printf("koncze polaczenie\n");
+				return 0;
+			break;
+			case Assets::ILOSC_GRACZY:{
+				string par="";
+				for(int i=1; i<strlen(buf); i++) par+=buf[i];
+			break;}
+			case Assets::DELTA:{
+				string par="";
+				for(int i=1; i<strlen(buf); i++) par+=buf[i];
+
+				_player->move(Vector2(atoi(par.c_str())*2,atoi(par.c_str())*2));
+			break;}
+			
 		}
-		_player->move(Vector2(atoi(buf)*2,atoi(buf)*2));
-		
-		//printf("\n%d",atoi(buf));
 	};
 	return 0;
 }
+
 bool cGame::connectToServer(){	   
 	WSADATA wsaData;
     struct addrinfo *result = NULL, *ptr = NULL, hints;
@@ -152,22 +157,56 @@ bool cGame::connectToServer(){
 
 void cGame::disconnect(){
 	closesocket(ConnectSocket);
+	ConnectSocket = INVALID_SOCKET;
 	WSACleanup();
 }
 
 //---Funkcja ustawia wartosci poczatkowe dla klasy
 void cGame::init(){
-	disconnect();
+	_masked = new MaskedSprite;
+	_masked->attachTo(this);
+
 	//dodanie dzieci
 	level = new cLevel();
-	menu = new cMenu(this);
+	menu = new cMenu(this, "sc_menu");
 	menu->setLevel(level);
 	level->setMenu(menu);
 	level->setGame(this);
-	addChild(menu);
-	addChild(level);
+	
+	menu->attachTo(_masked);
+	level->attachTo(_masked);
 	level->setPlayers(&players);
-}
+
+	//try{
+	//	this->tryConnectToServer();
+	//}
+	//catch(...){}
+	//printf("Odpowiedz: %s\n",this->askServer("testowe").c_str());
+	/*EventCallback c;
+	spActor t = new MaskedSprite;
+	t->addChild(cUI::addButton(400,400,"test",c));
+
+	t->attachTo(_masked);
+
+	//test
+	spSprite test = new Sprite;
+	test->setResAnim(Assets::gameResources.getResAnim("anim"));
+	test->attachTo(_masked);
+	test->setScale(10);
+	test->setPriority(-3000);
+
+	spSprite _mask = new Sprite;
+	_mask->setPriority(1);
+	_mask->setResAnim(Assets::gameResources.getResAnim("anim"));
+	_mask->setAlpha(0);
+	
+	_mask->setScale(4);
+	_mask->setPosition(200,200);
+	_mask->addTween(Actor::TweenScale(20), 1500, -1, true);
+
+	addChild(_mask);
+	_masked->setMask(_mask);*/
+};
 
 //---Metody odpowiedzialne za ob³ugê klawiatury
 void cGame::_onPlatform(Event *event){
@@ -212,6 +251,12 @@ void cGame::doUpdate(const UpdateState &us){
 		delta = 0;
 	}
 	SetEvent(send_message);
+
+	spcButton b= menu->getChildT<cButton>("bt_options", oxygine::ep_ignore_error);
+	
+	//if(b!=NULL) b->onOff(false);
+
+
 };
 
 //---Zwraca informacje, czy podana nazwa serwera jest poprawna (IP lub localhost)
@@ -237,3 +282,22 @@ bool cGame::tryConnectToServer(){
 	}
 	return true;
 }; 
+
+//---Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
+void cGame::askServer(Assets::REQUESTS q, string parametr){
+	//wyslanie zapytania
+	string question = " ";
+	question[0] = q;
+	if(parametr!="brak") question+=parametr;
+
+	WaitForSingleObject(send_message, 5);
+ 	int iResult = send( ConnectSocket, question.c_str(), question.length()+1, 0 );
+	//sprawdzenie polaczenia z serwerem
+	if (iResult == SOCKET_ERROR) {
+		printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		//throw 2; 
+	}
+	ResetEvent(send_message);
+};

@@ -17,7 +17,7 @@ DECLARE_SMART(cMenu, spcMenu);
 //---KLASA ZARZADZAJACA WSZYSTKIMI MENU W GRZE
 class cMenu: public Actor{
 	public:
-		cMenu(spcGame g):driver(0){game=g;level=NULL;menuMain(NULL);}
+		cMenu(spcGame g, string name=""):driver(0){game=g;level=NULL;menuMain(NULL);if(name.length()>0) setName(name);}
 		IVideoDriver *driver;
 
 		void render(const RenderState &parentRS);

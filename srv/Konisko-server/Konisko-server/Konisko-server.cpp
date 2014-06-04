@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 
+#include "cGame.h"
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -20,13 +21,8 @@ int n_of_conn = 0;
 
 int dana;
 
-struct connection{
-	char nazwa[128];
-	int id;
-	SOCKET ClientSocket;
-	HANDLE watek;
-	int dana;
-} connections[MAX_CONN];
+connection connections[MAX_CONN];
+cGame game;
 
 DWORD WINAPI odbieraj(void* a){
 	connection* c = (connection*)a;
@@ -34,30 +30,7 @@ DWORD WINAPI odbieraj(void* a){
 	char sendbuf[255];
 	c->dana = 0;
 	while (recv (c->ClientSocket, buf, 80, 0) > 0)
-	{
-		if (strcmp(buf, "KONIEC") == 0)
-		{
-			printf("koncze polaczenie\n");
-			n_of_conn--;
-			closesocket(c->ClientSocket);
-			return 0;
-		}
-		if (strcmp(buf, "daj") == 0)
-		{
-			//Je¿eli coœ siê zmieni³o to wysy³am delte
-			if(dana-c->dana != 0){
-				sprintf(sendbuf,"%d",dana-c->dana);
-				send(c->ClientSocket, sendbuf, (int)strlen(sendbuf)+1, 0 );
-				c->dana = dana;
-			}
-		}
-		else
-		{
-			dana += atoi(buf);
-		}
-
-		//printf("\n%d",(int)strlen(buf));
-	};
+		game.odbierzDane(buf,c,dana,n_of_conn);
 	n_of_conn--;
 	c->ClientSocket = INVALID_SOCKET;
 	printf("ZAKONCZONO POLACZENIE %d\n",c->id);

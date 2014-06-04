@@ -11,6 +11,8 @@ class cLevel;
 
 DECLARE_SMART(cLeftPanel, spcLeftPanel);
 DECLARE_SMART(cMenu, spcMenu);
+DECLARE_SMART(cButton, spcButton);
+
 //---KLASA LEWEGO PANELU PODCZAS GRY
 class cLeftPanel: public Actor{
 	public:
@@ -27,7 +29,7 @@ class cLeftPanel: public Actor{
 		vector <spcPlayer> *players;
 		spActor parent;
 		spColorRectSprite background, topLayer;
-		spButton mainMenu;
+		spcButton mainMenu;
 		spcCheckBox checkbox;
 		spcMenu menu;
 

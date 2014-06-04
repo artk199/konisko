@@ -17,7 +17,7 @@ DECLARE_SMART(cInputBox, spcInputBox);
 class cInputBox: public Actor{
 	public:	
 		cInputBox(int x, int y,string &t, string tlabel);
-		~cInputBox(){InputText::stopAnyInput();}
+		~cInputBox();
 		string getText();// - Pobiera aktualnie zapisany tekst na labelce
 
 	private:

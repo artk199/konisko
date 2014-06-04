@@ -2,7 +2,6 @@
 #include "Assets.h"
 #include <iostream>
 
-
 cTile::cTile(string n, Vector2 p, spActor par){
 	name = n;
 	pos = p;
@@ -28,11 +27,11 @@ cTile::~cTile(){
 };
 
 void cTile::_init(){
-	sprite = new Sprite;
+	/*sprite = new Sprite;
 	sprite->setResAnim(Assets::gameMap.getResAnim(name));
 	sprite->setPosition(pos.x,pos.y);
 
-	sprite->attachTo(_view);
+	sprite->attachTo(_view);*/
 };
 
 //---FUNKCJE DOSTEPU

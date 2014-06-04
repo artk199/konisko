@@ -23,23 +23,17 @@ void cLevel::render(const RenderState &parentRS){
 
 //---Zainicjalizowanie rysowania rozgrywki na ekranie
 void cLevel::drawGame(Event *event){
-	//proba polaczenia z serwerem
-	try{
-		game->tryConnectToServer();
-	
-		//proba zakonczyla sie powodzeniem
-		menu->setVisible(false);
-		setVisible(true);
-		removeChildren();
-	
-		map = new cMap();
-		addChild(map);
 
-		panel = new cLeftPanel(this,players,menu);	
-		panel->attachTo(this);
-	}
-	//wyswietlenie wyjatku na ekranie
-	catch(int e){cGame::notifies->notify(Assets::errors[e].c_str());}	
+	menu->setVisible(false);
+	setVisible(true);
+	removeChildren();
+
+	map = new cMap();
+	addChild(map);
+
+	panel = new cLeftPanel(this,players,menu);	
+	panel->attachTo(this);
+
 };
 
 //---Zapisanie wskaznika na klase wyswietlania menu na ekranie

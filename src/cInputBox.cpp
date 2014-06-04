@@ -38,6 +38,12 @@ cInputBox::cInputBox( int x, int y, string &t, string tlabel){
 	input->addEventListener(Event::COMPLETE, CLOSURE(this, &cInputBox::onComplete));
 };
 
+cInputBox::~cInputBox(){
+	InputText::stopAnyInput();
+	string pom=text->getText();
+	*napis = pom;
+};
+
 //---Event po zaakceptowaniu wprowadzonych zmian
 void cInputBox::onComplete(Event *ev){
 	ramka->setColor(noEdit);
