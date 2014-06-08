@@ -3,6 +3,10 @@
 
 cPlayer::cPlayer(void)
 {
+	this->pos = std::pair<double,double>(0,0);
+	this->direction = RIGHT;
+	this->velocity = 10;
+	this->nick = "NICK";
 }
 
 
@@ -15,11 +19,50 @@ std::pair<double,double> cPlayer::getNextPos(double delta){
 	return std::pair<double,double>(0,0);
 }
 
-void cPlayer::move(){
-
+void cPlayer::move(double delta){
+	double  newX = 0,
+			newY = 0;
+	switch (direction){
+	case TOP:
+		newX = this->pos.first;
+		newY = this->pos.second - delta * this->velocity;
+		break;
+	case BOT:
+		newX = this->pos.first;
+		newY = this->pos.second + delta * this->velocity;
+		break;
+	case LEFT:
+		newX = this->pos.first - delta * this->velocity;
+		newY = this->pos.second;
+		break;
+	case RIGHT:
+		newX = this->pos.first - delta * this->velocity;
+		newY = this->pos.second;
+		break;
+	}
+	if (map->canMove(newX,newY)){
+		this->pos.first = newX;
+		this->pos.second = newY;
+	}
 }
 
 void cPlayer::update(double delta){
+	this->move(delta);
+}
 
+void cPlayer::attachToMap(cMap* map){
+	this->map = map;
+}
+
+void cPlayer::changeDirection(E_DIRECTION direction){
+	this->direction = direction;
+}
+
+void cPlayer::setConnection(cConnection* connection){
+	this->connection = connection;
+}
+
+std::string cPlayer::serialize(){
+	return std::to_string((long double)pos.first) + " " + std::to_string((long double)pos.second);
 }
 

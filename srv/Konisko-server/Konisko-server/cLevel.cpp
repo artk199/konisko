@@ -1,5 +1,7 @@
 #include "cLevel.h"
-
+#include <stdio.h>
+#include <conio.h>
+#include <iostream>
 
 cLevel::cLevel(void)
 {
@@ -35,6 +37,8 @@ void cLevel::setMap(cMap* map){
 	}
 
 	this->map = map;
+	for(int i=0;i<connected_players;i++)
+		players[i]->attachToMap(map);
 }
 
 //--Pêtla g³ówna gry
@@ -47,20 +51,31 @@ void cLevel::start(){
 
 	//Delta czasu
 	double delta = 0;
-
+	int i = 0;
 	while(is_active){
 		
 		//Ograniczyæ do max 60 obratów na sekundê
 		//10 przyk³adowo dane na szybko
-		delta = 10;
-		
+		delta = 1;
+		i++;
+
 		map->update(delta);
 	
 		for(int i=0;i<connected_players;i++){
 			players[i]->update(delta);
 		}
-
+		this->serializabled = this->serialize();
+		std::cout<<i<<"\t"<<serializabled<<std::endl;
 	
 	}
 
+}
+
+std::string cLevel::serialize(){
+	std::string r = "";
+
+	for(int i=0;i<connected_players;i++)
+		r += players[i]->serialize() + "\n";
+	
+	return r;
 }
