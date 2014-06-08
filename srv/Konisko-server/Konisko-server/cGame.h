@@ -3,6 +3,10 @@
 #include <cstdlib>
 #include <string>
 #include <winsock2.h>
+#include "cPlayer.h"
+class cLevel;
+
+#define N_OF_PLAYERS 4
 
 using namespace std;
 
@@ -23,5 +27,11 @@ class cGame{
 
 		bool sprawdzString(string gdzie, string szukaj, int poz=0);
 		bool odbierzDane(string dane, connection *c, int &dana, int &n_of_conn);//---Odebranie komunikatow od klienta
+		void waitForPlayers();
+
+	private:
+		cPlayer* players[N_OF_PLAYERS];
+		cLevel* lvl;
+		int chosen_map;
 };
 

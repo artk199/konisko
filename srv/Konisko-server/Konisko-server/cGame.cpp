@@ -1,15 +1,44 @@
 #include "cGame.h"
+#include "cMap.h"
+#include "cLevel.h"
 
 cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
-	
+	return;
 	//Start gry
 	//this->start();
+	this->chosen_map = 1;
+
+	while(true){
+		//Czekaj na po³¹czenie graczy
+		this->waitForPlayers();
+
+		//Stworzenie poziomu
+		this->lvl = new cLevel();
+
+		//Dodanie graczy
+		for(int i=0;i<N_OF_PLAYERS;i++)
+			lvl->addPlayer(players[i]);
+		
+		//Ustawienie wybranej mapy
+		lvl->setMap(new cMap(chosen_map));
+
+		//Start gry
+		lvl->start();
+
+		delete lvl;
+	}
 }
 
 cGame::~cGame(void)
 {
+	for(int i=0;i<N_OF_PLAYERS;i++)
+		if(players[i] != NULL) delete players[i];
+}
+
+void cGame::waitForPlayers(){
+	//takie tam lobby do czekania na po³¹czenie siê wszystkich graczy jo³
 }
 
 //---Sprawdza, czy podany string znajduje sie w drugim stringu od danego miejsca

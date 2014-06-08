@@ -78,12 +78,22 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cConnection.h" />
     <ClInclude Include="cGame.h" />
+    <ClInclude Include="cLevel.h" />
+    <ClInclude Include="cMap.h" />
+    <ClInclude Include="cPlayer.h" />
+    <ClInclude Include="cTile.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cConnection.cpp" />
     <ClCompile Include="cGame.cpp" />
+    <ClCompile Include="cLevel.cpp" />
+    <ClCompile Include="cMap.cpp" />
+    <ClCompile Include="cPlayer.cpp" />
+    <ClCompile Include="cTile.cpp" />
     <ClCompile Include="Konisko-server.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

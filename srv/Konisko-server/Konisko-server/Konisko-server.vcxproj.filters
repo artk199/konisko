@@ -27,6 +27,21 @@
     <ClInclude Include="cGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cTile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cConnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +51,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cTile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
