@@ -35,7 +35,7 @@ class cGame: public Actor{
 		bool checkServerName(string n); // - Zwraca informacje, czy podana nazwa serwera jest poprawna (IP lub localhost)
 		bool tryConnectToServer(); // - Zwraca informacje, czy udalo sie polaczyc do serwera (rzuca wyjatkiem, jesli nie)
 		void disconnect();		   // - Roz³¹czenie z serwerem
-		void askServer(Assets::REQUESTS q, string parametr="brak"); // - Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
+		void askServer(Assets::REQUESTS q, string parametr=""); // - Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
 
 		spMaskedSprite _masked;
 

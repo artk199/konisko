@@ -66,6 +66,8 @@ void cPlayer::setConnection(cConnection* connection){
 	this->connection = connection;
 }
 
+cConnection * cPlayer::getConnection(){return connection;}
+
 std::string cPlayer::serialize(){
 	return std::to_string((long double)pos.first) + " " + std::to_string((long double)pos.second);
 }

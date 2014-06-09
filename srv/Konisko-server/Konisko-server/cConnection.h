@@ -9,8 +9,8 @@ class cConnection
 public:
 	cConnection(void);
 	~cConnection(void);
-	void setSocket(SOCKET s);
-	SOCKET getSocket();
+	void setSocket(SOCKET s){ClientSocket=s;};
+	SOCKET getSocket(){return ClientSocket;};
 	void send(std::string s);
 	void recieveData();
 private:

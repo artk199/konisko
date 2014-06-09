@@ -4,6 +4,8 @@
 #include <string>
 #include <winsock2.h>
 #include "cPlayer.h"
+#include <process.h> 
+
 class cLevel;
 
 #define N_OF_PLAYERS 4
@@ -29,6 +31,7 @@ class cGame{
 		bool odbierzDane(string dane, connection *c, int &dana, int &n_of_conn);//---Odebranie komunikatow od klienta
 		void waitForPlayers();
 		void sendToClient(SOCKET c, REQUESTS q, string par="");
+
 	private:
 		cPlayer* players[N_OF_PLAYERS];
 		cLevel* lvl;
@@ -37,5 +40,6 @@ class cGame{
 		int numberOfPlayers;
 		HANDLE send_message;
 		
+		friend void __cdecl manageGame( void * Args ); // - Watek zarzadzajacy gra
 };
 

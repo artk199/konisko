@@ -2,37 +2,53 @@
 #include "cMap.h"
 #include "cLevel.h"
 
+
+//---Watek zarzadzajacy gra
+// do poprawy: po rozlaczeniu sie gracza nalezy ponownie sprawdzac, czy wymagana ilosc graczy jest osiagnieta
+// i jesli nie wracac do funkcji waitforplayers
+void __cdecl manageGame( void * x ){
+	cGame *game = (cGame *) x;
+
+	//oczekiwanie na polaczenie sie odpowiedniej ilosci graczy
+	game->waitForPlayers();
+
+	printf("JESTEM 1 \n");
+	//Stworzenie poziomu
+	game->lvl = new cLevel();
+	printf("JESTEM 2 \n");
+	//Dodanie graczy
+	for(int i=0;i<N_OF_PLAYERS;i++)
+		game->lvl->addPlayer(game->players[i]);
+
+	printf("JESTEM 3 \n");
+	delete game->lvl;
+
+	//wyjscie z watku
+	_endthread();
+};
+
+
 cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
-	//return;
-	//Start gry
-	//this->start();
+
 	this->chosen_map = 1;
 	numberOfPlayersToStart = 1;
 	numberOfPlayers = 0;
-
+	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
-	//while(true){
-		//Czekaj na po³¹czenie graczy
-	//	this->waitForPlayers();
 
-		//Stworzenie poziomu
-		this->lvl = new cLevel();
+	//utworzenie watku zarzadzajacego gra
+	HANDLE hThread =( HANDLE ) _beginthread(manageGame, 0, this );
 
-		//Dodanie graczy
-		for(int i=0;i<N_OF_PLAYERS;i++)
-			lvl->addPlayer(players[i]);
 		
 		//Ustawienie wybranej mapy
 	//	lvl->setMap(new cMap(chosen_map));
 
 		//Start gry
 	//	lvl->start();
-
-	//	delete lvl;
-	//}
 }
+
 
 cGame::~cGame(void)
 {
@@ -40,8 +56,16 @@ cGame::~cGame(void)
 		if(players[i] != NULL) delete players[i];
 }
 
+//---Oczekiwanie az polaczy sie wymagana ilosc graczy
 void cGame::waitForPlayers(){
-	//takie tam lobby do czekania na po³¹czenie siê wszystkich graczy jo³
+	while(numberOfPlayers <numberOfPlayersToStart){printf("");}
+
+	//poinformowanie wszystkich graczy, ze mozna rozpoczac gre
+	for(int i=0; i<numberOfPlayers; i++)
+		if(players[i]!=NULL)
+			sendToClient(players[i]->getConnection()->getSocket(), START_GAME);	
+
+	printf("Wymagana ilosc graczy do startu osiagnieta!\n");
 }
 
 //---Wysyla do klienta odpowiedz z mozliwoscia dodania parametru
@@ -109,24 +133,21 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			numberOfPlayers++;
 			players[id] = new cPlayer();
 			players[id]->setNick(nick);
+			cConnection *conn = new cConnection();
+			conn->setSocket(c->ClientSocket);
+			players[id]->setConnection(conn);
 
 			//poinformowanie gracza o przydzielonym mu ID
-			//sendToClient(c->ClientSocket, SET_PLAYER_ID, to_string(long double(id)));
+			sendToClient(c->ClientSocket, SET_PLAYER_ID, to_string(long double(id)));
 			
+			Sleep(10);
+
 			//poinformowanie innych graczy o dolaczeniu nowego pro gamera
-			//for(int i=0; i<N_OF_PLAYERS; i++){
-				//if(players[i]!=NULL){
-					//sendToClient(c->ClientSocket, PLAYER_JOINED, nick+"\t"+to_string(long double(id)));
-
-					//jest wystarczajaco duzo graczy do rozpoczecia rozgrywki
-					if(numberOfPlayers>=numberOfPlayersToStart){
-						printf("MOZNA ROZPOCZAC GRE!\n");
-						sendToClient(c->ClientSocket, START_GAME);
-					}
-				//}
-			//}
-
-			printf("Dolaczyl %s o id %d!\n",nick.c_str(), id);
+			for(int i=0; i<N_OF_PLAYERS; i++)
+				if(players[i]!=NULL)
+					sendToClient(players[i]->getConnection()->getSocket(), PLAYER_JOINED, nick+"\t"+to_string(long double(id)));
+				
+			printf("Dolaczyl %s o id %d (z %d)!\n",nick.c_str(), id, numberOfPlayers);
 		break;}
 		case PLAYER_QUIT:
 			numberOfPlayers--;
