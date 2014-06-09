@@ -17,8 +17,12 @@ void __cdecl manageGame( void * x ){
 	game->lvl = new cLevel();
 	printf("JESTEM 2 \n");
 	//Dodanie graczy
-	for(int i=0;i<N_OF_PLAYERS;i++)
+	for(int i=0;i<game->numberOfPlayers;i++)
 		game->lvl->addPlayer(game->players[i]);
+
+	game->lvl->setMap(new cMap(game->chosen_map));
+
+	game->lvl->start();
 
 	printf("JESTEM 3 \n");
 	delete game->lvl;
