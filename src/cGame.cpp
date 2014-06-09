@@ -17,10 +17,7 @@
 #include "s3eKeyboard.h"
 #endif
 
-
-
 using namespace oxygine;
-
 
 file::STDFileSystem extfs(true);
 cNotify * cGame::notifies;
@@ -39,14 +36,9 @@ cGame::cGame(){
 	setSize(getRoot()->getSize());
 	delta = 0;
 
-	//Dodanie gracza
-	_player = new cPlayer(Vector2(0,0));
-	_player->init(this);
-	_player->setName(Assets::userNick);
+	//Input::instance.addEventListener(Input::event_platform, CLOSURE(this, &cGame::_onPlatform));
 
-	players.push_back(_player);
-
-	Input::instance.addEventListener(Input::event_platform, CLOSURE(this, &cGame::_onPlatform));
+	for(int i=0; i<4; i++) players.push_back(new cPlayer());
 
 	przes = 0;
 };
@@ -79,14 +71,13 @@ DWORD cGame::sender(){
 	return 0;
 }
 
+//odebranie pakietow od serwera
 DWORD cGame::reciever(){   
 	int iResult;
 	char buf[80];
-	while (recv (ConnectSocket, buf, 80, 0 ) > 0)
-	{
-		if(ConnectSocket == INVALID_SOCKET) printf("JESTEM w\n");
-
+	while (recv (ConnectSocket, buf, 80, 0 ) > 0){
 		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
+		//rozpoznanie typu komunikatu
 		switch(com){
 			case Assets::KONIEC:
 				printf("koncze polaczenie\n");
@@ -100,9 +91,48 @@ DWORD cGame::reciever(){
 				string par="";
 				for(int i=1; i<strlen(buf); i++) par+=buf[i];
 
-				_player->move(Vector2(atoi(par.c_str())*2,atoi(par.c_str())*2));
+				//_player->move(Vector2(atoi(par.c_str())*2,atoi(par.c_str())*2));
 			break;}
-			
+			case Assets::START_GAME:{
+				printf("mozna startowac");
+				//znalezienie przycisku umozliwiajacego dolaczenie do gry
+				spcButton b=menu->getChildT<cButton>("bt_start", oxygine::ep_ignore_error);
+				if(b!=NULL) b->onOff(true);
+
+			break;}
+			//nadanie graczowi ID przydzielonego z serwera
+			case Assets::SET_PLAYER_ID:{ 
+				//pobranie z parametru id gracza
+				string par="";
+				for(int i=1; i<strlen(buf); i++) par+=buf[i];
+				int  id = atoi(par.c_str());
+
+				printf("ID GRACZA USTAWIONO NA %d\n",id);
+			break;}
+			//dolaczyl nowy gracz, nalezy go dodac
+			case Assets::PLAYER_JOINED:{
+				//pobranie danych o graczu
+				int i, ID;
+				string nick, id;
+				for(i=1; i<strlen(buf) && buf[i]!='\t'; i++) nick+=buf[i];
+				for(i=i+1; i<strlen(buf) && buf[i]!='\t'; i++) id+=buf[i];
+				ID=atoi(id.c_str());
+
+				players[ID]->setNick(nick);
+				players[ID]->setID(ID);
+				//players[ID]->setSprite(ID);
+
+				int pozy=100+60*ID;
+				int pozx=150;
+				spTextActor napis=cUI::createText(players[ID]->getNick());
+				napis->setPosition(pozx,pozy);
+				napis->attachTo(menu);
+
+				printf("Dolaczyl gracz %s - %s\n", nick.c_str(), id.c_str());
+			break;}
+			//nieznane polecenie
+			default:
+				printf("Nieprawidlowy komunikat: %s\n",buf);
 		}
 	};
 	return 0;
@@ -156,6 +186,7 @@ bool cGame::connectToServer(){
 };
 
 void cGame::disconnect(){
+	askServer(Assets::PLAYER_QUIT);
 	closesocket(ConnectSocket);
 	ConnectSocket = INVALID_SOCKET;
 	WSACleanup();
@@ -176,36 +207,6 @@ void cGame::init(){
 	menu->attachTo(_masked);
 	level->attachTo(_masked);
 	level->setPlayers(&players);
-
-	//try{
-	//	this->tryConnectToServer();
-	//}
-	//catch(...){}
-	//printf("Odpowiedz: %s\n",this->askServer("testowe").c_str());
-	/*EventCallback c;
-	spActor t = new MaskedSprite;
-	t->addChild(cUI::addButton(400,400,"test",c));
-
-	t->attachTo(_masked);
-
-	//test
-	spSprite test = new Sprite;
-	test->setResAnim(Assets::gameResources.getResAnim("anim"));
-	test->attachTo(_masked);
-	test->setScale(10);
-	test->setPriority(-3000);
-
-	spSprite _mask = new Sprite;
-	_mask->setPriority(1);
-	_mask->setResAnim(Assets::gameResources.getResAnim("anim"));
-	_mask->setAlpha(0);
-	
-	_mask->setScale(4);
-	_mask->setPosition(200,200);
-	_mask->addTween(Actor::TweenScale(20), 1500, -1, true);
-
-	addChild(_mask);
-	_masked->setMask(_mask);*/
 };
 
 //---Metody odpowiedzialne za ob³ugê klawiatury
@@ -251,12 +252,6 @@ void cGame::doUpdate(const UpdateState &us){
 		delta = 0;
 	}
 	SetEvent(send_message);
-
-	spcButton b= menu->getChildT<cButton>("bt_options", oxygine::ep_ignore_error);
-	
-	//if(b!=NULL) b->onOff(false);
-
-
 };
 
 //---Zwraca informacje, czy podana nazwa serwera jest poprawna (IP lub localhost)
@@ -280,17 +275,21 @@ bool cGame::tryConnectToServer(){
 		throw 1;
 		return false;
 	}
+
+	//poinformowanie stanu gry na serwerze, ze dolaczyl gracz
+	askServer(Assets::PLAYER_JOINED, Assets::userNick);
+
 	return true;
 }; 
 
 //---Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
 void cGame::askServer(Assets::REQUESTS q, string parametr){
 	//wyslanie zapytania
-	string question = " ";
-	question[0] = q;
-	if(parametr!="brak") question+=parametr;
+	string question = "";
+	question += q;
+	if(parametr!="") question+=parametr;
 
-	WaitForSingleObject(send_message, 5);
+	WaitForSingleObject(send_message, 1000);
  	int iResult = send( ConnectSocket, question.c_str(), question.length()+1, 0 );
 	//sprawdzenie polaczenia z serwerem
 	if (iResult == SOCKET_ERROR) {

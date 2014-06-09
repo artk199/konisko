@@ -16,7 +16,7 @@ cLeftPanel::cLeftPanel(spActor p,vector <spcPlayer> *player, spcMenu m){
 	onMouseOut(NULL);
 	//dodawanie dzieci panelu
 	addBackground(background);
-	addPlayersInfo();
+	//addPlayersInfo();
 
 	addBackground(topLayer,Color::White,1);
 	topLayer->addEventListener(TouchEvent::OVER, CLOSURE(this, &cLeftPanel::onMouseOver));

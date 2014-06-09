@@ -18,20 +18,24 @@ struct connection{
 	int dana;
 };
 
-enum REQUESTS{ILOSC_GRACZY=1, KONIEC=2, DELTA=3, PLAYER_POSITION=4};
+enum REQUESTS{ILOSC_GRACZY=1, KONIEC=2, DELTA=3, PLAYER_POSITION=4, UPDATE_ALL=5, START_GAME=6, SET_PLAYER_ID = 7,
+	PLAYER_JOINED=8, PLAYER_QUIT=9};
 
 class cGame{
 	public:
 		cGame();
 		~cGame();
 
-		bool sprawdzString(string gdzie, string szukaj, int poz=0);
 		bool odbierzDane(string dane, connection *c, int &dana, int &n_of_conn);//---Odebranie komunikatow od klienta
 		void waitForPlayers();
-
+		void sendToClient(SOCKET c, REQUESTS q, string par="");
 	private:
 		cPlayer* players[N_OF_PLAYERS];
 		cLevel* lvl;
 		int chosen_map;
+		int numberOfPlayersToStart;
+		int numberOfPlayers;
+		HANDLE send_message;
+		
 };
 

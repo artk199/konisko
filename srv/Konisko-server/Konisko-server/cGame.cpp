@@ -5,14 +5,17 @@
 cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
-	return;
+	//return;
 	//Start gry
 	//this->start();
 	this->chosen_map = 1;
+	numberOfPlayersToStart = 1;
+	numberOfPlayers = 0;
 
-	while(true){
+	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
+	//while(true){
 		//Czekaj na po³¹czenie graczy
-		this->waitForPlayers();
+	//	this->waitForPlayers();
 
 		//Stworzenie poziomu
 		this->lvl = new cLevel();
@@ -22,13 +25,13 @@ cGame::cGame(void)
 			lvl->addPlayer(players[i]);
 		
 		//Ustawienie wybranej mapy
-		lvl->setMap(new cMap(chosen_map));
+	//	lvl->setMap(new cMap(chosen_map));
 
 		//Start gry
-		lvl->start();
+	//	lvl->start();
 
-		delete lvl;
-	}
+	//	delete lvl;
+	//}
 }
 
 cGame::~cGame(void)
@@ -41,23 +44,24 @@ void cGame::waitForPlayers(){
 	//takie tam lobby do czekania na po³¹czenie siê wszystkich graczy jo³
 }
 
-//---Sprawdza, czy podany string znajduje sie w drugim stringu od danego miejsca
-bool cGame::sprawdzString(string gdzie, string szukaj, int poz){
-	if(poz<0) return false;
+//---Wysyla do klienta odpowiedz z mozliwoscia dodania parametru
+void cGame::sendToClient(SOCKET c, REQUESTS q, string par){
 
-	int d1=gdzie.length();
-	int d2=szukaj.length();
+	//wyslanie zapytania
+	string question = "";
+	question += q;
+	if(par!="") question+=par;
 
-	//jezeli szukany napis nie miesci sie w stringu funkcji
-	if(d1-poz<d2) return false;
-
-	int j=0;
-	int i;
-	for(i=poz; i<d1 && j<d2; i++, j++)
-		if(gdzie[i]!=szukaj[j]) return false;
-	
-	poz = i-1;
-	return true;
+	WaitForSingleObject(send_message, 1000);
+ 	int iResult = send( c, question.c_str(), question.length()+1, 0 );
+	//sprawdzenie polaczenia z serwerem
+	if (iResult == SOCKET_ERROR) {
+		printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
+		closesocket(c);
+		WSACleanup();
+		//throw 2; 
+	}
+	ResetEvent(send_message);
 };
 
 //---Odebranie komunikatow od klienta
@@ -68,10 +72,8 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 	switch(com){
 		case ILOSC_GRACZY:{
 			//printf("Ile graczy\n");
-			string odp = "";
-			odp+=ILOSC_GRACZY;
-			odp+=to_string(long double(n_of_conn));	
-			send(c->ClientSocket, odp.c_str(), odp.length()+1, 0 );
+
+			sendToClient(c->ClientSocket, ILOSC_GRACZY, to_string(long double(n_of_conn)));
 		break;}
 		case KONIEC:
 			//printf("Koniec\n");
@@ -97,6 +99,38 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 	
 			dana+=atoi(pozycja.c_str());
 		break;}
+		case PLAYER_JOINED:{
+			//odczytanie parametru
+			string nick="";
+			for(int i=1; i<dane.length(); i++)  nick+=dane[i];
+			int id = c->id;
+
+			//dodanie nowego gracza
+			numberOfPlayers++;
+			players[id] = new cPlayer();
+			players[id]->setNick(nick);
+
+			//poinformowanie gracza o przydzielonym mu ID
+			//sendToClient(c->ClientSocket, SET_PLAYER_ID, to_string(long double(id)));
+			
+			//poinformowanie innych graczy o dolaczeniu nowego pro gamera
+			//for(int i=0; i<N_OF_PLAYERS; i++){
+				//if(players[i]!=NULL){
+					//sendToClient(c->ClientSocket, PLAYER_JOINED, nick+"\t"+to_string(long double(id)));
+
+					//jest wystarczajaco duzo graczy do rozpoczecia rozgrywki
+					if(numberOfPlayers>=numberOfPlayersToStart){
+						printf("MOZNA ROZPOCZAC GRE!\n");
+						sendToClient(c->ClientSocket, START_GAME);
+					}
+				//}
+			//}
+
+			printf("Dolaczyl %s o id %d!\n",nick.c_str(), id);
+		break;}
+		case PLAYER_QUIT:
+			numberOfPlayers--;
+		break;
 		default:
 			printf("Odebralem zle polecenie: %s!\n",dane.c_str());
 	}

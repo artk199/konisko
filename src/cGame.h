@@ -11,7 +11,7 @@
 #include <winsock2.h>
 #include "cLevel.h"
 #include "cMenu.h"
-
+#include "cButton.h"
 using namespace oxygine;
 
 class cNotify;

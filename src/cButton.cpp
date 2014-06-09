@@ -1,6 +1,6 @@
 #include "cButton.h"
 
-cButton::cButton(int pX, int pY, string tekst, EventCallback c, string name){
+cButton::cButton(int pX, int pY, string tekst, EventCallback c, string name, bool active){
 	//inicjalizacja zmiennych skladowych
 	x=pX;
 	y=pY;
@@ -11,7 +11,7 @@ cButton::cButton(int pX, int pY, string tekst, EventCallback c, string name){
 	//dodanie wewnetrznych funkcji
 	addBackground();
 	addText(tekst);
-	onOff(true);
+	onOff(active);
 };
 
 //---Dodaje wysrodkowany tekst do przycisku
@@ -38,11 +38,13 @@ void cButton::onOff(bool t){
 
 	//dodanie obslugi zdarzen
 	if(active){
+		background->setAnimFrame(Assets::gameResources.getResAnim("button"),0);
 		addEventListener(TouchEvent::CLICK, cb);
 		addEventListener(TouchEvent::OVER, CLOSURE(this, &cButton::onMouseOver));
 		addEventListener(TouchEvent::OUT, CLOSURE(this, &cButton::onMouseOut));
 	}
-
+	else
+		background->setAnimFrame(Assets::gameResources.getResAnim("button"),2);
 }; 
 
 //---Obsluga zdarzenia po najechaniu myszka

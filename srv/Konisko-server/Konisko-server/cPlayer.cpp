@@ -14,6 +14,9 @@ cPlayer::~cPlayer(void)
 {
 }
 
+void cPlayer::setNick(string nick){
+	this->nick = nick;
+}
 
 std::pair<double,double> cPlayer::getNextPos(double delta){
 	return std::pair<double,double>(0,0);

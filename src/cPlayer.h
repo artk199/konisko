@@ -6,19 +6,20 @@ using namespace oxygine;
 
 DECLARE_SMART(cPlayer, spcPlayer);
 
-class cPlayer : public cUnit{
+class cPlayer : public Actor{
 	public :
-		cPlayer(Vector2 pos);
-		void _init();
-		void move(Vector2 delta);
+		cPlayer();
 
-		string getName();
-		void setName(string n);
+		string &getNick(){return nick;};
+		void setNick(string n){nick=n;};
+		void setID(int i){id = i;}
+		int & getID(){return id;};
 		spSprite getIcon();
 
 	private:
 		spSprite sprite;
 		Vector2 pos;
-		string name;
+		string nick;
+		int id;
 };
 

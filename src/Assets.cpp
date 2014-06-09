@@ -14,8 +14,6 @@ namespace Assets
 	string serverName = "localhost";
 	map <int, string> errors;
 
-	
-
 	void load(){
 		//load our resources
 		gameResources.loadXML("res.xml");
@@ -39,6 +37,5 @@ namespace Assets
 	void loadErrors(){
 		errors[0] = "Invalid server adress. Use IP or localhost!";
 		errors[1] = "Unable to connect to server. Check server adress!";
-		errors[2] = "Disconnected from server...";
 	};
 };

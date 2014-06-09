@@ -6,13 +6,13 @@
 using namespace oxygine;
 
 //---Zwraca przycisk z okreslonym tekstem
-spcButton cUI::addButton(int x, int y, string text, EventCallback cb, string buttonName, string buttonStyle){
-	spcButton button = new cButton(x,y,text,cb,buttonName);
+spcButton cUI::addButton(int x, int y, string text, EventCallback cb, string buttonName, bool active, string buttonStyle){
+	spcButton button = new cButton(x,y,text,cb,buttonName,active);
 	return button;
 };
 
 //---Tworzy i zwraca obiekt typu tekst (nazwa czcionki z pliku XML)
-spTextActor cUI::createText(string &txt, Color fcolor, string fontName){
+spTextActor cUI::createText(string txt, Color fcolor, string fontName){
 	spTextActor text = new TextActor();
 
 	TextStyle style;
@@ -23,7 +23,7 @@ spTextActor cUI::createText(string &txt, Color fcolor, string fontName){
 	style.multiline = true;
 
 	text->setStyle(style);
-	text->setText(txt.c_str());
+	text->setText(txt);
 
 	return text;
 };
