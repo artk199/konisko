@@ -3,9 +3,9 @@
 
 cPlayer::cPlayer(void)
 {
-	this->pos = std::pair<double,double>(0,0);
-	this->direction = RIGHT;
-	this->velocity = 10;
+	this->pos = std::pair<double,double>(160,96);
+	this->direction = LEFT;
+	this->velocity = 64;
 	this->nick = "NICK";
 }
 
@@ -36,10 +36,11 @@ void cPlayer::move(double delta){
 		newY = this->pos.second;
 		break;
 	case RIGHT:
-		newX = this->pos.first - delta * this->velocity;
+		newX = this->pos.first + delta * this->velocity;
 		newY = this->pos.second;
 		break;
 	}
+
 	if (map->canMove(newX,newY)){
 		this->pos.first = newX;
 		this->pos.second = newY;

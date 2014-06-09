@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <conio.h>
 #include <iostream>
+#include <windows.h>
+#include <omp.h>
 
 cLevel::cLevel(void)
 {
@@ -56,7 +58,13 @@ void cLevel::start(){
 		
 		//Ograniczyæ do max 60 obratów na sekundê
 		//10 przyk³adowo dane na szybko
-		delta = 1;
+		double start = omp_get_wtime();
+		
+		
+		Sleep(1);
+		double end = omp_get_wtime();
+		//Zmierzony czas w sekundach
+		delta = end - start;
 		i++;
 
 		map->update(delta);
@@ -64,8 +72,10 @@ void cLevel::start(){
 		for(int i=0;i<connected_players;i++){
 			players[i]->update(delta);
 		}
+
+
 		this->serializabled = this->serialize();
-		std::cout<<i<<"\t"<<serializabled<<std::endl;
+		std::cout<<delta<<"\n"<<serializabled<<std::endl;
 	
 	}
 

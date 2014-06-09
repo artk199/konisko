@@ -3,7 +3,7 @@
 #include <vector>
 #include "cTile.h"
 
-#define TILE_SIZE 64;
+
 class cMap
 {
 public:
@@ -12,7 +12,9 @@ public:
 	~cMap(void);
 	bool canMove(double,double);
 	void update(double delta);
+	bool isMoveable(double x, double y);
 private:
 	std::vector<std::vector<cTile*>> tiles;
+	std::string mapString;
 };
 
