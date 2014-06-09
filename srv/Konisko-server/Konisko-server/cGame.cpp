@@ -134,12 +134,13 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			int id = c->id;
 
 			//dodanie nowego gracza
-			numberOfPlayers++;
 			players[id] = new cPlayer();
 			players[id]->setNick(nick);
 			cConnection *conn = new cConnection();
 			conn->setSocket(c->ClientSocket);
 			players[id]->setConnection(conn);
+
+			numberOfPlayers++;
 
 			//poinformowanie gracza o przydzielonym mu ID
 			sendToClient(c->ClientSocket, SET_PLAYER_ID, to_string(long double(id)));
@@ -156,8 +157,15 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 		case PLAYER_QUIT:
 			numberOfPlayers--;
 		break;
-		default:
-			printf("Odebralem zle polecenie: %s!\n",dane.c_str());
+		case KEY_PRESSED:{
+			string key="";
+			for(int i=1; i<dane.length(); i++)  key+=dane[i];
+			int keyNumber=atoi(key.c_str());
+
+			printf("GRACZ WCISNAL KLAWISZ: %d\n",keyNumber);
+
+		break;}
+		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());
 	}
 
 	return true;

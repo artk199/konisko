@@ -36,9 +36,12 @@ cGame::cGame(){
 	setSize(getRoot()->getSize());
 	delta = 0;
 
-	//Input::instance.addEventListener(Input::event_platform, CLOSURE(this, &cGame::_onPlatform));
+	Input::instance.addEventListener(Input::event_platform, CLOSURE(this, &cGame::_onPlatform));
 
+	//dodanie graczy
 	for(int i=0; i<4; i++) players.push_back(new cPlayer());
+
+	klawisz = 0;
 
 	przes = 0;
 };
@@ -58,7 +61,11 @@ DWORD cGame::sender(){
 	int iResult;
 	while(1){
 		if(ConnectSocket == INVALID_SOCKET) break;
-		
+		//gracz wcisnal klawisz
+		if(klawisz!=0){
+			askServer(Assets::KEY_PRESSED, to_string(long double(klawisz)));
+			klawisz=0;
+		}
 		//zapytanie o przesuniecie gracza
 		if (przes != 0){
 			askServer(Assets::PLAYER_POSITION, to_string(long double(przes)));
@@ -219,16 +226,16 @@ int cGame::_onSDLEvent(SDL_Event *event){
 	case SDL_KEYDOWN:
 		switch( event->key.keysym.sym ){
             case SDLK_LEFT:
-                przes-=1;
+				klawisz=1;
             break;
             case SDLK_RIGHT:
-                przes+=1;
+                klawisz=2;
             break;
             case SDLK_UP:
-				przes+=1;
+				klawisz=3;
             break;
             case SDLK_DOWN:
-                przes-=1;
+                klawisz=4;
             break;
             default:;
 		}

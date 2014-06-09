@@ -31,6 +31,10 @@ void cLevel::drawGame(Event *event){
 	map = new cMap();
 	addChild(map);
 
+	//dodanie graczy
+	for(int i=0; i<players->size(); i++)
+		players->at(i)->attachTo(this);
+
 	panel = new cLeftPanel(this,players,menu);	
 	panel->attachTo(this);
 

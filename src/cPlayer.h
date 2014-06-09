@@ -16,6 +16,8 @@ class cPlayer : public Actor{
 		int & getID(){return id;};
 		spSprite getIcon();
 
+		void move(Vector2 delta);
+
 	private:
 		spSprite sprite;
 		Vector2 pos;

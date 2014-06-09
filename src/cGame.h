@@ -40,6 +40,7 @@ class cGame: public Actor{
 		spMaskedSprite _masked;
 
 	private:
+		int klawisz;
 		//Dane
 		float delta;
 		spcPlayer _player;
