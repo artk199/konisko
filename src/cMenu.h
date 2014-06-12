@@ -28,7 +28,8 @@ class cMenu: public Actor{
 		void menuOptions(Event *event);// - Pokazuje na ekranie opcje menu zwiazanego z ustawieniami
 		void menuMultiplayer(Event *event);// - Pokazuje na ekranie opcje gry w sieci
 		void setLevel(spcLevel g);// - Zapisuje wskaznik na klase zarzadzajaca wyswietlaniem gry
-		
+		void saveOptions(Event  *event);// - Pozwala na zapisanie ustawien po wyjsciu z opcji
+
 	private:
 		spcLevel level;
 		spcGame game;

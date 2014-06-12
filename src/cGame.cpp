@@ -86,8 +86,8 @@ DWORD cGame::sender(){
 //odebranie pakietow od serwera
 DWORD cGame::reciever(){   
 	int iResult;
-	char buf[80];
-	while (recv (ConnectSocket, buf, 80, 0 ) > 0){
+	char buf[512];
+	while (recv (ConnectSocket, buf, 512, 0 ) > 0){
 		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
 		//rozpoznanie typu komunikatu
 		switch(com){

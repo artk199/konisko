@@ -116,7 +116,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 		case DELTA:
 			if(this->lvl != NULL){
 				sendToClient(c->ClientSocket, DELTA, this->lvl->serialize());
-				printf("%s\n",this->lvl->serialize());
+				//printf("%s\n",this->lvl->serialize());
 			}
 		break;
 		case PLAYER_POSITION:{
@@ -192,7 +192,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 				break;
 			}
 			players[c->id]->changeDirection(dir);
-			printf("KLAWISZ!\n");
+			//printf("KLAWISZ!\n");
 			break;}
 		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());
 	}

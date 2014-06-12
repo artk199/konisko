@@ -62,7 +62,7 @@ void cMenu::menuOptions(Event *event){
 	addChild(new cInputBox(100,150,Assets::serverName,"Nazwa serwera:"));
 	addChild(new cInputBox(100,200,Assets::serverPort,"Port serwera:"));
 
-	EventCallback c = CLOSURE(this, &cMenu::menuMain);
+	EventCallback c = CLOSURE(this, &cMenu::saveOptions);
 	addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-150, "back", c));
 };
 
@@ -116,4 +116,11 @@ void cMenu::addBackground(int x, int y, int width, int height){
 		bg->attachTo(this);
 		bg->setAlpha(220);
 	}
+};
+
+//---Pozwala na zapisanie ustawien po wyjsciu z opcji
+void cMenu::saveOptions(Event  *event){
+	Assets::saveSettingsToFile();
+
+	menuMain(event);
 };
