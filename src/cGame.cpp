@@ -28,6 +28,7 @@ cNotify * cGame::notifies;
 cGame::cGame(){
 	//Wczytanie assetów
 	Assets::load();
+	Assets::loadSettingsFromFile();
 
 	//ustawienia wyswietlania informacji na ekranie
 	notifies = new cNotify;
@@ -282,6 +283,8 @@ int cGame::_onSDLEvent(SDL_Event *event){
 //---Funkcja czysci pamiec po zakonczeniu zycia klasy
 void cGame::destroy(){
 	Assets::free();
+	Assets::saveSettingsToFile();
+
 	delete notifies;
 	this->disconnect();
 };

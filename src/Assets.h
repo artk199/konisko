@@ -13,9 +13,13 @@ namespace Assets{
 	extern string userNick;
 	extern string serverName;
 	extern string serverPort;
-
+	extern string settingsFile;
 	void load();
 	void free();
+
+	
+	void loadSettingsFromFile();
+	void saveSettingsToFile();
 
 	extern map <int, string> errors;
 	void loadErrors();
