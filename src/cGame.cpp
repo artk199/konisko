@@ -67,7 +67,6 @@ DWORD cGame::sender(){
 	while(1){
 		if(ConnectSocket == INVALID_SOCKET) break;
 		WaitForSingleObject(send_message, -1);
-		ResetEvent(send_message);
 		if(klawisz!=0){
 			askServer(Assets::KEY_PRESSED, to_string(long double(klawisz)));
 			klawisz=0;
@@ -79,6 +78,7 @@ DWORD cGame::sender(){
 			przes = 0;
 		}
 		askServer(Assets::DELTA);
+		ResetEvent(send_message);
 	}
 	return 0;
 }
