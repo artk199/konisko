@@ -12,6 +12,7 @@ namespace Assets{
 	extern Vector2 windowSize;
 	extern string userNick;
 	extern string serverName;
+	extern string serverPort;
 
 	void load();
 	void free();

@@ -12,6 +12,7 @@ namespace Assets
 	Vector2 windowSize;
 	string userNick = "New player";
 	string serverName = "localhost";
+	string serverPort = "27015";
 	map <int, string> errors;
 
 	void load(){
@@ -22,7 +23,7 @@ namespace Assets
 		gameMap.loadXML("map.xml");
 
 		//Wpisze siê tutaj rozmiar okna
-		windowSize = Vector2(600,800);
+		windowSize = Vector2(960,640);
 
 		loadErrors();
 	};
