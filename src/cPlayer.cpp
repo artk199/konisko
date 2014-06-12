@@ -12,8 +12,11 @@ cPlayer::cPlayer(){
 	sprite->attachTo(this);
 	sprite->setPosition(pos.x,pos.y);
 	ready=false;
-	visible=false;
+	visible=true;
 	id=-1;
+
+	//dodanie 10 pustych bomb
+	for(int i=0; i<10; i++)		bombs.push_back(NULL);
 };
 
 void cPlayer::move(Vector2 delta){
@@ -47,3 +50,24 @@ void cPlayer::init(){
 	visible = true;
 	sprite->addTween(TweenAnim(Assets::gameResources.getResAnim("hero"+to_string(long double(id)),oxygine::ep_show_warning)),500,-1);
 }
+
+
+//---Aktualizuje bomby i wybucha te, na ktore przyszedl juz czas, by oposcic ten ziemski padol
+void cPlayer::updateBombs(int dt){
+	for(int i=0; i<10; i++)
+		if(bombs[i]!=NULL){
+			// jezeli zostal przekroczony czas, bomba wybucha
+			if(bombs[i]->updateDestroyTime(dt)){
+				//bombs[i]->releaseRef();
+				//bombs[i] = NULL;
+			}
+		}
+};
+
+//--Dodaje nowa bombe dla gracza pod jej adresem ID
+void cPlayer::addBomb(int id,int x, int y, int range, int destroying_time){
+	bombs[id] = new cBomb(x,y);
+	bombs[id]->attachTo(this);
+	bombs[id]->setDestroyTime(destroying_time);
+	bombs[id]->setRange(range);
+};

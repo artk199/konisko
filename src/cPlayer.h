@@ -2,6 +2,8 @@
 #include "oxygine-framework.h"
 #include "cUnit.h"
 #include "cSerializable.h"
+#include "cBomb.h"
+
 using namespace oxygine;
 
 DECLARE_SMART(cPlayer, spcPlayer);
@@ -23,6 +25,9 @@ class cPlayer : public Actor, public cSerializable{
 		void setReady(bool flag){ready=flag;};
 		bool &getReady(){return ready;};
 
+		void updateBombs(int dt); // - Aktualizuje bomby i wybucha te, na ktore przyszedl juz czas, by oposcic ten ziemski padol
+		void addBomb(int id, int x, int y, int range=1, int destroying_time=3000); // - Dodaje nowa bombe dla gracza pod jej adresem ID
+
 	private:
 		spSprite sprite;
 		Vector2 pos;
@@ -30,5 +35,6 @@ class cPlayer : public Actor, public cSerializable{
 		int id;
 		bool visible;
 		bool ready;
+		vector <spcBomb> bombs;
 };
 
