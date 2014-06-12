@@ -74,3 +74,9 @@ bool cMap::canMove(double x, double y){
 void cMap::update(double delta){
 	
 }
+
+std::pair<int,int> cMap::getPositionOnMap(double posx, double posy){
+	int x = std::floor(posx / TILE_SIZE);
+	int y = std::floor(posy / TILE_SIZE);
+	return std::pair<int,int>(x,y);
+}

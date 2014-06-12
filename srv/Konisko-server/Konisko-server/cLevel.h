@@ -3,6 +3,8 @@
 #include "cPlayer.h"
 #include "cGame.h"
 #include <string>
+#include <list>
+#include "cBomb.h"
 
 enum LVL_STATE{
 	PREPARATION,
@@ -19,6 +21,7 @@ public:
 	void setMap(cMap* map);
 	std::string serialize();
 	std::string getSerialized(){return this->serializabled;};
+	void setBomb(int);
 private:
 	std::string serializabled;
 	cMap* map;

@@ -1,5 +1,5 @@
 #include "cPlayer.h"
-
+#include "cBomb.h"
 
 cPlayer::cPlayer(void)
 {
@@ -7,6 +7,10 @@ cPlayer::cPlayer(void)
 	this->direction = LEFT;
 	this->velocity = 128;
 	this->nick = "NICK";
+	this->ilosc_bomb = 0;
+	this->max_bomb = 10;
+	for (int i=0;i<max_bomb;i++)
+		bombs.push_back(NULL);
 }
 
 
@@ -52,10 +56,38 @@ void cPlayer::move(double delta){
 
 void cPlayer::update(double delta){
 	this->move(delta);
+	for(int i=0;i<max_bomb;i++){
+		if(bombs[i] != NULL){
+			bombs[i]->update(delta);
+			if(bombs[i]->isDestroyed()){
+				//map->BOOM(bombs[i]->getPosition());
+				delete bombs[i];
+				bombs[i] = NULL;
+			}
+		}
+	}
+
 }
 
 void cPlayer::attachToMap(cMap* map){
 	this->map = map;
+}
+
+void cPlayer::addBomb(){
+	if(map == NULL){
+		return;
+	}
+	cBomb* bomb = new cBomb();
+	bomb->setPosition(this->map->getPositionOnMap(pos.first,pos.second));
+	ilosc_bomb++;
+	for(int i=0;i<max_bomb;i++){
+		if(bombs[i] != NULL){
+			bombs[i] = bomb;
+			bomb->setId(i);
+			ilosc_bomb--;
+			return;
+		}
+	}
 }
 
 void cPlayer::changeDirection(E_DIRECTION direction){
@@ -72,8 +104,16 @@ cConnection * cPlayer::getConnection(){
 
 std::string cPlayer::serialize(){
 	long double temp_id = this->id;
-	return 
+	string s =
 		"object\tplayer\t"+std::to_string(temp_id)+/*tutaj jeszcze hashcode powinien byæ*/
-		+"\nposition\t"+std::to_string((long double)pos.first) + "\t" + std::to_string((long double)pos.second);
+		+"\nposition\t"+std::to_string((long double)pos.first) + "\t" + std::to_string((long double)pos.second)+"\n";
+	
+	for(int i=0;i<max_bomb;i++){
+		if(bombs[i] != NULL){
+			s+=bombs[i]->serialize();
+		}
+	}
+	
+	return s;
 }
 

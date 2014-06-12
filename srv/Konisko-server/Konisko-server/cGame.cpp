@@ -193,16 +193,21 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			for(int i=1; i<dane.length(); i++)  pozycja+=dane[i];
 			switch(atoi(pozycja.c_str())){
 			case 1:
-				dir = LEFT;
+				players[c->id]->changeDirection(LEFT);
 				break;
-			case 2:dir = RIGHT;
+			case 2:
+				players[c->id]->changeDirection(RIGHT);
 				break;
-			case 3:dir = TOP;
+			case 3:
+				players[c->id]->changeDirection(TOP);
 				break;
-			case 4:dir = BOT;
+			case 4:
+				players[c->id]->changeDirection(BOT);
+				break;
+			case 5:
+				players[c->id]->addBomb();
 				break;
 			}
-			players[c->id]->changeDirection(dir);
 			//printf("KLAWISZ!\n");
 			break;}
 		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());

@@ -43,6 +43,8 @@ void cLevel::setMap(cMap* map){
 		players[i]->attachToMap(map);
 }
 
+void cLevel::setBomb(int id){
+}
 //--Pêtla g³ówna gry
 void cLevel::start(){
 	
@@ -61,7 +63,7 @@ void cLevel::start(){
 		double start = omp_get_wtime();
 		
 		
-		Sleep(1);
+		Sleep(30);
 		double end = omp_get_wtime();
 		//Zmierzony czas w sekundach
 		delta = end - start;
@@ -72,7 +74,6 @@ void cLevel::start(){
 		for(int i=0;i<connected_players;i++){
 			players[i]->update(delta);
 		}
-
 
 		this->serializabled = this->serialize();
 		//std::cout<<delta<<"\n"<<serializabled<<std::endl;

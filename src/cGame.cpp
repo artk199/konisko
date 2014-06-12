@@ -190,7 +190,7 @@ void cGame::parse_response(string s){
 		if(object != NULL){
 			if(line.length() != 0){
 				object->deserialize(line);
-				std::cout<<line<<"\n";
+				//std::cout<<line<<"\n";
 			}	
 		}
     } while (iss);
@@ -287,6 +287,9 @@ int cGame::_onSDLEvent(SDL_Event *event){
             break;
             case SDLK_DOWN:
                 klawisz=4;
+            break;
+			case SDLK_SPACE:
+                klawisz=5;
             break;
             default:;
 		}

@@ -2,6 +2,8 @@
 #include <string>
 #include "cConnection.h"
 #include "cMap.h"
+#include <vector>
+class cBomb;
 
 using namespace std;
 
@@ -30,6 +32,7 @@ class cPlayer
 		void changeDirection(E_DIRECTION direction);
 		string serialize();
 		int id;
+		void addBomb();
 	private:
 		//Nick gracza
 		string nick;
@@ -37,11 +40,14 @@ class cPlayer
 		//Dane o po³¹czeniu
 		cConnection* connection;
 		bool ready;
+		int ilosc_bomb;
+		int max_bomb;
 		//Dane do gry
 		pair<double,double> pos;
 		double velocity;
 		cMap* map;
 		E_DIRECTION direction;
+		std::vector<cBomb*> bombs;
 
 };
 
