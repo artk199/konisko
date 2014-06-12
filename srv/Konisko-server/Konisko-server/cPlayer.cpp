@@ -81,10 +81,9 @@ void cPlayer::addBomb(){
 	bomb->setPosition(this->map->getPositionOnMap(pos.first,pos.second));
 	ilosc_bomb++;
 	for(int i=0;i<max_bomb;i++){
-		if(bombs[i] != NULL){
+		if(bombs[i] == NULL){
 			bombs[i] = bomb;
 			bomb->setId(i);
-			ilosc_bomb--;
 			return;
 		}
 	}
@@ -113,7 +112,7 @@ std::string cPlayer::serialize(){
 			s+=bombs[i]->serialize();
 		}
 	}
-	
+
 	return s;
 }
 

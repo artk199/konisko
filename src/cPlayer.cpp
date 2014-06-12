@@ -40,6 +40,17 @@ void cPlayer::deserialize(string s){
 			iss >> sub;
 			double y = atof(sub.c_str());
 			this->setPosition(x,y);
+		}else
+		if(sub == "bomb"){
+			iss >> sub;
+			int id = atoi(sub.c_str());
+			iss >> sub;
+			double x = atof(sub.c_str());
+			iss >> sub;
+			double y = atof(sub.c_str());
+			iss >> sub;
+			double time = atof(sub.c_str());
+			this->addBomb(id,x*64,y*64);	
 		}
 			
     } while (iss);
@@ -66,8 +77,10 @@ void cPlayer::updateBombs(int dt){
 
 //--Dodaje nowa bombe dla gracza pod jej adresem ID
 void cPlayer::addBomb(int id,int x, int y, int range, int destroying_time){
-	bombs[id] = new cBomb(x,y);
-	bombs[id]->attachTo(this);
-	bombs[id]->setDestroyTime(destroying_time);
-	bombs[id]->setRange(range);
+	if(bombs[id] == NULL || bombs[id]->isDestroyed()){
+		bombs[id] = new cBomb(x,y);
+		bombs[id]->attachTo(this);
+		bombs[id]->setDestroyTime(destroying_time);
+		bombs[id]->setRange(range);
+	}
 };

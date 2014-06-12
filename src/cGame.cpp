@@ -56,12 +56,12 @@ cGame::cGame(){
 
 
 	//TO DO TESTU
-	players[0]->setID(1);
+	/*players[0]->setID(1);
 	players[0]->setNick("Trolololo");
 	players[0]->setPosition(100,100);
 	players[0]->init();
 	addChild(players[0]);
-};
+*/};
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
 static DWORD WINAPI startSending(void* param){
@@ -330,8 +330,8 @@ void cGame::doUpdate(const UpdateState &us){
 		delta = 0;
 
 		//TO DO TESTU
-		players[0]->addBomb(0,300,300,4,1500);
-		players[0]->addBomb(1,500,500,4,1500);
+		//players[0]->addBomb(0,300,300,4,1500);
+		//players[0]->addBomb(1,500,500,4,1500);
 	}
 	SetEvent(send_message);
 };

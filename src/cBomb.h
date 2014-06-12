@@ -26,4 +26,5 @@ class cBomb:public Actor, public cSerializable{
 		void setDestroyTime(float t); // - Ustawia czas, po jakim bomba wybucha
 		float getDestroyTime(); // - Zwraca czas, po jakim bomba wybucha
 		bool updateDestroyTime(int dt); // - Odejmuje od czasu wybuchu dt i wybucha po uplywie czasu (zwraca wtedy true)
+		bool isDestroyed(){return destroyed;};
 };

@@ -10,6 +10,7 @@ cBomb::cBomb(int x, int y, float time){
 
 	bomb->setPosition(pozx-5,pozy-5);
 	bomb->setPriority(10);
+	bomb->attachTo(this);
 
 	fire = new Sprite;
 	fire->setResAnim(Assets::gameResources.getResAnim("bomb_fire"));
