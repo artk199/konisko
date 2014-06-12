@@ -35,7 +35,7 @@ cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 1;
+	numberOfPlayersToStart = 3;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
@@ -162,10 +162,21 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			
 			Sleep(10);
 
+			string odp;
+			odp += numberOfPlayers+'0';
+			//zbudowanie odpowiedzi z informacja o graczach
+			for(int i=0; i<N_OF_PLAYERS; i++){
+				if(players[i]!=NULL){
+					odp+=players[i]->getNick()+"\t";
+					odp+=to_string(long double(i))+"\t";
+				}
+			}
+
+			printf("Wysylam: %s\n",odp.c_str());
 			//poinformowanie innych graczy o dolaczeniu nowego pro gamera
 			for(int i=0; i<N_OF_PLAYERS; i++)
 				if(players[i]!=NULL)
-					sendToClient(players[i]->getConnection()->getSocket(), PLAYER_JOINED, nick+"\t"+to_string(long double(id)));
+					sendToClient(players[i]->getConnection()->getSocket(), PLAYER_JOINED, odp);
 				
 			printf("Dolaczyl %s o id %d (z %d)!\n",nick.c_str(), id, numberOfPlayers);
 		

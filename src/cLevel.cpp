@@ -23,7 +23,6 @@ void cLevel::render(const RenderState &parentRS){
 
 //---Zainicjalizowanie rysowania rozgrywki na ekranie
 void cLevel::drawGame(Event *event){
-
 	menu->setVisible(false);
 	setVisible(true);
 	removeChildren();
@@ -32,12 +31,14 @@ void cLevel::drawGame(Event *event){
 	addChild(map);
 
 	//dodanie graczy
-	for(int i=0; i<players->size(); i++)
+	for(int i=0; i<players->size(); i++){
 		players->at(i)->attachTo(this);
+		if(players->at(i)->getID() >= 0)
+		players->at(i)->init();
+	}
 
 	panel = new cLeftPanel(this,players,menu);	
 	panel->attachTo(this);
-
 };
 
 //---Zapisanie wskaznika na klase wyswietlania menu na ekranie

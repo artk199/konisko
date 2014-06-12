@@ -42,6 +42,9 @@ class cGame: public Actor{
 	private:
 		int klawisz;
 		int num_of_players;
+
+		int mainPlayerID;
+
 		//Dane
 		float delta;
 		spcPlayer _player;

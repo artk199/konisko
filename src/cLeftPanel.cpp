@@ -19,7 +19,7 @@ cLeftPanel::cLeftPanel(spActor p,vector <spcPlayer> *player, spcMenu m){
 	onMouseOut(NULL);
 	//dodawanie dzieci panelu
 	addBackground(background);
-	//addPlayersInfo();
+	addPlayersInfo();
 
 	this->addEventListener(TouchEvent::MOVE, CLOSURE(this, &cLeftPanel::onMouseMove));
 	this->addEventListener(7, CLOSURE(this, &cLeftPanel::onMouseOut));
@@ -51,22 +51,27 @@ void cLeftPanel::addBackground(spColorRectSprite &rect, Color kolor, int alpha){
 void cLeftPanel::addPlayersInfo(){
 	int ilosc = players->size();
 	int przes=50;
+	int ktory = 0;
 	for(int i=0; i<ilosc; i++){
-		przes+=i*50;
+		przes+=ktory*50;
 
-		spTextActor t = cUI::createText(players->at(i)->getName());
-		t->setX(x+50);
-		t->setY(przes);
-		t->setHAlign(TextStyle::HALIGN_LEFT);
-		t->setPriority(2);
-		t->attachTo(this);
+		if(players->at(i)->getID()>=0){
+			spTextActor t = cUI::createText(players->at(i)->getNick());
+			t->setX(x+50);
+			t->setY(przes);
+			t->setHAlign(TextStyle::HALIGN_LEFT);
+			t->setPriority(2);
+			t->attachTo(this);
 
-		spSprite s =players->at(i)->getIcon()->clone();
-		s->setScale(0.5);
-		s->setX(x+10);
-		s->setY(przes-10);
-		s->setPriority(2);
-		s->attachTo(this);
+			spSprite s =players->at(i)->getIcon()->clone();
+			s->setScale(0.5);
+			s->setX(x+10);
+			s->setY(przes-10);
+			s->setPriority(2);
+			s->attachTo(this);
+
+			ktory++;
+		}
 	}
 };
 

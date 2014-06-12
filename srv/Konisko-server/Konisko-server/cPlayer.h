@@ -14,7 +14,7 @@ class cPlayer
 		cPlayer(void);
 		~cPlayer(void);
 		void setNick(string nick);
-		string getNick();
+		string getNick(){return nick;};
 		void setConnection(cConnection* c);
 		cConnection * getConnection();
 

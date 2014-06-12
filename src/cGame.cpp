@@ -49,6 +49,8 @@ cGame::cGame(){
 	przes = 0;
 	send_message = CreateEvent(NULL, false, false, NULL);
 	this->num_of_players = 4;
+
+	mainPlayerID=-1;
 };
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
@@ -119,27 +121,39 @@ DWORD cGame::reciever(){
 				for(int i=1; i<strlen(buf); i++) par+=buf[i];
 				int  id = atoi(par.c_str());
 
+				mainPlayerID=id;
 				printf("ID GRACZA USTAWIONO NA %d\n",id);
 			break;}
 			//dolaczyl nowy gracz, nalezy go dodac
 			case Assets::PLAYER_JOINED:{
-				//pobranie danych o graczu
-				int i, ID;
-				string nick, id;
-				for(i=1; i<strlen(buf) && buf[i]!='\t'; i++) nick+=buf[i];
-				for(i=i+1; i<strlen(buf) && buf[i]!='\t'; i++) id+=buf[i];
-				ID=atoi(id.c_str());
+				int ile_graczy = buf[1] - '0';
 
-				players[ID]->setNick(nick);
-				players[ID]->setID(ID);
+				int i=2;
+				//pobieranie nicka i id kolejnych graczy
+				for(int n=0; n<ile_graczy; n++){
+					string id, nick;
+					for(i; i<strlen(buf) && buf[i]!='\t'; i++) nick+=buf[i];
+					for(i=i+1; i<strlen(buf) && buf[i]!='\t'; i++) id+=buf[i];
+					i++;
 
-				int pozy=100+60*ID;
-				int pozx=150;
-				spTextActor napis=cUI::createText(players[ID]->getNick());
-				napis->setPosition(pozx,pozy);
-				napis->attachTo(menu);
+					int ID=atoi(id.c_str());
+			
+					// to jest nowy gracz
+					if(players[ID]->getID()!=ID){
+						players[ID]->setID(ID);
+						players[ID]->setNick(nick);
 
-				printf("Dolaczyl gracz %s - %s\n", nick.c_str(), id.c_str());
+						int pozy=100+60*ID;
+						int pozx=150;
+
+						bool edytowalny = false;
+						if(ID==mainPlayerID) edytowalny = true;
+
+						//dodanie nowego dziecka tylko jezeli nie zostalo juz dodane
+						menu->addChild(new cCheckBox(pozx,pozy,&players[ID]->getReady(),players[ID]->getNick(),edytowalny,"player_"+to_string(long double(ID))+"_ready"));
+						printf("Dodano gracza %s - %s\n", nick.c_str(), id.c_str());
+					}	
+				}		
 			break;}
 			//nieznane polecenie
 			default:

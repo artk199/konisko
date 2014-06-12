@@ -14,6 +14,7 @@ class cCheckBox: public Actor{
 		cCheckBox(int x, int y,bool *w, string tlabel="", bool editable=true, string class_name="");
 
 		void onOff(bool flag); // - Zmienia mozliwosc edytowania checkboxa
+		void setFlag(bool flag); // - Zmienia wartosc checkboxa na podana flage
 	private:
 		Color checked, unchecked; // - Kolory zanzaczenia
 		spColorRectSprite ramka, check;

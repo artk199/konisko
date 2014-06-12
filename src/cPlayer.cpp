@@ -5,13 +5,15 @@
 
 
 cPlayer::cPlayer(){
-	pos.x=100;
-	pos.y=100;
+	pos.x=0;
+	pos.y=0;
 	nick="New player";
 	sprite = new Sprite;
-	sprite->addTween(TweenAnim(Assets::gameResources.getResAnim("player")),500,-1);
-	sprite->setPosition(pos.x,pos.y);
 	sprite->attachTo(this);
+	sprite->setPosition(pos.x,pos.y);
+	ready=false;
+	visible=false;
+	id=-1;
 };
 
 void cPlayer::move(Vector2 delta){
@@ -40,3 +42,8 @@ void cPlayer::deserialize(string s){
     } while (iss);
 }
 spSprite cPlayer::getIcon(){return sprite;};
+
+void cPlayer::init(){
+	visible = true;
+	sprite->addTween(TweenAnim(Assets::gameResources.getResAnim("hero"+to_string(long double(id)),oxygine::ep_show_warning)),500,-1);
+}

@@ -67,3 +67,8 @@ void cCheckBox::onClick(Event *ev){
 void cCheckBox::onOff(bool flag){
 	isEditable = flag;
 };
+
+//---Zmienia wartosc checkboxa na podana flage
+void cCheckBox::setFlag(bool flag){
+	*wartosc = flag;
+};
