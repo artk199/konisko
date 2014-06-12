@@ -21,7 +21,7 @@ void cPlayer::move(Vector2 delta){
 void cPlayer::setPosition(double x, double y){
 	pos.x = x;
 	pos.y = y;
-	sprite->setPosition(pos.x,pos.y);
+	sprite->setPosition(pos.x-32,pos.y-32);
 }
 void cPlayer::deserialize(string s){
     istringstream iss(s);

@@ -10,7 +10,7 @@ cMap::cMap(void)
 
 cMap::cMap(int type)
 {
-	mapString ="XXXXX\nX  XX\nXXXXX\n";
+	mapString ="XXXXX\nX   X\nXXXXX\n";
 	
 	for(int i = 0 ;i < 3 ; i++){
 		tiles.push_back(std::vector<cTile*>());

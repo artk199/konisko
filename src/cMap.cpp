@@ -8,6 +8,26 @@ cMap::cMap(){
 	//wczytanie zawartosci mapy
 	int maxy=0, maxx=0;
 
+	mapString ="XXXXX\nX   X\nXXXXX\n";
+	
+	for(int i = 0 ;i < 3 ; i++){
+		tiles.push_back(std::vector<spcTile>());
+		for(int j = 0 ; j < 5 ;j++){
+			if(mapString[i*5+j+i] == 'X'){
+				spcTile nowy = new cTile("wall1",Vector2(j*64+przes.x,i*64+przes.y),this);
+				nowy->setDestroyable(true);
+				nowy->setWalkable(false);
+				tiles[i].push_back(nowy);
+			}else{
+				spcTile nowy = new cTile("grass1",Vector2(j*64+przes.x,i*64+przes.y),this);
+				nowy->setDestroyable(true);
+				nowy->setWalkable(true);
+				tiles[i].push_back(nowy);
+			}	
+
+		}
+	}
+	/*
 	for(int i=0; i<Assets::gameMap.getCount()-1; i++){
 		//pobranie wlasciwosci nowego pola
 		Resource *kt=Assets::gameMap.get(i);
@@ -30,16 +50,8 @@ cMap::cMap(){
 			tiles[make_pair(y,x)] = nowy;
 		}
 	}
-	size = make_pair(maxy,maxx);
+	size = make_pair(maxy,maxx);*/
 };
 
 void cMap::clear(){
-	auto it=tiles.begin();
-	auto end = tiles.end();
-
-	while(it!=end){
-		std::cout<<it->second->getSprite()->_ref_counter<<endl;
-		it->second->releaseRef();
-		it++;
-	}
 };
