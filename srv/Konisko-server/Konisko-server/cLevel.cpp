@@ -75,7 +75,7 @@ void cLevel::start(){
 
 
 		this->serializabled = this->serialize();
-		std::cout<<delta<<"\n"<<serializabled<<std::endl;
+		//std::cout<<delta<<"\n"<<serializabled<<std::endl;
 	
 	}
 

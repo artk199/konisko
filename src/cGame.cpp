@@ -7,6 +7,8 @@
 #include "core/STDFileSystem.h"
 #include <iostream>
 #include <regex>
+#include <sstream>
+#include <iostream>
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -44,6 +46,8 @@ cGame::cGame(){
 	klawisz = 0;
 
 	przes = 0;
+
+	this->num_of_players = 4;
 };
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
@@ -97,8 +101,8 @@ DWORD cGame::reciever(){
 			case Assets::DELTA:{
 				string par="";
 				for(int i=1; i<strlen(buf); i++) par+=buf[i];
-
-				//_player->move(Vector2(atoi(par.c_str())*2,atoi(par.c_str())*2));
+				//cout<<par<<endl;
+				parse_response(par);
 			break;}
 			case Assets::START_GAME:{
 				printf("mozna startowac");
@@ -143,6 +147,37 @@ DWORD cGame::reciever(){
 		}
 	};
 	return 0;
+}
+
+void cGame::parse_response(string s){
+	cSerializable* object = NULL;
+	istringstream iss(s);
+	istringstream iss2;
+	cout<<s<<endl;
+    do
+    {
+		string line,sub;
+		getline(iss,line);
+        iss2 = istringstream(line);
+		iss2 >> sub;
+		if(sub == "object"){
+			iss2 >> sub;	
+			object = NULL;
+			if(sub == "player"){
+				iss2 >> sub;
+				int id = atoi(sub.c_str());
+				if(id >= 0 && id < this->num_of_players)
+					object = players[id].get();
+			}
+			continue;
+		}
+		if(object != NULL){
+			if(line.length() != 0){
+				object->deserialize(line);
+				std::cout<<line<<"\n";
+			}	
+		}
+    } while (iss);
 }
 
 bool cGame::connectToServer(){	   

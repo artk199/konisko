@@ -5,7 +5,7 @@ cPlayer::cPlayer(void)
 {
 	this->pos = std::pair<double,double>(160,96);
 	this->direction = LEFT;
-	this->velocity = 64;
+	this->velocity = 20;
 	this->nick = "NICK";
 }
 
@@ -66,9 +66,14 @@ void cPlayer::setConnection(cConnection* connection){
 	this->connection = connection;
 }
 
-cConnection * cPlayer::getConnection(){return connection;}
+cConnection * cPlayer::getConnection(){
+	return connection;
+}
 
 std::string cPlayer::serialize(){
-	return std::to_string((long double)pos.first) + " " + std::to_string((long double)pos.second);
+	long double temp_id = this->id;
+	return 
+		"object\tplayer\t"+std::to_string(temp_id)+/*tutaj jeszcze hashcode powinien byæ*/
+		+"\nposition\t"+std::to_string((long double)pos.first) + "\t" + std::to_string((long double)pos.second);
 }
 

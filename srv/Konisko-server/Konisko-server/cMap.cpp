@@ -42,7 +42,7 @@ cMap::~cMap(void)
 }
 
 bool cMap::isMoveable(double x, double y){
-	std::cout<<floor(x/TILE_SIZE)<<" "<<floor(y/TILE_SIZE)<<std::endl;
+	//std::cout<<floor(x/TILE_SIZE)<<" "<<floor(y/TILE_SIZE)<<std::endl;
 	if(y>=0 && std::floor(y/TILE_SIZE) < tiles.size()
 	&& x>=0 && std::floor(x/TILE_SIZE) < tiles[std::floor(y/TILE_SIZE)].size())
 		return tiles[std::floor(y/TILE_SIZE)][std::floor(x/TILE_SIZE)]->isMoveable();
@@ -59,7 +59,7 @@ bool cMap::canMove(double x, double y){
 	 |      |      |
 	  ------ ------				
 	*/
-	std::cout<<x<<" "<<y<<std::endl;
+	//std::cout<<x<<" "<<y<<std::endl;
 	if(!isMoveable(x-TILE_SIZE/2,y-TILE_SIZE/2))
 		return false;
 	if(!isMoveable(x+TILE_SIZE/2-1,y-TILE_SIZE/2))

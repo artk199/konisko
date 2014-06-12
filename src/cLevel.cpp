@@ -28,8 +28,8 @@ void cLevel::drawGame(Event *event){
 	setVisible(true);
 	removeChildren();
 
-	map = new cMap();
-	addChild(map);
+	//map = new cMap();
+	//addChild(map);
 
 	//dodanie graczy
 	for(int i=0; i<players->size(); i++)

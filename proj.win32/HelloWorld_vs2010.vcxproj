@@ -102,6 +102,7 @@
     <ClCompile Include="..\src\cMenu.cpp" />
     <ClCompile Include="..\src\cNotify.cpp" />
     <ClCompile Include="..\src\cPlayer.cpp" />
+    <ClCompile Include="..\src\cSerializable.cpp" />
     <ClCompile Include="..\src\cTile.cpp" />
     <ClCompile Include="..\src\cUI.cpp" />
     <ClCompile Include="..\src\cUnit.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="..\src\cMenu.h" />
     <ClInclude Include="..\src\cNotify.h" />
     <ClInclude Include="..\src\cPlayer.h" />
+    <ClInclude Include="..\src\cSerializable.h" />
     <ClInclude Include="..\src\cTile.h" />
     <ClInclude Include="..\src\cUI.h" />
     <ClInclude Include="..\src\cUnit.h" />

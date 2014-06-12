@@ -11,11 +11,11 @@ void __cdecl manageGame( void * x ){
 
 	//oczekiwanie na polaczenie sie odpowiedniej ilosci graczy
 	game->waitForPlayers();
+	game->loadPlayers();
 
-	printf("JESTEM 1 \n");
 	//Stworzenie poziomu
 	game->lvl = new cLevel();
-	printf("JESTEM 2 \n");
+	
 	//Dodanie graczy
 	for(int i=0;i<game->numberOfPlayers;i++)
 		game->lvl->addPlayer(game->players[i]);
@@ -24,7 +24,6 @@ void __cdecl manageGame( void * x ){
 
 	game->lvl->start();
 
-	printf("JESTEM 3 \n");
 	delete game->lvl;
 
 	//wyjscie z watku
@@ -35,22 +34,18 @@ void __cdecl manageGame( void * x ){
 cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
-
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 1;
+	numberOfPlayersToStart = 2;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
 
+	amount_of_players_reached =  CreateEvent(NULL, false, false, NULL);
+
 	//utworzenie watku zarzadzajacego gra
 	HANDLE hThread =( HANDLE ) _beginthread(manageGame, 0, this );
 
-		
-		//Ustawienie wybranej mapy
-	//	lvl->setMap(new cMap(chosen_map));
 
-		//Start gry
-	//	lvl->start();
 }
 
 
@@ -62,14 +57,24 @@ cGame::~cGame(void)
 
 //---Oczekiwanie az polaczy sie wymagana ilosc graczy
 void cGame::waitForPlayers(){
-	while(numberOfPlayers <numberOfPlayersToStart){printf("");}
+
+	WaitForSingleObject(amount_of_players_reached, -1);
+
+	printf("Wymagana ilosc graczy do startu osiagnieta!\n");
+
+}
+
+//---Sprawdzanie po³¹czenia z graczami oraz wysy³anie informacji poczatkowych
+void cGame::loadPlayers(){
 
 	//poinformowanie wszystkich graczy, ze mozna rozpoczac gre
 	for(int i=0; i<numberOfPlayers; i++)
 		if(players[i]!=NULL)
 			sendToClient(players[i]->getConnection()->getSocket(), START_GAME);	
 
-	printf("Wymagana ilosc graczy do startu osiagnieta!\n");
+	//Czekam 2s na to aby wszyscy gracze zglosili gotowosc w innym przypadku startuje
+	//WaitForSingleObject(all_players_ready, 2000);
+
 }
 
 //---Wysyla do klienta odpowiedz z mozliwoscia dodania parametru
@@ -99,34 +104,43 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 	//wyslanie odpowiedniej odpowiedzi na zapytanie
 	switch(com){
 		case ILOSC_GRACZY:{
-			//printf("Ile graczy\n");
-
 			sendToClient(c->ClientSocket, ILOSC_GRACZY, to_string(long double(n_of_conn)));
 		break;}
 		case KONIEC:
-			//printf("Koniec\n");
-			printf("koncze polaczenie\n");
+			printf("Po³¹czenie z graczem zakoñczone!\n");
+			printf("Player %d roz³¹czony.!\n",c->id);
 			n_of_conn--;
 			closesocket(c->ClientSocket);
 			return false;
 		break;
-		case DELTA:{
-			//printf("Delta\n");
-			string odp = "";
-			odp+=DELTA;
-			if(dana-c->dana != 0){
-				odp+=to_string(long double(dana-c->dana));
-				send(c->ClientSocket, odp.c_str(), odp.length()+1, 0 );
-				c->dana = dana;
+		case DELTA:
+			if(this->lvl != NULL){
+				sendToClient(c->ClientSocket, DELTA, this->lvl->serialize());
+				printf("%s\n",this->lvl->serialize());
 			}
-		break;}
+		break;
 		case PLAYER_POSITION:{
-			//printf("Pozycja\n");
 			string pozycja="";
 			for(int i=1; i<dane.length(); i++)  pozycja+=dane[i];
 	
 			dana+=atoi(pozycja.c_str());
 		break;}
+		/*case START_GAME:{
+			players[c->id]->setReady(true);
+
+			//Sprawdza czy wszyscy s¹ gotowi do gry
+			bool all_ready = true;
+
+			for(int i=0; i<numberOfPlayers; i++)
+				if(players[i]!=NULL && !plyers[i]->isReady()){
+					all_ready = false;		
+					break;
+				}
+
+			if(all_ready)
+				SetEvent(all_players_ready);
+
+		break;}*/
 		case PLAYER_JOINED:{
 			//odczytanie parametru
 			string nick="";
@@ -136,6 +150,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			//dodanie nowego gracza
 			players[id] = new cPlayer();
 			players[id]->setNick(nick);
+			players[id]->id = id;
 			cConnection *conn = new cConnection();
 			conn->setSocket(c->ClientSocket);
 			players[id]->setConnection(conn);
@@ -153,18 +168,32 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 					sendToClient(players[i]->getConnection()->getSocket(), PLAYER_JOINED, nick+"\t"+to_string(long double(id)));
 				
 			printf("Dolaczyl %s o id %d (z %d)!\n",nick.c_str(), id, numberOfPlayers);
+		
+			if(numberOfPlayers >= numberOfPlayersToStart)
+				SetEvent(amount_of_players_reached);
 		break;}
 		case PLAYER_QUIT:
 			numberOfPlayers--;
 		break;
 		case KEY_PRESSED:{
-			string key="";
-			for(int i=1; i<dane.length(); i++)  key+=dane[i];
-			int keyNumber=atoi(key.c_str());
-
-			printf("GRACZ WCISNAL KLAWISZ: %d\n",keyNumber);
-
-		break;}
+			//Przeczytaæ kto to podes³a³ 
+			E_DIRECTION dir;
+			string pozycja="";
+			for(int i=1; i<dane.length(); i++)  pozycja+=dane[i];
+			switch(atoi(pozycja.c_str())){
+			case 1:
+				dir = LEFT;
+				break;
+			case 2:dir = RIGHT;
+				break;
+			case 3:dir = TOP;
+				break;
+			case 4:dir = BOT;
+				break;
+			}
+			players[c->id]->changeDirection(dir);
+			printf("KLAWISZ!\n");
+			break;}
 		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());
 	}
 

@@ -36,11 +36,12 @@ class cGame: public Actor{
 		bool tryConnectToServer(); // - Zwraca informacje, czy udalo sie polaczyc do serwera (rzuca wyjatkiem, jesli nie)
 		void disconnect();		   // - Roz³¹czenie z serwerem
 		void askServer(Assets::REQUESTS q, string parametr=""); // - Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
-
+		void parse_response(string s);
 		spMaskedSprite _masked;
 
 	private:
 		int klawisz;
+		int num_of_players;
 		//Dane
 		float delta;
 		spcPlayer _player;

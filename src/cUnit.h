@@ -12,7 +12,7 @@ public:
 	void init(cGame *game);
 
 	void update(const UpdateState &us);
-
+	virtual void deserialize(string s){};
 protected:
 	virtual void _init(){}
 	virtual void _update(const UpdateState &us){}

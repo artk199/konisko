@@ -53,7 +53,7 @@ void cMenu::menuMultiplayer(Event *event){
 
 
 		EventCallback c1 = CLOSURE(level.get(), &cLevel::drawGame);
-		addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start level", c1, "bt_start", false));
+		addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start level", c1, "bt_start", true));
 		EventCallback c2 = CLOSURE(this, &cMenu::menuMain);
 		addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-150, "back", c2));
 

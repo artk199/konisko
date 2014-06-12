@@ -30,6 +30,7 @@ class cGame{
 
 		bool odbierzDane(string dane, connection *c, int &dana, int &n_of_conn);//---Odebranie komunikatow od klienta
 		void waitForPlayers();
+		void loadPlayers();
 		void sendToClient(SOCKET c, REQUESTS q, string par="");
 
 	private:
@@ -38,8 +39,11 @@ class cGame{
 		int chosen_map;
 		int numberOfPlayersToStart;
 		int numberOfPlayers;
+
 		HANDLE send_message;
-		
+		HANDLE amount_of_players_reached;
+		HANDLE all_players_ready;
+
 		friend void __cdecl manageGame( void * Args ); // - Watek zarzadzajacy gra
 };
 

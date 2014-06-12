@@ -29,15 +29,14 @@ class cPlayer
 		void attachToMap(cMap* map);
 		void changeDirection(E_DIRECTION direction);
 		string serialize();
-
+		int id;
 	private:
 		//Nick gracza
 		string nick;
 	
-		int id;
 		//Dane o po³¹czeniu
 		cConnection* connection;
-	
+		bool ready;
 		//Dane do gry
 		pair<double,double> pos;
 		double velocity;

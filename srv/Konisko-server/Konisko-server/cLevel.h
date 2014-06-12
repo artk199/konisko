@@ -18,6 +18,7 @@ public:
 	void addPlayer(cPlayer *player);
 	void setMap(cMap* map);
 	std::string serialize();
+	std::string getSerialized(){return this->serializabled;};
 private:
 	std::string serializabled;
 	cMap* map;
