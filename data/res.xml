@@ -5,10 +5,10 @@
 		<image id="anim" file="anim1.png" cols = "7" /> <!-- 'id' is optional -->
 		<image id="tile1" file="tile1.png" cols = "1" /> 
 		<image id="tile2" file="tile2.png" cols = "1" /> 
-		<image  file="hero0.png" cols = "4" /> 
-		<image  file="hero1.png" cols = "4" /> 
-		<image  file="hero2.png" cols = "4" /> 
-		<image  file="hero3.png" cols = "4" /> 
+		<image  file="hero0.png" cols = "4" rows="1" /> 
+		<image  file="hero1.png" cols = "4" rows="1"/> 
+		<image  file="hero2.png" cols = "4" rows="1"/> 
+		<image  file="hero3.png" cols = "4" rows="1"/> 
 		<image file="button.png" cols = "3" />		
 		<image file="bomb.png"/>
 		<image file = "bomb_fire.png"/>
@@ -16,7 +16,7 @@
 		<image file="checkbox_checked.png"/>
 	</atlas>
 	
-	<set path = "images/map" />
+	<set path = "images/map" /> 
 	<atlas>
 		<image file="grass1.png"/> 
 		<image file="grass2.png"/> 

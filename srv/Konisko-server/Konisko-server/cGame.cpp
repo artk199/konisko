@@ -35,7 +35,7 @@ cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 1;
+	numberOfPlayersToStart = 4;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;

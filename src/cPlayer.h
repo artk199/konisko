@@ -30,7 +30,9 @@ class cPlayer : public Actor, public cSerializable{
 
 	private:
 		spSprite sprite;
-		Vector2 pos;
+		Vector2 pos, poprzpoz;
+		int kierunek; // 0 gora 1 prawo 2 dol 3 lewo
+
 		string nick;
 		int id;
 		bool visible;

@@ -2,8 +2,8 @@
 
 cBomb::cBomb(int x, int y, float time){
 	startTime = time;
-	pozx=x;
-	pozy=y;
+	pozx=x+8;
+	pozy=y+8;
 
 	bomb = new Sprite;
 	bomb->setResAnim(Assets::gameResources.getResAnim("bomb"));
@@ -15,7 +15,7 @@ cBomb::cBomb(int x, int y, float time){
 	fire = new Sprite;
 	fire->setResAnim(Assets::gameResources.getResAnim("bomb_fire"));
 
-	range = 1;
+	range = 2;
 
 	startTime=0;
 	destroyTime = 3000;

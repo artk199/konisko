@@ -23,11 +23,17 @@ void cPlayer::move(Vector2 delta){
 	this->pos += delta;
 	sprite->setPosition(pos.x,pos.y);
 };
+
 void cPlayer::setPosition(double x, double y){
 	pos.x = x;
 	pos.y = y;
+
 	sprite->setPosition(pos.x-32,pos.y-32);
+
+	poprzpoz = pos;
 }
+
+
 void cPlayer::deserialize(string s){
     istringstream iss(s);
     do
@@ -79,6 +85,6 @@ void cPlayer::addBomb(int id,int x, int y, int range, int destroying_time){
 		bombs[id] = new cBomb(x,y);
 		bombs[id]->attachTo(this);
 		bombs[id]->setDestroyTime(destroying_time);
-		bombs[id]->setRange(range);
+		bombs[id]->setRange(2);
 	}
 };
