@@ -56,3 +56,4 @@ void cButton::onMouseOver(Event *ev){
 void cButton::onMouseOut(Event *ev){
 	background->setAnimFrame(Assets::gameResources.getResAnim("button"),0);
 };
+

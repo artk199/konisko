@@ -1,6 +1,7 @@
 #include "cBomb.h"
 
-cBomb::cBomb(int x, int y){
+cBomb::cBomb(int x, int y, float time){
+	startTime = time;
 	pozx=x;
 	pozy=y;
 
@@ -8,13 +9,17 @@ cBomb::cBomb(int x, int y){
 	bomb->setResAnim(Assets::gameResources.getResAnim("bomb"));
 
 	bomb->setPosition(pozx-5,pozy-5);
-	bomb->attachTo(this);
 	bomb->setPriority(10);
 
 	fire = new Sprite;
 	fire->setResAnim(Assets::gameResources.getResAnim("bomb_fire"));
 
-	range = 4;
+	range = 1;
+
+	startTime=0;
+	destroyTime = 3000;
+
+	destroyed = false;
 };
 
 //---Uruchamia TweenAlpha z wybuchem
@@ -29,7 +34,11 @@ void cBomb::destroy(){
 	tween->add(TextActor::TweenAlpha(0),50);
 	tween->add(TextActor::TweenAlpha(255),50);
 	tween->add(TextActor::TweenAlpha(0),50);
-	bomb->addTween(tween);
+	tween->setDetachActor(true);
+
+	spSprite bclone = bomb->clone();
+	bclone->attachTo(this);
+	bclone->addTween(tween);
 
 	//efekt ognia
 	for(int i=-range; i<=range; i++){
@@ -65,10 +74,37 @@ void cBomb::destroy(){
 		copy2->attachTo(this);
 		copy2->addTween(fired2);
 	}
-	
 };
 
  //---Ustawia zasieg razenia bomby po wybuchu
 void cBomb::setRange(int range){
 	this->range = range;
+};
+
+ //---Zwraca czas rozstawienia bomby
+float cBomb::getTime(){
+	return startTime;
+};
+
+ //--- Ustawia czas, po jakim bomba wybucha
+void cBomb::setDestroyTime(float t){
+	destroyTime=t;
+};
+
+//---Zwraca czas, po jakim bomba wybucha
+float cBomb::getDestroyTime(){
+	return destroyTime;
+}; 
+
+//---Odejmuje od czasu wybuchu dt i wybucha po uplywie czasu
+bool cBomb::updateDestroyTime(int dt){
+	if(destroyed) return true;
+	destroyTime -= dt;
+
+	if(destroyTime <= 0) {
+		destroy();
+		destroyed = true;
+		return true;
+	}
+	return false;
 };

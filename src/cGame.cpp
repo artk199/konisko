@@ -53,6 +53,14 @@ cGame::cGame(){
 	this->num_of_players = 4;
 
 	mainPlayerID=-1;
+
+
+	//TO DO TESTU
+	players[0]->setID(1);
+	players[0]->setNick("Trolololo");
+	players[0]->setPosition(100,100);
+	players[0]->init();
+	addChild(players[0]);
 };
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
@@ -311,11 +319,19 @@ void cGame::destroy(){
 //---Funkcja aktualizujaca czynnosci klasy
 void cGame::doUpdate(const UpdateState &us){
 	delta += us.dt;
-	if (delta > 1000){
+
+	//aktualizowanie bomb kazdego gracza
+	for(int i=0; i<4; i++)
+		if(players[i]->getID()>=0)
+			players[i]->updateBombs(us.dt);
+		
+	
+	if (delta > 2000){
 		delta = 0;
-		cBomb* a = new cBomb(300,300);
-		addChild(a);
-		a->destroy();
+
+		//TO DO TESTU
+		players[0]->addBomb(0,300,300,4,1500);
+		players[0]->addBomb(1,500,500,4,1500);
 	}
 	SetEvent(send_message);
 };
