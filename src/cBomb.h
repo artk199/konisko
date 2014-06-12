@@ -20,6 +20,8 @@ class cBomb:public Actor, public cSerializable{
 
 	public:
 		cBomb(int x, int y, float time=0);
+		~cBomb();
+
 		void destroy(); // - Uruchamia TweenAlpha z wybuchem
 		void setRange(int range); // - Ustawia zasieg razenia bomby po wybuchu
 		float getTime(); // - Zwraca czas rozstawienia bomby

@@ -23,6 +23,12 @@ cBomb::cBomb(int x, int y, float time){
 	destroyed = false;
 };
 
+cBomb::~cBomb(){
+	bomb->releaseRef();
+	fire->releaseRef();
+};
+
+
 //---Uruchamia TweenAlpha z wybuchem
 void cBomb::destroy(){
 	spTweenQueue tween = new TweenQueue();
@@ -105,6 +111,7 @@ bool cBomb::updateDestroyTime(int dt){
 	if(destroyTime <= 0) {
 		destroy();
 		destroyed = true;
+		bomb->setVisible(false);
 		return true;
 	}
 	return false;

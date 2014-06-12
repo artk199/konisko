@@ -35,6 +35,6 @@ class cPlayer : public Actor, public cSerializable{
 		int id;
 		bool visible;
 		bool ready;
-		vector <spcBomb> bombs;
+		vector <cBomb *> bombs;
 };
 

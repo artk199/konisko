@@ -69,8 +69,6 @@ void cPlayer::updateBombs(int dt){
 		if(bombs[i]!=NULL){
 			// jezeli zostal przekroczony czas, bomba wybucha
 			if(bombs[i]->updateDestroyTime(dt)){
-				//bombs[i]->releaseRef();
-				//bombs[i] = NULL;
 			}
 		}
 };
