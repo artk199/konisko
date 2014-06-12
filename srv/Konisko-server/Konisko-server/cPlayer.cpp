@@ -5,7 +5,7 @@ cPlayer::cPlayer(void)
 {
 	this->pos = std::pair<double,double>(160,96);
 	this->direction = LEFT;
-	this->velocity = 20;
+	this->velocity = 128;
 	this->nick = "NICK";
 }
 

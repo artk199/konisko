@@ -5,8 +5,12 @@ public:
 	cTile(void);
 	cTile(int type);
 	~cTile(void);
-	bool isMoveable();
+	void setWalkable(bool s); 
+	void setDestroyable(bool s);
+	bool isWalkable();
+	bool isDestroyable();
 private:
-	bool moveable;
+	bool walkable;
+	bool destroyable;
 };
 

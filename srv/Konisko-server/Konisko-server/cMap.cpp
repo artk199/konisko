@@ -10,12 +10,12 @@ cMap::cMap(void)
 
 cMap::cMap(int type)
 {
-	mapString ="XXXXX\nX   X\nXXXXX\n";
+	mapString ="XXXXXXXXXXX\nX         X\nX    X    X\nX    X    X\nX         X\nXXXXXXXXXXX";
 	
-	for(int i = 0 ;i < 3 ; i++){
+	for(int i = 0 ;i < 6 ; i++){
 		tiles.push_back(std::vector<cTile*>());
-		for(int j = 0 ; j < 5 ;j++){
-			if(mapString[i*5+j+i] == 'X')
+		for(int j = 0 ; j < 11 ;j++){
+			if(mapString[i*11+j+i] == 'X')
 				tiles[i].push_back(new cTile(2));		
 			else
 				tiles[i].push_back(new cTile(1));		
@@ -45,7 +45,7 @@ bool cMap::isMoveable(double x, double y){
 	//std::cout<<floor(x/TILE_SIZE)<<" "<<floor(y/TILE_SIZE)<<std::endl;
 	if(y>=0 && std::floor(y/TILE_SIZE) < tiles.size()
 	&& x>=0 && std::floor(x/TILE_SIZE) < tiles[std::floor(y/TILE_SIZE)].size())
-		return tiles[std::floor(y/TILE_SIZE)][std::floor(x/TILE_SIZE)]->isMoveable();
+		return tiles[std::floor(y/TILE_SIZE)][std::floor(x/TILE_SIZE)]->isWalkable();
 	return false;
 }
 

@@ -8,9 +8,9 @@ cTile::cTile(void)
 cTile::cTile(int type)
 {
 	if(type == 1)
-		moveable = true;
+		walkable = true;
 	else
-		moveable = false;
+		walkable = false;
 }
 
 
@@ -18,6 +18,15 @@ cTile::~cTile(void)
 {
 }
 
-bool cTile::isMoveable(){
-	return moveable;
-}
+void cTile::setWalkable(bool s){
+	walkable = s;
+};
+void cTile::setDestroyable(bool s){
+	destroyable = s;
+};
+bool cTile::isWalkable(){
+	return walkable;
+};
+bool cTile::isDestroyable(){
+	return destroyable;
+};

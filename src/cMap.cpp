@@ -8,12 +8,13 @@ cMap::cMap(){
 	//wczytanie zawartosci mapy
 	int maxy=0, maxx=0;
 
-	mapString ="XXXXX\nX   X\nXXXXX\n";
+	mapString ="XXXXXXXXXXX\nX         X\nX    X    X\nX    X    X\nX         X\nXXXXXXXXXXX";
 	
-	for(int i = 0 ;i < 3 ; i++){
+	
+	for(int i = 0 ;i < 6 ; i++){
 		tiles.push_back(std::vector<spcTile>());
-		for(int j = 0 ; j < 5 ;j++){
-			if(mapString[i*5+j+i] == 'X'){
+		for(int j = 0 ; j < 11 ;j++){
+			if(mapString[i*11+j+i] == 'X'){
 				spcTile nowy = new cTile("wall1",Vector2(j*64+przes.x,i*64+przes.y),this);
 				nowy->setDestroyable(true);
 				nowy->setWalkable(false);
