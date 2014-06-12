@@ -25,10 +25,11 @@ class cLeftPanel: public Actor{
 		int x;
 		int szer;
 		bool wygaszaj;
+		bool isAlpha;
 
 		vector <spcPlayer> *players;
 		spActor parent;
-		spColorRectSprite background, topLayer;
+		spColorRectSprite background;
 		spcButton mainMenu;
 		spcCheckBox checkbox;
 		spcMenu menu;
@@ -39,4 +40,5 @@ class cLeftPanel: public Actor{
 
 		void onMouseOver(Event *ev);// - Obsluga zdarzenia po najechaniu myszka
 		void onMouseOut(Event *ev);// - Obsluga zdarzenia po zjechaniu myszka
+		void onMouseMove(Event *ev); // - Obsluga poruszania myszka
 };

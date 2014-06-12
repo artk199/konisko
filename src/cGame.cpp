@@ -131,7 +131,6 @@ DWORD cGame::reciever(){
 
 				players[ID]->setNick(nick);
 				players[ID]->setID(ID);
-				//players[ID]->setSprite(ID);
 
 				int pozy=100+60*ID;
 				int pozx=150;

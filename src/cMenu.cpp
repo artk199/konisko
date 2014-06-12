@@ -82,7 +82,7 @@ void cMenu::menuMultiplayer(Event *event){
 		napis->setHAlign(TextStyle::HALIGN_LEFT);
 
 		EventCallback c1 = CLOSURE(level.get(), &cLevel::drawGame);
-		addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start level", c1, "bt_start", true));
+		addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-220, "Start level", c1, "bt_start", false));
 		EventCallback c2 = CLOSURE(this, &cMenu::menuMain);
 		addChild(cUI::addButton(getRoot()->getWidth()-220,getRoot()->getHeight()-150, "back", c2));
 

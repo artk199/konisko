@@ -1,9 +1,19 @@
 #include "cCheckBox.h"
 
-cCheckBox::cCheckBox( int x, int y, bool *w, string tlabel){
+cCheckBox::cCheckBox(int x, int y,bool *w, string tlabel, bool editable, string class_name){
+	//ustawienie wartosci poczatkowych
 	checked = Color::White;
 	unchecked = Color::DarkGray;
 	wartosc = w;
+	isEditable = editable;
+	if(class_name.length()>0) setName(class_name);
+
+	//wczytanie sprite'a do zaznaczenia
+	spchecked = new Sprite;
+	spchecked->setResAnim(Assets::gameResources.getResAnim("checkbox_checked",oxygine::ep_show_warning));
+	spchecked->setName("spchecked");
+	spchecked->setPosition(-2,-4);
+	spchecked->setVisible(false);
 
 	//tworzenie labelki
 	label = cUI::createText(tlabel);
@@ -32,17 +42,28 @@ cCheckBox::cCheckBox( int x, int y, bool *w, string tlabel){
 	check->setColor(k);
 	check->attachTo(this);
 	check->addEventListener(TouchEvent::CLICK, CLOSURE(this, &cCheckBox::onClick));
+
+	spchecked->attachTo(check);
 };
 
 
 //---Event nasluchiwania na klikniecie 
 void cCheckBox::onClick(Event *ev){
-	if(*wartosc==true){
-		check->setColor(unchecked);
-		*wartosc = false;
+	if(isEditable){
+		if(*wartosc==true){
+			check->setColor(unchecked);
+			*wartosc = false;
+			spchecked->setVisible(false);
+		}
+		else{
+			check->setColor(checked);
+			*wartosc=true;
+			spchecked->setVisible(true);	
+		}
 	}
-	else{
-		check->setColor(checked);
-		*wartosc=true;
-	}
+};
+
+//---Zmienia mozliwosc edytowania checkboxa
+void cCheckBox::onOff(bool flag){
+	isEditable = flag;
 };

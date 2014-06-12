@@ -54,6 +54,7 @@ class cGame: public Actor{
 		spcMenu menu;
 		spcLevel level;
 
+
 		//Metody
 		void doUpdate(const UpdateState &us);	//Overload metody wywo³ywana 
 		int _onSDLEvent(SDL_Event *event);

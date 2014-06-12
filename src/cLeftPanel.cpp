@@ -11,19 +11,21 @@ cLeftPanel::cLeftPanel(spActor p,vector <spcPlayer> *player, spcMenu m){
 	setPriority(100);
 	szer = 200;
 	menu=m;
-	wygaszaj=true;
-	
+	wygaszaj=false;
+	isAlpha=true;
+
+	printf("%d - %d \n", &wygaszaj, wygaszaj);
+
 	onMouseOut(NULL);
 	//dodawanie dzieci panelu
 	addBackground(background);
 	//addPlayersInfo();
 
-	addBackground(topLayer,Color::White,1);
-	topLayer->addEventListener(TouchEvent::OVER, CLOSURE(this, &cLeftPanel::onMouseOver));
-	topLayer->addEventListener(7, CLOSURE(this, &cLeftPanel::onMouseOut));
-	topLayer->setPriority(3);
-
+	this->addEventListener(TouchEvent::MOVE, CLOSURE(this, &cLeftPanel::onMouseMove));
+	this->addEventListener(7, CLOSURE(this, &cLeftPanel::onMouseOut));
 	addButtons();
+
+	setName("cLeftPanel");
 };
 
 //---Ustawia wskaznik na klase odpowiadajaca za wyswietlanie menu
@@ -71,13 +73,13 @@ void cLeftPanel::addPlayersInfo(){
 //---Dodaje przyciski dostepu w panelu
 void cLeftPanel::addButtons(){
 	EventCallback c1 = CLOSURE(menu.get(), &cMenu::menuMain);
-	mainMenu=cUI::addButton(x+5,getRoot()->getHeight()-220, "Main Menu", c1);
+	mainMenu=cUI::addButton(5,background->getHeight()-220, "Main Menu", c1);
 	mainMenu->setPriority(4);
-	mainMenu->attachTo(this);	
+	mainMenu->attachTo(background);	
 
-	spcCheckBox checkbox = new cCheckBox(x+5,getRoot()->getHeight()-140,&wygaszaj,"Shading");
+	spcCheckBox checkbox = new cCheckBox(5,background->getHeight()-140,&wygaszaj,"Stop shading");
 	checkbox->setPriority(4);
-	checkbox->attachTo(this);
+	checkbox->attachTo(background);
 }; 
 
 //---Obsluga zdarzenia po najechaniu myszka
@@ -85,13 +87,29 @@ void cLeftPanel::onMouseOver(Event *ev){
 	spTweenQueue tween = new TweenQueue();
 	tween->add(TextActor::TweenAlpha(255),300);
 	this->addTween(tween);
+	isAlpha = false;
 };
 
 //---Obsluga zdarzenia po zjechaniu myszka
 void cLeftPanel::onMouseOut(Event *ev){
-	if(wygaszaj){
+	if(!wygaszaj){
 		spTweenQueue tween = new TweenQueue();
 		tween->add(TextActor::TweenAlpha(20),300);
 		this->addTween(tween);
+		isAlpha=true;
+		
+	}
+
+};
+
+//---Obsluga poruszania myszka
+void cLeftPanel::onMouseMove(Event *ev){
+	oxygine::spEventDispatcher pos = ev->currentTarget;
+
+	if(isAlpha){
+		if(pos->getName().c_str() == this->getName())
+			onMouseOver(ev);
+		else
+			onMouseOut(ev);
 	}
 };

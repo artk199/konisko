@@ -8,6 +8,7 @@
 		<image id="player" file="player.png" cols = "4" /> 
 		<image file="button.png" cols = "3" />		
 		<image id ="background" file ="background.png" />
+    <image file="checkbox_checked.png"/>
 	</atlas>
 	
 	<set path = "images/map" />
