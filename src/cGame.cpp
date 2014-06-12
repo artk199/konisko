@@ -47,7 +47,7 @@ cGame::cGame(){
 	klawisz = 0;
 
 	przes = 0;
-
+	send_message = CreateEvent(NULL, false, false, NULL);
 	this->num_of_players = 4;
 };
 
@@ -66,19 +66,19 @@ DWORD cGame::sender(){
 	int iResult;
 	while(1){
 		if(ConnectSocket == INVALID_SOCKET) break;
-		//gracz wcisnal klawisz
+		WaitForSingleObject(send_message, -1);
+		ResetEvent(send_message);
 		if(klawisz!=0){
 			askServer(Assets::KEY_PRESSED, to_string(long double(klawisz)));
 			klawisz=0;
+			continue;
 		}
 		//zapytanie o przesuniecie gracza
 		if (przes != 0){
 			askServer(Assets::PLAYER_POSITION, to_string(long double(przes)));
 			przes = 0;
 		}
-		//pobieranie delty
-		else
-			askServer(Assets::DELTA);
+		askServer(Assets::DELTA);
 	}
 	return 0;
 }
@@ -332,8 +332,6 @@ void cGame::askServer(Assets::REQUESTS q, string parametr){
 	string question = "";
 	question += q;
 	if(parametr!="") question+=parametr;
-
-	WaitForSingleObject(send_message, 1000);
  	int iResult = send( ConnectSocket, question.c_str(), question.length()+1, 0 );
 	//sprawdzenie polaczenia z serwerem
 	if (iResult == SOCKET_ERROR) {
