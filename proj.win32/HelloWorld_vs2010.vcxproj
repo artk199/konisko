@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Assets.cpp" />
+    <ClCompile Include="..\src\cBomb.cpp" />
     <ClCompile Include="..\src\cButton.cpp" />
     <ClCompile Include="..\src\cCheckBox.cpp" />
     <ClCompile Include="..\src\cInputBox.cpp" />
@@ -111,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Assets.h" />
+    <ClInclude Include="..\src\cBomb.h" />
     <ClInclude Include="..\src\cButton.h" />
     <ClInclude Include="..\src\cCheckBox.h" />
     <ClInclude Include="..\src\cGame.h" />

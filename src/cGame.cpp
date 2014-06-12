@@ -10,6 +10,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "cBomb.h"
+
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -306,8 +308,11 @@ void cGame::destroy(){
 //---Funkcja aktualizujaca czynnosci klasy
 void cGame::doUpdate(const UpdateState &us){
 	delta += us.dt;
-	if (delta > 2000){
+	if (delta > 1000){
 		delta = 0;
+		cBomb* a = new cBomb(300,300);
+		addChild(a);
+		a->destroy();
 	}
 	SetEvent(send_message);
 };

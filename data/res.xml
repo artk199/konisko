@@ -10,8 +10,10 @@
 		<image  file="hero2.png" cols = "4" /> 
 		<image  file="hero3.png" cols = "4" /> 
 		<image file="button.png" cols = "3" />		
+		<image file="bomb.png"/>
+		<image file = "bomb_fire.png"/>
 		<image id ="background" file ="background.png" />
-    <image file="checkbox_checked.png"/>
+		<image file="checkbox_checked.png"/>
 	</atlas>
 	
 	<set path = "images/map" />

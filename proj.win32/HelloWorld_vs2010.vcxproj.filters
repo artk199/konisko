@@ -105,6 +105,9 @@
     <ClCompile Include="..\src\cSerializable.cpp">
       <Filter>Source Files\Unit</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cBomb.cpp">
+      <Filter>Source Files\Unit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cUnit.h">
@@ -150,6 +153,9 @@
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cSerializable.h">
+      <Filter>Header Files\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cBomb.h">
       <Filter>Header Files\Unit</Filter>
     </ClInclude>
   </ItemGroup>
