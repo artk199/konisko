@@ -3,6 +3,7 @@
 #include "cConnection.h"
 #include "cMap.h"
 #include <vector>
+class cLevel;
 class cBomb;
 
 using namespace std;
@@ -19,10 +20,10 @@ class cPlayer
 		string getNick(){return nick;};
 		void setConnection(cConnection* c);
 		cConnection * getConnection();
-
+		void setLvl(cLevel* l){this->lvl = l;};
 		void update(double delta);
-		double getPosX();
-		double getPosY();
+		double getPosX(){return pos.first;};
+		double getPosY(){return pos.second;};
 		void setPos(double x,double y);
 		double getVelocity();
 		void setVelocity(double velocity);
@@ -46,6 +47,7 @@ class cPlayer
 		pair<double,double> pos;
 		double velocity;
 		cMap* map;
+		cLevel* lvl;
 		E_DIRECTION direction;
 		std::vector<cBomb*> bombs;
 

@@ -1,5 +1,6 @@
 #include "cPlayer.h"
 #include "cBomb.h"
+#include "cLevel.h"
 
 cPlayer::cPlayer(void)
 {
@@ -8,7 +9,7 @@ cPlayer::cPlayer(void)
 	this->velocity = 128;
 	this->nick = "NICK";
 	this->ilosc_bomb = 0;
-	this->max_bomb = 10;
+	this->max_bomb = 1;
 	for (int i=0;i<max_bomb;i++)
 		bombs.push_back(NULL);
 }
@@ -26,6 +27,9 @@ std::pair<double,double> cPlayer::getNextPos(double delta){
 	return std::pair<double,double>(0,0);
 }
 
+void cPlayer::setPos(double x, double y){
+	pos = std::pair<double,double>(x,y);
+}
 void cPlayer::move(double delta){
 	double  newX = 0,
 			newY = 0;
@@ -60,7 +64,7 @@ void cPlayer::update(double delta){
 		if(bombs[i] != NULL){
 			bombs[i]->update(delta);
 			if(bombs[i]->isDestroyed()){
-				//map->BOOM(bombs[i]->getPosition());
+				lvl->BOOM(bombs[i]->getPosition(),2);
 				delete bombs[i];
 				bombs[i] = NULL;
 			}

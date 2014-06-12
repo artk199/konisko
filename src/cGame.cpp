@@ -326,14 +326,13 @@ void cGame::doUpdate(const UpdateState &us){
 			players[i]->updateBombs(us.dt);
 		
 	
-	if (delta > 2000){
+	if (delta > 10){
 		delta = 0;
-
+		SetEvent(send_message);
 		//TO DO TESTU
 		//players[0]->addBomb(0,300,300,4,1500);
 		//players[0]->addBomb(1,500,500,4,1500);
 	}
-	SetEvent(send_message);
 };
 
 //---Zwraca informacje, czy podana nazwa serwera jest poprawna (IP lub localhost)

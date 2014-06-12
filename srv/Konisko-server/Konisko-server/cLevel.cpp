@@ -25,7 +25,7 @@ void cLevel::addPlayer(cPlayer* player){
 	if (lvl_state != PREPARATION){
 		throw "Po rozpoczêciu gry nie mo¿na dodawaæ graczy!";
 	}
-	
+	player->setLvl(this);
 	this->players[connected_players] = player;
 	connected_players++;
 
@@ -89,4 +89,21 @@ std::string cLevel::serialize(){
 		r += players[i]->serialize() + "\n";
 	
 	return r;
+}
+
+void cLevel::BOOM(std::pair<int,int> poz,int moc){
+	for(int i=-moc;i<=moc;i++){
+		for(int j=0;j<connected_players;j++){
+			if(std::abs((poz.first*64+64*i) - players[j]->getPosX())<64
+			&& std::abs(poz.second*64 - players[j]->getPosY())<64
+				){
+					players[j]->setPos(96,96);
+			}
+			if(std::abs(poz.first*64 - players[j]->getPosX())<64
+			&& std::abs((poz.second*64+64*i) - players[j]->getPosY())<64
+				){
+					players[j]->setPos(96,96);
+			}
+		}
+	}
 }

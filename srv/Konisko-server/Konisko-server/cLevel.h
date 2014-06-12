@@ -22,6 +22,7 @@ public:
 	std::string serialize();
 	std::string getSerialized(){return this->serializabled;};
 	void setBomb(int);
+	void BOOM(std::pair<int,int>,int);
 private:
 	std::string serializabled;
 	cMap* map;
