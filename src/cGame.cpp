@@ -351,7 +351,7 @@ void cGame::doUpdate(const UpdateState &us){
 	
 	if (delta > 10){
 		delta = 0;
-		//askServer(Assets::DELTA);
+		askServer(Assets::DELTA);
 		//SetEvent(send_message);
 		//TO DO TESTU
 		//players[0]->addBomb(0,300,300,4,1500);
