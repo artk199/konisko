@@ -55,6 +55,8 @@ void cPlayer::move(double delta){
 	if (map->canMove(newX,newY)){
 		this->pos.first = newX;
 		this->pos.second = newY;
+	}else{
+		direction = STAND;
 	}
 }
 
@@ -109,7 +111,8 @@ std::string cPlayer::serialize(){
 	long double temp_id = this->id;
 	string s =
 		"object\tplayer\t"+std::to_string(temp_id)+/*tutaj jeszcze hashcode powinien byæ*/
-		+"\nposition\t"+std::to_string((long double)pos.first) + "\t" + std::to_string((long double)pos.second)+"\n";
+		+"\nposition\t"+std::to_string((long double)pos.first) + "\t" + std::to_string((long double)pos.second)+
+		"\ndirection\t"+std::to_string((long double)direction)+"\n";
 	
 	for(int i=0;i<max_bomb;i++){
 		if(bombs[i] != NULL){

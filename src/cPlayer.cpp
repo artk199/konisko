@@ -13,6 +13,8 @@ cPlayer::cPlayer(){
 	sprite->setPosition(pos.x,pos.y);
 	ready=false;
 	visible=true;
+	direction = 5;
+	velocity = 128;
 	id=-1;
 
 	//dodanie 10 pustych bomb
@@ -57,6 +59,10 @@ void cPlayer::deserialize(string s){
 			iss >> sub;
 			double time = atof(sub.c_str());
 			this->addBomb(id,x*64,y*64);	
+		}else
+		if(sub == "direction"){
+				iss >> sub;
+				direction = atoi(sub.c_str());
 		}
 			
     } while (iss);
@@ -71,12 +77,29 @@ void cPlayer::init(){
 
 //---Aktualizuje bomby i wybucha te, na ktore przyszedl juz czas, by oposcic ten ziemski padol
 void cPlayer::updateBombs(int dt){
+
+
 	for(int i=0; i<10; i++)
 		if(bombs[i]!=NULL){
 			// jezeli zostal przekroczony czas, bomba wybucha
 			if(bombs[i]->updateDestroyTime(dt)){
 			}
 		}
+
+	switch (direction){
+	case 1:
+		this->pos.y -= dt * this->velocity;
+		break;
+	case 2:
+		this->pos.y += dt * this->velocity;
+		break;
+	case 3:
+		this->pos.x -= dt * this->velocity;
+		break;
+	case 4:
+		this->pos.x += dt * this->velocity;
+		break;
+	}
 };
 
 //--Dodaje nowa bombe dla gracza pod jej adresem ID

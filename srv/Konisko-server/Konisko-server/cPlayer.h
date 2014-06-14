@@ -10,7 +10,7 @@ class cBomb;
 
 using namespace std;
 
-enum E_DIRECTION{TOP,BOT,LEFT,RIGHT};
+enum E_DIRECTION{TOP=1,BOT,LEFT,RIGHT,STAND};
 enum E_PLAYER_STATE{PLANTING,GOING,DEAD};
 
 class cPlayer

@@ -36,6 +36,8 @@ class cPlayer : public Actor, public cSerializable{
 		string nick;
 		int id;
 		bool visible;
+		int direction;
+		double velocity;
 		bool ready;
 		vector <cBomb *> bombs;
 };

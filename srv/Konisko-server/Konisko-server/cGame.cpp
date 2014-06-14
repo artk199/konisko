@@ -31,10 +31,10 @@ void __cdecl manageGame( void * x ){
 };
 
 void __cdecl cos_do( void * x ){
-	return;
+	//return;
 	cGame *game = (cGame *) x;
 	while(true){
-		WaitForSingleObject(game->wyslij_delte,50);
+		WaitForSingleObject(game->wyslij_delte,1000/60);
 		for(int i=0;i<game->numberOfPlayers;i++)
 			game->sendToClient(game->players[i]->getConnection(), DELTA, game->lvl->getSerialized());
 	}
@@ -88,10 +88,19 @@ void cGame::loadPlayers(){
 
 //---Wysyla do klienta odpowiedz z mozliwoscia dodania parametru
 void cGame::sendToClient(connection* c, REQUESTS q, string par){
-
-	//wyslanie zapytania
+	if(!c->message.empty()){
+		if(c->message.c_str()[0] == DELTA){
+			return;
+		}else{
+			while(!c->message.empty()){
+				printf("Czekam na wylasnie: ", c->message);
+				Sleep(10);
+			}
+		}
+	}	//wyslanie zapytania
+	
 	c->message = "";
-
+	
 	c->message += q;
 
 	if(par!="") c->message+=par;
@@ -100,9 +109,6 @@ void cGame::sendToClient(connection* c, REQUESTS q, string par){
 
 };
 
-void cGame::send_data(){
-	//SetEvent(wyslij_delte);
-}
 
 //---Odebranie komunikatow od klienta
 bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){

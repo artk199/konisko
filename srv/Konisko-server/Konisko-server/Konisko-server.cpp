@@ -60,7 +60,7 @@ DWORD WINAPI wysylaj(void* x){
 			WSACleanup();
 			//throw 2; 
 		}
-		//c->message = "";
+		c->message = "";
 		ResetEvent(c->send_message);
 	}
 	return 0;
