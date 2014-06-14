@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<usernick>Art</usernick>
-	<servername>localhost</servername>
+	<usernick>DeeM</usernick>
+	<servername>127.0.0.1</servername>
 	<serverport>27015</serverport>
 </settings>

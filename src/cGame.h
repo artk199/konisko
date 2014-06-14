@@ -46,6 +46,13 @@ class cGame: public Actor{
 		int mainPlayerID;
 
 		//Dane
+
+		///////server udp////////
+		struct sockaddr_in si_other;
+		int serverSocket;
+		int slen;
+		///////server udp////////
+
 		string message;
 		float delta;
 		spcPlayer _player;

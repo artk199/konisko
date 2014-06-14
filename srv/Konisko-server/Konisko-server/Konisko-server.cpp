@@ -9,48 +9,62 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
-// #pragma comment (lib, "Mswsock.lib")
 
-#define DEFAULT_BUFLEN 512
+#define BUFLEN 512
 string DEFAULT_PORT = "27015";
 #define MAX_CONN 5
-
 int n_of_conn = 0;
-
 int dana;
 
-connection connections[MAX_CONN];
+SOCKET s;
+struct sockaddr_in server, si_other;
+int slen , recv_len;
+bool ready = false;
+
 cGame game;
 
-DWORD WINAPI odbieraj(void* a){
-	connection* c = (connection*)a;
-	char buf[80];
-	c->dana = 0;
+void __cdecl odbieraj(void *a){
+	char buf[BUFLEN];
+	//keep listening for data
+    while(1)
+    {
+        printf("Waiting for data...");
+        fflush(stdout);
+         
+        //clear the buffer by filling null, it might have previously received data
+        memset(buf,'\0', BUFLEN);
+         
+        //try to receive some data, this is a blocking call
+        if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == SOCKET_ERROR)
+        {
+            printf("recvfrom() failed with error code : %d" , WSAGetLastError());
+            exit(EXIT_FAILURE);
+        }
 
-	while (recv (c->RecieveSocket, buf, 80, 0) > 0){
-		game.odbierzDane(buf,c,dana,n_of_conn);
-		SetEvent(game.wyslij_delte);
-	}
-	
-	n_of_conn--;
-	c->RecieveSocket = INVALID_SOCKET;
-	c->SendSocket = INVALID_SOCKET;
-	closesocket(c->RecieveSocket);
-	closesocket(c->SendSocket);
-	printf("ZAKONCZONO POLACZENIE %d\n",c->id);
-	
-	return 0;
+		game.odbierzDane(buf,si_other);
+		//SetEvent(game.wyslij_delte);
+         
+        //print details of the client/peer and the data received
+        printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
+        printf("Data: %s\n" , buf);
+
+    }
 }
-DWORD WINAPI wysylaj(void* x){
 
-	connection *c = (connection *) x;
-
+void __cdecl wysylaj(void* x){
 	//wyslanie zapytania
-	
-	while(true){
+        /*//now reply the client with the same data
+        if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == SOCKET_ERROR)
+        {
+            printf("sendto() failed with error code : %d" , WSAGetLastError());
+            exit(EXIT_FAILURE);
+        }/*/
+
+	/*while(true){
 		WaitForSingleObject(c->send_message, -1);
 		string question = c->message;
 		int iResult = send( c->SendSocket, question.c_str(), question.length()+1, 0 );
@@ -64,129 +78,53 @@ DWORD WINAPI wysylaj(void* x){
 		}
 		c->message = "";
 		ResetEvent(c->send_message);
-	}
-	return 0;
+	}*/
+	return;
 };
+
 int __cdecl main(void) 
 {
 	std::cout<<"podaj port: ";
 	std::cin>>DEFAULT_PORT;
-	//std::cout<<"podaj ilosc graczy do startu: ";
-	//std::cin>>game.numberOfPlayersToStart;
-	for(int i=0;i<MAX_CONN;i++){
-		connections[i].SendSocket = INVALID_SOCKET;
-		connections[i].RecieveSocket = INVALID_SOCKET;
-	}
-	dana = 0;
-    WSADATA wsaData;
-    int iResult;
 
-    SOCKET ListenSocket = INVALID_SOCKET;
+    WSADATA wsa;
+    slen = sizeof(si_other) ;
+     
 
-    SOCKET SendSocket = INVALID_SOCKET;
-	SOCKET RecieveSocket = INVALID_SOCKET;
-
-    struct addrinfo *result = NULL;
-    struct addrinfo hints;
-
-    int iSendResult;
-    char recvbuf[DEFAULT_BUFLEN];
-    int recvbuflen = DEFAULT_BUFLEN;
+    //Initialise winsock
+    printf("\nInitialising Winsock...");
+    if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
+    {
+        printf("Failed. Error Code : %d",WSAGetLastError());
+        exit(EXIT_FAILURE);
+    }
+    printf("Initialised.\n");
     
-    // Initialize Winsock
-    iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-    if (iResult != 0) {
-        printf("WSAStartup failed with error: %d\n", iResult);
-        return 1;
+	
+    //Create a socket
+    if((s = socket(AF_INET , SOCK_DGRAM , 0 )) == INVALID_SOCKET)
+    {
+        printf("Could not create socket : %d" , WSAGetLastError());
     }
+    printf("Socket created.\n");
 
-    ZeroMemory(&hints, sizeof(hints));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP;
-    hints.ai_flags = AI_PASSIVE;
+    //Prepare the sockaddr_in structure
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons( atoi(DEFAULT_PORT.c_str()) );
 
-    // Resolve the server address and port
-	iResult = getaddrinfo(NULL, DEFAULT_PORT.c_str(), &hints, &result);
-
-    // Create a SOCKET for connecting to server
-    ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-
-    // Setup the TCP listening socket
-    iResult = bind( ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-
-    freeaddrinfo(result);
-
-    iResult = listen(ListenSocket, SOMAXCONN);
-    if (iResult == SOCKET_ERROR) {
-        printf("listen failed with error: %d\n", WSAGetLastError());
-        closesocket(ListenSocket);
-        WSACleanup();
-        return 1;
+    //Bind
+    if( bind(s ,(struct sockaddr *)&server , sizeof(server)) == SOCKET_ERROR)
+    {
+        printf("Bind failed with error code : %d" , WSAGetLastError());
+        exit(EXIT_FAILURE);
     }
-						DWORD id;
-    // Accept a client socket
-	while(1){
-		RecieveSocket = accept(ListenSocket, NULL, NULL);
-		SendSocket = accept(ListenSocket, NULL, NULL);
-		if (SendSocket== INVALID_SOCKET ||  RecieveSocket == INVALID_SOCKET) {
-			printf("accept failed with error: %d\n", WSAGetLastError());
-			closesocket(ListenSocket);
-			WSACleanup();
-			return 1;
-		}else{
-			//Dodaje po³¹czenie
-			if (n_of_conn == MAX_CONN){
-				printf("Maxymalna liczba polaczen osiagnieta.\n");
-				continue;
-			}
-			//Szukam wolnego miejsca w tablicy
-			for (int i=0;i<MAX_CONN;i++){
-				//Znaleziono, dodaje po³aczenie
-				if(connections[i].RecieveSocket == INVALID_SOCKET){
+    puts("Bind done");
+	
 
-					//Zwiêkszenie licznika;
-					n_of_conn++;
-					//Dodanie po³¹czenia
-					connections[i].SendSocket = SendSocket;
-					connections[i].RecieveSocket = RecieveSocket;
-					connections[i].id = i;
-					connections[i].send_message =  CreateEvent(NULL, false, false, NULL);
-					printf("Polaczono! czekam na wiadomosci\n");
+	HANDLE hThread =( HANDLE ) _beginthread(odbieraj, 0,0 );
+	HANDLE hThread2 =( HANDLE ) _beginthread(wysylaj, 0,0 );
 
-					connections[i].watek = CreateThread(
-						NULL,						// atrybuty bezpieczeñstwa
-						0,							// inicjalna wielkoœæ stosu
-						odbieraj,					// funkcja w¹tku
-						(void *)&connections[i],	// dane dla funkcji w¹tku
-						0,							// flagi utworzenia
-						&id );
-					if( connections[i].watek != INVALID_HANDLE_VALUE )
-					{ 
-						printf( "Utworzylem watek o identyfikatorze %d\n",i);
-						// ustawienie priorytetu
-						SetThreadPriority( connections[i].watek, THREAD_PRIORITY_NORMAL );
-					}
-
-					connections[i].watek = CreateThread(
-						NULL,						// atrybuty bezpieczeñstwa
-						0,							// inicjalna wielkoœæ stosu
-						wysylaj,					// funkcja w¹tku
-						(void *)&connections[i],	// dane dla funkcji w¹tku
-						0,							// flagi utworzenia
-						&id );
-					printf( "Hello world\n" );
-					break;
-				}
-
-			}
-			//Dodaje po³¹czenie
-		}
-	}
-    // No longer need server socket
-    closesocket(ListenSocket);
-
-    WSACleanup();
-
+	while(1){}
     return 0;
 }

@@ -3,6 +3,18 @@
 #include "cLevel.h"
 #include "cPlayer.h"
 
+bool  operator < (const sockaddr_in &a, const sockaddr_in &b){
+	if(a.sin_addr.S_un.S_addr < b.sin_addr.S_un.S_addr)
+		return true;
+	else{
+		if(a.sin_addr.S_un.S_addr == b.sin_addr.S_un.S_addr){
+			if(a.sin_port < b.sin_port) return true;
+			else return false;
+		}
+		else return false;
+	}
+}
+
 //---Watek zarzadzajacy gra
 // do poprawy: po rozlaczeniu sie gracza nalezy ponownie sprawdzac, czy wymagana ilosc graczy jest osiagnieta
 // i jesli nie wracac do funkcji waitforplayers
@@ -45,7 +57,7 @@ cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 1;
+	numberOfPlayersToStart = 2;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
@@ -112,20 +124,20 @@ void cGame::sendToClient(connection* c, REQUESTS q, string par){
 
 
 //---Odebranie komunikatow od klienta
-bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
+bool cGame::odbierzDane(string dane,  sockaddr_in c){
 	REQUESTS com = (REQUESTS)dane[0];
 
 	//wyslanie odpowiedniej odpowiedzi na zapytanie
 	switch(com){
 		case ILOSC_GRACZY:{
-			sendToClient(c, ILOSC_GRACZY, to_string(long double(n_of_conn)));
+			//sendToClient(c, ILOSC_GRACZY, to_string(long double(n_of_conn)));
 		break;}
 		case KONIEC:
 			printf("Po³¹czenie z graczem zakoñczone!\n");
-			printf("Player %d roz³¹czony.!\n",c->id);
-			n_of_conn--;
-			closesocket(c->RecieveSocket);
-			closesocket(c->SendSocket);
+			//printf("Player %d roz³¹czony.!\n",c->id);
+			//n_of_conn--;
+			//closesocket(c->RecieveSocket);
+			//closesocket(c->SendSocket);
 			return false;
 		break;
 		case DELTA:
@@ -138,7 +150,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			string pozycja="";
 			for(int i=1; i<dane.length(); i++)  pozycja+=dane[i];
 	
-			dana+=atoi(pozycja.c_str());
+			//dana+=atoi(pozycja.c_str());
 		break;}
 		/*case START_GAME:{
 			players[c->id]->setReady(true);
@@ -160,18 +172,20 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			//odczytanie parametru
 			string nick="";
 			for(int i=1; i<dane.length(); i++)  nick+=dane[i];
-			int id = c->id;
+			int id = numberOfPlayers;
+
+			clients[c] = id;
 
 			//dodanie nowego gracza
 			players[id] = new cPlayer();
 			players[id]->setNick(nick);
 			players[id]->id = id;
-			players[id]->setConnection(c);
+			//players[id]->setConnection(c);
 
 			numberOfPlayers++;
 
 			//poinformowanie gracza o przydzielonym mu ID
-			sendToClient(c, SET_PLAYER_ID, to_string(long double(id)));
+			//sendToClient(c, SET_PLAYER_ID, to_string(long double(id)));
 			
 			Sleep(10);
 
@@ -187,10 +201,10 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 
 			printf("Wysylam: %s\n",odp.c_str());
 			//poinformowanie innych graczy o dolaczeniu nowego pro gamera
-			for(int i=0; i<N_OF_PLAYERS; i++)
+		/*	for(int i=0; i<N_OF_PLAYERS; i++)
 				if(players[i]!=NULL)
 					sendToClient(players[i]->getConnection(), PLAYER_JOINED, odp);
-				
+				*/
 			printf("Dolaczyl %s o id %d (z %d)!\n",nick.c_str(), id, numberOfPlayers);
 		
 			if(numberOfPlayers >= numberOfPlayersToStart)
@@ -201,7 +215,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 		break;
 		case KEY_PRESSED:{
 			//Przeczytaæ kto to podes³a³ 
-			E_DIRECTION dir;
+			/*E_DIRECTION dir;
 			string pozycja="";
 			for(int i=1; i<dane.length(); i++)  pozycja+=dane[i];
 			switch(atoi(pozycja.c_str())){
@@ -220,7 +234,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 			case 5:
 				players[c->id]->addBomb();
 				break;
-			}
+			}*/
 			//printf("KLAWISZ!\n");
 			break;}
 		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());

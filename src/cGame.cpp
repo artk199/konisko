@@ -51,21 +51,12 @@ cGame::cGame(){
 	for(int i=0; i<4; i++) players.push_back(new cPlayer());
 
 	klawisz = 0;
-
 	przes = 0;
-
 	this->num_of_players = 4;
-
 	mainPlayerID=-1;
 
-
-	//TO DO TESTU
-	/*players[0]->setID(1);
-	players[0]->setNick("Trolololo");
-	players[0]->setPosition(100,100);
-	players[0]->init();
-	addChild(players[0]);
-*/};
+	message.clear();
+};
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
 static DWORD WINAPI startSending(void* param){
@@ -79,23 +70,15 @@ static DWORD WINAPI startRecieving(void* param){
 }
 
 DWORD cGame::sender(){   
-	int iResult;
 	while(1){
-		if(SendSocket == INVALID_SOCKET) break;
-
 		WaitForSingleObject(send_message, -1);
 		string question = this->message;
-		int iResult = send( SendSocket, question.c_str(), question.length()+1, 0 );
-		//sprawdzenie polaczenia z serwerem
-		if (iResult == SOCKET_ERROR) {
-			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
-			closesocket(SendSocket);
-			closesocket(RecieveSocket);
-			WSACleanup();
-			//throw 2; 
+		if (sendto(serverSocket, question.c_str(), question.length()+1 , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+		{
+			printf("sendto() failed with error code : %d" , WSAGetLastError());
+			//exit(EXIT_FAILURE);
 		}
 		this->message.clear();
-		//askServer(Assets::DELTA);
 		ResetEvent(send_message);
 	}
 	return 0;
@@ -105,7 +88,13 @@ DWORD cGame::sender(){
 DWORD cGame::reciever(){   
 	int iResult;
 	char buf[512];
-	while (recv (RecieveSocket, buf, 512, 0 ) > 0){
+	while(1){
+		memset(buf,'\0', 512);
+		//odebranie informacji z serwera
+		if (recvfrom(serverSocket, buf, 512, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
+        {
+            printf("recvfrom() failed with error code : %d" , WSAGetLastError());
+        }
 		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
 		//rozpoznanie typu komunikatu
 		switch(com){
@@ -175,7 +164,8 @@ DWORD cGame::reciever(){
 			default:
 				printf("Nieprawidlowy komunikat: %s\n",buf);
 		}
-	};
+	}
+
 	return 0;
 }
 
@@ -211,58 +201,41 @@ void cGame::parse_response(string s){
 }
 
 bool cGame::connectToServer(){	   
-	WSADATA wsaData;
-    struct addrinfo *result = NULL, *ptr = NULL, hints;
-    int iResult;
-
-	WSAStartup(MAKEWORD(2,2), &wsaData);
-    ZeroMemory( &hints, sizeof(hints) );
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP;
-	getaddrinfo(Assets::serverName.c_str(), Assets::serverPort.c_str(), &hints, &result);
-
-    // Attempt to connect to an address until one succeeds
-    for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
-        // Create a SOCKET for connecting to server
-        SendSocket = socket(ptr->ai_family, ptr->ai_socktype, 
-            ptr->ai_protocol);
-        RecieveSocket = socket(ptr->ai_family, ptr->ai_socktype, 
-            ptr->ai_protocol);
-        if (SendSocket == INVALID_SOCKET || RecieveSocket == INVALID_SOCKET) {
-            printf("socket failed with error: %ld\n", WSAGetLastError());
-            WSACleanup();
-            return false;
-        }
-
-        // Connect to server.
-        iResult = connect( SendSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        
-		if (iResult == SOCKET_ERROR) {
-            closesocket(SendSocket);
-            SendSocket = INVALID_SOCKET;
-            continue;
-        }
-        // Connect to server.
-        iResult = connect( RecieveSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        
-		if (iResult == SOCKET_ERROR) {
-            closesocket(RecieveSocket);
-            RecieveSocket = INVALID_SOCKET;
-            continue;
-        }
-        
-		break;
+    WSADATA wsa;
+	slen = sizeof(si_other);
+    //Initialise winsock
+    printf("\nInitialising Winsock...");
+    if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
+    {
+        printf("Failed. Error Code : %d",WSAGetLastError());
+        exit(EXIT_FAILURE);
     }
-
-    freeaddrinfo(result);
-
-    if (SendSocket == INVALID_SOCKET) {
-        printf("Unable to connect to server!\n");
-        WSACleanup();
-        return false;
+    printf("Initialised.\n");
+     
+    //create socket
+    if ( (serverSocket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
+    {
+        printf("socket() failed with error code : %d" , WSAGetLastError());
+        exit(EXIT_FAILURE);
     }
-	send_message=CreateEvent(0,1,0,0); /*No security descriptor, Manual Reset, initially 0, no name*/
+     
+    //setup address structure
+    memset((char *) &si_other, 0, sizeof(si_other));
+    si_other.sin_family = AF_INET;
+	si_other.sin_port = htons(atoi(Assets::serverPort.c_str()));
+	si_other.sin_addr.S_un.S_addr = inet_addr(Assets::serverName.c_str());
+
+	string pyt;
+	pyt+=Assets::CONNECT;
+	if (sendto(serverSocket, pyt.c_str(), pyt.length()+1 , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+	{
+		printf("sendto() failed with error code : %d" , WSAGetLastError());
+		exit(EXIT_FAILURE);
+	}
+
+	message.clear();
+
+	send_message=CreateEvent(0,1,0,0); 
 	DWORD ThreadID;
 	DWORD ThreadID2;
 	CreateThread(NULL, 0, startSending, (void*) this, 0, &ThreadID);
@@ -271,12 +244,11 @@ bool cGame::connectToServer(){
 };
 
 void cGame::disconnect(){
+	message.clear();
 	askServer(Assets::PLAYER_QUIT);
-	closesocket(SendSocket);
-	closesocket(RecieveSocket);
-	SendSocket = INVALID_SOCKET;
-	RecieveSocket = INVALID_SOCKET;
-	WSACleanup();
+	closesocket(serverSocket);
+	serverSocket = INVALID_SOCKET;
+    WSACleanup();
 }
 
 //---Funkcja ustawia wartosci poczatkowe dla klasy
@@ -348,14 +320,9 @@ void cGame::doUpdate(const UpdateState &us){
 		if(players[i]->getID()>=0)
 			players[i]->updateBombs(us.dt);
 		
-	
-	if (delta > 10){
+	if (delta > 1000){
 		delta = 0;
-		askServer(Assets::DELTA);
-		//SetEvent(send_message);
-		//TO DO TESTU
-		//players[0]->addBomb(0,300,300,4,1500);
-		//players[0]->addBomb(1,500,500,4,1500);
+		//askServer(Assets::DELTA);
 	}
 };
 
@@ -389,9 +356,8 @@ bool cGame::tryConnectToServer(){
 
 //---Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
 void cGame::askServer(Assets::REQUESTS q, string parametr){
+	if(serverSocket == INVALID_SOCKET) return;
 	//wyslanie zapytania
-	if(this->SendSocket == INVALID_SOCKET)
-		return;
 	while(!this->message.empty()){
 		printf("Czekam na wyslanie: %s\n",this->message);
 		Sleep(10);

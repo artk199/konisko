@@ -4,6 +4,7 @@
 #include <string>
 #include <winsock2.h>
 #include <process.h> 
+#include <map>
 
 class cLevel;
 class cPlayer;
@@ -23,21 +24,24 @@ struct connection{
 	int dana;
 };
 
-enum REQUESTS{ILOSC_GRACZY=1, KONIEC=2, DELTA=3, PLAYER_POSITION=4, UPDATE_ALL=5, START_GAME=6, SET_PLAYER_ID = 7,
-	PLAYER_JOINED=8, PLAYER_QUIT=9, KEY_PRESSED=10};
+enum REQUESTS{ILOSC_GRACZY=33, KONIEC=34, DELTA=35, PLAYER_POSITION=36, UPDATE_ALL=37, START_GAME=38, SET_PLAYER_ID = 39,
+	PLAYER_JOINED=40, PLAYER_QUIT=41, KEY_PRESSED=42, CONNECT=43};
 
 class cGame{
 	public:
 		cGame();
 		~cGame();
 
-		bool odbierzDane(string dane, connection *c, int &dana, int &n_of_conn);//---Odebranie komunikatow od klienta
+		bool odbierzDane(string dane, sockaddr_in c);//---Odebranie komunikatow od klienta
 		void waitForPlayers();
 		void loadPlayers();
 		void sendToClient(connection* c, REQUESTS q, string par="");
 		void send_data();
 		int numberOfPlayersToStart;		
 		HANDLE wyslij_delte;
+
+		map<sockaddr_in, int> clients;
+
 	private:
 		cPlayer* players[N_OF_PLAYERS];
 		cLevel* lvl;
