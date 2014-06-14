@@ -86,7 +86,7 @@ void cPlayer::updateBombs(int dt){
 			}
 		}
 		//return;
-	printf("Direction: %d\n",direction);
+	//printf("Direction: %d\n",direction);
 	double delta = dt;
 	delta /= 1000; 
 	switch (direction){

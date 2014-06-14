@@ -35,7 +35,7 @@ void __cdecl cos_do( void * x ){
 	cGame *game = (cGame *) x;
 	
 	while(true){
-		WaitForSingleObject(game->wyslij_delte,100);
+		WaitForSingleObject(game->wyslij_delte,1000);
 		for(int i=0;i<game->numberOfPlayers;i++)
 			game->sendToClient(game->players[i]->getConnection(), DELTA, game->lvl->getSerialized());
 	}

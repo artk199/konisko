@@ -36,7 +36,8 @@ class cGame{
 		void loadPlayers();
 		void sendToClient(connection* c, REQUESTS q, string par="");
 		void send_data();
-		int numberOfPlayersToStart;
+		int numberOfPlayersToStart;		
+		HANDLE wyslij_delte;
 	private:
 		cPlayer* players[N_OF_PLAYERS];
 		cLevel* lvl;
@@ -46,7 +47,7 @@ class cGame{
 
 		HANDLE amount_of_players_reached;
 		HANDLE all_players_ready;
-		HANDLE wyslij_delte;
+
 		friend void __cdecl manageGame( void * Args ); // - Watek zarzadzajacy gra
 		friend void __cdecl cos_do( void * Args ); // - Watek zarzadzajacy gra
 };

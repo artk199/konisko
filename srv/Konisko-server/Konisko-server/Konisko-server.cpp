@@ -30,8 +30,10 @@ DWORD WINAPI odbieraj(void* a){
 	char buf[80];
 	c->dana = 0;
 
-	while (recv (c->RecieveSocket, buf, 80, 0) > 0)
+	while (recv (c->RecieveSocket, buf, 80, 0) > 0){
 		game.odbierzDane(buf,c,dana,n_of_conn);
+		SetEvent(game.wyslij_delte);
+	}
 	
 	n_of_conn--;
 	c->RecieveSocket = INVALID_SOCKET;
