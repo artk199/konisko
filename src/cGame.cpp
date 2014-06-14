@@ -50,6 +50,7 @@ cGame::cGame(){
 
 	przes = 0;
 	send_message = CreateEvent(NULL, false, false, NULL);
+	message = "";
 	this->num_of_players = 4;
 
 	mainPlayerID=-1;
@@ -78,13 +79,19 @@ DWORD cGame::sender(){
 	int iResult;
 	while(1){
 		if(SendSocket == INVALID_SOCKET) break;
+
 		WaitForSingleObject(send_message, -1);
-		if(klawisz!=0){
-			askServer(Assets::KEY_PRESSED, to_string(long double(klawisz)));
-			klawisz=0;
-			continue;
+		string question = this->message;
+		int iResult = send( SendSocket, question.c_str(), question.length()+1, 0 );
+		//sprawdzenie polaczenia z serwerem
+		if (iResult == SOCKET_ERROR) {
+			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
+			closesocket(SendSocket);
+			closesocket(RecieveSocket);
+			WSACleanup();
+			//throw 2; 
 		}
-		askServer(Assets::DELTA);
+		//askServer(Assets::DELTA);
 		ResetEvent(send_message);
 	}
 	return 0;
@@ -311,7 +318,7 @@ int cGame::_onSDLEvent(SDL_Event *event){
             break;
             default:;
 		}
-		SetEvent(send_message);
+		this->askServer(Assets::KEY_PRESSED,std::to_string((long double)klawisz));
 		break;
 	}
 	return 0;
@@ -338,7 +345,8 @@ void cGame::doUpdate(const UpdateState &us){
 	
 	if (delta > 10){
 		delta = 0;
-		SetEvent(send_message);
+		askServer(Assets::DELTA);
+		//SetEvent(send_message);
 		//TO DO TESTU
 		//players[0]->addBomb(0,300,300,4,1500);
 		//players[0]->addBomb(1,500,500,4,1500);
@@ -379,14 +387,6 @@ void cGame::askServer(Assets::REQUESTS q, string parametr){
 	string question = "";
 	question += q;
 	if(parametr!="") question+=parametr;
- 	int iResult = send( SendSocket, question.c_str(), question.length()+1, 0 );
-	//sprawdzenie polaczenia z serwerem
-	if (iResult == SOCKET_ERROR) {
-		printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
-		closesocket(SendSocket);
-		closesocket(RecieveSocket);
-		WSACleanup();
-		//throw 2; 
-	}
-	ResetEvent(send_message);
+	this->message = question;
+	SetEvent(send_message);
 };

@@ -46,6 +46,7 @@ class cGame: public Actor{
 		int mainPlayerID;
 
 		//Dane
+		string message;
 		float delta;
 		spcPlayer _player;
 		SOCKET RecieveSocket;
