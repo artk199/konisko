@@ -29,6 +29,10 @@ cNotify * cGame::notifies;
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
 	//Wczytanie assetów
+	send_message = CreateEvent(NULL, false, false, NULL);
+	message.clear();
+	SendSocket = INVALID_SOCKET;
+	RecieveSocket = INVALID_SOCKET;
 	Assets::load();
 	Assets::loadSettingsFromFile();
 
@@ -49,8 +53,7 @@ cGame::cGame(){
 	klawisz = 0;
 
 	przes = 0;
-	send_message = CreateEvent(NULL, false, false, NULL);
-	message = "";
+
 	this->num_of_players = 4;
 
 	mainPlayerID=-1;
@@ -91,6 +94,7 @@ DWORD cGame::sender(){
 			WSACleanup();
 			//throw 2; 
 		}
+		this->message.clear();
 		//askServer(Assets::DELTA);
 		ResetEvent(send_message);
 	}
@@ -179,7 +183,7 @@ void cGame::parse_response(string s){
 	cSerializable* object = NULL;
 	istringstream iss(s);
 	istringstream iss2;
-	cout<<s<<endl;
+	//cout<<s<<endl;
     do
     {
 		string line,sub;
@@ -299,7 +303,7 @@ void cGame::_onPlatform(Event *event){
 
 int cGame::_onSDLEvent(SDL_Event *event){
 	switch(event->type){
-	case SDL_KEYDOWN:
+	case SDL_KEYDOWN:{
 		switch( event->key.keysym.sym ){
             case SDLK_LEFT:
 				klawisz=1;
@@ -318,8 +322,10 @@ int cGame::_onSDLEvent(SDL_Event *event){
             break;
             default:;
 		}
-		this->askServer(Assets::KEY_PRESSED,std::to_string((long double)klawisz));
-		break;
+			this->askServer(Assets::KEY_PRESSED,std::to_string((long double)klawisz));
+			break;
+		}
+
 	}
 	return 0;
 };
@@ -345,7 +351,7 @@ void cGame::doUpdate(const UpdateState &us){
 	
 	if (delta > 10){
 		delta = 0;
-		askServer(Assets::DELTA);
+		//askServer(Assets::DELTA);
 		//SetEvent(send_message);
 		//TO DO TESTU
 		//players[0]->addBomb(0,300,300,4,1500);
@@ -384,6 +390,12 @@ bool cGame::tryConnectToServer(){
 //---Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
 void cGame::askServer(Assets::REQUESTS q, string parametr){
 	//wyslanie zapytania
+	if(this->SendSocket == INVALID_SOCKET)
+		return;
+	while(!this->message.empty()){
+		printf("Czekam na wyslanie: %s\n",this->message);
+		Sleep(10);
+	}
 	string question = "";
 	question += q;
 	if(parametr!="") question+=parametr;
