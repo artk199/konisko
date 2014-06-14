@@ -41,6 +41,9 @@ class cGame{
 		HANDLE wyslij_delte;
 
 		map<sockaddr_in, int> clients;
+		HANDLE send_message;
+		string message;
+		SOCKET s;
 
 	private:
 		cPlayer* players[N_OF_PLAYERS];
@@ -51,7 +54,7 @@ class cGame{
 
 		HANDLE amount_of_players_reached;
 		HANDLE all_players_ready;
-
+		
 		friend void __cdecl manageGame( void * Args ); // - Watek zarzadzajacy gra
 		friend void __cdecl cos_do( void * Args ); // - Watek zarzadzajacy gra
 };

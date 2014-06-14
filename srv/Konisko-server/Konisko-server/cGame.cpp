@@ -47,7 +47,7 @@ void __cdecl cos_do( void * x ){
 	cGame *game = (cGame *) x;
 	
 	while(true){
-		WaitForSingleObject(game->wyslij_delte,1000);
+		WaitForSingleObject(game->wyslij_delte,50);
 		for(int i=0;i<game->numberOfPlayers;i++)
 			game->sendToClient(game->players[i]->getConnection(), DELTA, game->lvl->getSerialized());
 	}
@@ -55,9 +55,11 @@ void __cdecl cos_do( void * x ){
 
 cGame::cGame(void)
 {
+	message.clear();
+	send_message =  CreateEvent(NULL, false, false, NULL);
 	//Czekaj na po³¹czenie 2 graczy
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 2;
+	numberOfPlayersToStart = 1;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
@@ -101,27 +103,26 @@ void cGame::loadPlayers(){
 
 //---Wysyla do klienta odpowiedz z mozliwoscia dodania parametru
 void cGame::sendToClient(connection* c, REQUESTS q, string par){
-	if(!c->message.empty()){
-		if(c->message.c_str()[0] == DELTA){
+	/*if(!message.empty()){
+		if(message.c_str()[0] == DELTA){
 			return;
 		}else{
-			while(!c->message.empty()){
-				printf("Czekam na wylasnie: ", c->message);
+			while(!message.empty()){
+				printf("Czekam na wylasnie: \n", message);
 				Sleep(10);
 			}
 		}
 	}	//wyslanie zapytania
+	*/
+	message = "";
 	
-	c->message = "";
-	
-	c->message += q;
+	message += q;
 
-	if(par!="") c->message+=par;
+	if(par!="") message+=par;
 
-	SetEvent(c->send_message);
+	SetEvent(send_message);
 
 };
-
 
 //---Odebranie komunikatow od klienta
 bool cGame::odbierzDane(string dane,  sockaddr_in c){
@@ -130,7 +131,7 @@ bool cGame::odbierzDane(string dane,  sockaddr_in c){
 	//wyslanie odpowiedniej odpowiedzi na zapytanie
 	switch(com){
 		case ILOSC_GRACZY:{
-			//sendToClient(c, ILOSC_GRACZY, to_string(long double(n_of_conn)));
+			//sendToClient(NULL, ILOSC_GRACZY, to_string(long double(n_of_conn)));
 		break;}
 		case KONIEC:
 			printf("Po³¹czenie z graczem zakoñczone!\n");
@@ -185,6 +186,11 @@ bool cGame::odbierzDane(string dane,  sockaddr_in c){
 			numberOfPlayers++;
 
 			//poinformowanie gracza o przydzielonym mu ID
+			string gg = "";
+			gg+=SET_PLAYER_ID;
+			Sleep(100);
+			gg+=to_string(long double(id));
+			sendto(s, gg.c_str(), gg.length(), 0, (struct sockaddr*) &c, sizeof(c));
 			//sendToClient(c, SET_PLAYER_ID, to_string(long double(id)));
 			
 			Sleep(10);
@@ -201,10 +207,12 @@ bool cGame::odbierzDane(string dane,  sockaddr_in c){
 
 			printf("Wysylam: %s\n",odp.c_str());
 			//poinformowanie innych graczy o dolaczeniu nowego pro gamera
-		/*	for(int i=0; i<N_OF_PLAYERS; i++)
-				if(players[i]!=NULL)
-					sendToClient(players[i]->getConnection(), PLAYER_JOINED, odp);
-				*/
+			Sleep(100);
+			sendToClient(NULL, PLAYER_JOINED, odp);
+			Sleep(100);
+			sendToClient(NULL, START_GAME);
+
+				
 			printf("Dolaczyl %s o id %d (z %d)!\n",nick.c_str(), id, numberOfPlayers);
 		
 			if(numberOfPlayers >= numberOfPlayersToStart)
@@ -215,27 +223,28 @@ bool cGame::odbierzDane(string dane,  sockaddr_in c){
 		break;
 		case KEY_PRESSED:{
 			//Przeczytaæ kto to podes³a³ 
-			/*E_DIRECTION dir;
+			E_DIRECTION dir;
 			string pozycja="";
+			int id = clients[c];
 			for(int i=1; i<dane.length(); i++)  pozycja+=dane[i];
 			switch(atoi(pozycja.c_str())){
 			case 1:
-				players[c->id]->changeDirection(LEFT);
+				players[id]->changeDirection(LEFT);
 				break;
 			case 2:
-				players[c->id]->changeDirection(RIGHT);
+				players[id]->changeDirection(RIGHT);
 				break;
 			case 3:
-				players[c->id]->changeDirection(TOP);
+				players[id]->changeDirection(TOP);
 				break;
 			case 4:
-				players[c->id]->changeDirection(BOT);
+				players[id]->changeDirection(BOT);
 				break;
 			case 5:
-				players[c->id]->addBomb();
+				players[id]->addBomb();
 				break;
-			}*/
-			//printf("KLAWISZ!\n");
+			}
+			printf("KLAWISZ!\n");
 			break;}
 		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());
 	}

@@ -46,7 +46,7 @@ void __cdecl odbieraj(void *a){
         }
 
 		game.odbierzDane(buf,si_other);
-		//SetEvent(game.wyslij_delte);
+		//SetEvent(game.send_message);
          
         //print details of the client/peer and the data received
         printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
@@ -56,14 +56,24 @@ void __cdecl odbieraj(void *a){
 }
 
 void __cdecl wysylaj(void* x){
-	//wyslanie zapytania
-        /*//now reply the client with the same data
-        if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == SOCKET_ERROR)
-        {
-            printf("sendto() failed with error code : %d" , WSAGetLastError());
-            exit(EXIT_FAILURE);
-        }/*/
-
+		//wyslanie zapytania
+	while(true){
+		WaitForSingleObject(game.send_message, -1);
+		string buf = game.message;
+		//buf = "hello";
+        //now reply the client with the same data
+		//printf("Ilosc klientow %d: ",game.clients.size());
+		for(auto it=game.clients.cbegin();it!=game.clients.cend();it++){
+			if (sendto(s, buf.c_str(), buf.length(), 0, (struct sockaddr*) &(it->first), slen) == SOCKET_ERROR)
+			{
+				printf("sendto() failed with error code : %d" , WSAGetLastError());
+				//exit(EXIT_FAILURE);
+			}
+			//printf("Wyslalem do %d: ",it->first.sin_addr);
+		}
+		game.message.clear();
+		ResetEvent(game.send_message);
+	}
 	/*while(true){
 		WaitForSingleObject(c->send_message, -1);
 		string question = c->message;
@@ -107,7 +117,7 @@ int __cdecl main(void)
         printf("Could not create socket : %d" , WSAGetLastError());
     }
     printf("Socket created.\n");
-
+	game.s = s;
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;

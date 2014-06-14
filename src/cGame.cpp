@@ -95,6 +95,7 @@ DWORD cGame::reciever(){
         {
             printf("recvfrom() failed with error code : %d" , WSAGetLastError());
         }
+		std::cout<<buf<<endl;
 		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
 		//rozpoznanie typu komunikatu
 		switch(com){
@@ -358,10 +359,10 @@ bool cGame::tryConnectToServer(){
 void cGame::askServer(Assets::REQUESTS q, string parametr){
 	if(serverSocket == INVALID_SOCKET) return;
 	//wyslanie zapytania
-	while(!this->message.empty()){
+	/*while(!this->message.empty()){
 		printf("Czekam na wyslanie: %s\n",this->message);
 		Sleep(10);
-	}
+	}*/
 	string question = "";
 	question += q;
 	if(parametr!="") question+=parametr;
