@@ -85,21 +85,25 @@ void cPlayer::updateBombs(int dt){
 			if(bombs[i]->updateDestroyTime(dt)){
 			}
 		}
-
+		//return;
+	printf("Direction: %d\n",direction);
+	double delta = dt;
+	delta /= 1000; 
 	switch (direction){
 	case 1:
-		this->pos.y -= dt * this->velocity;
+		this->pos.y -= delta * this->velocity;
 		break;
 	case 2:
-		this->pos.y += dt * this->velocity;
+		this->pos.y += delta * this->velocity;
 		break;
 	case 3:
-		this->pos.x -= dt * this->velocity;
+		this->pos.x -= delta * this->velocity;
 		break;
 	case 4:
-		this->pos.x += dt * this->velocity;
+		this->pos.x += delta * this->velocity;
 		break;
 	}
+	sprite->setPosition(pos.x-32,pos.y-32);
 };
 
 //--Dodaje nowa bombe dla gracza pod jej adresem ID

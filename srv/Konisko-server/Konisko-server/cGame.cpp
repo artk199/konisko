@@ -33,8 +33,9 @@ void __cdecl manageGame( void * x ){
 void __cdecl cos_do( void * x ){
 	//return;
 	cGame *game = (cGame *) x;
+	
 	while(true){
-		WaitForSingleObject(game->wyslij_delte,1000/60);
+		WaitForSingleObject(game->wyslij_delte,100);
 		for(int i=0;i<game->numberOfPlayers;i++)
 			game->sendToClient(game->players[i]->getConnection(), DELTA, game->lvl->getSerialized());
 	}
@@ -44,7 +45,7 @@ cGame::cGame(void)
 {
 	//Czekaj na po³¹czenie 2 graczy
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 2;
+	numberOfPlayersToStart = 1;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
@@ -129,7 +130,7 @@ bool cGame::odbierzDane(string dane, connection *c, int &dana, int &n_of_conn){
 		break;
 		case DELTA:
 			if(this->lvl != NULL){
-				sendToClient(c, DELTA, this->lvl->serialize());
+				//sendToClient(c, DELTA, this->lvl->serialize());
 				//printf("%s\n",this->lvl->serialize());
 			}
 		break;
