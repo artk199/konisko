@@ -25,6 +25,7 @@ using namespace oxygine;
 
 file::STDFileSystem extfs(true);
 cNotify * cGame::notifies;
+SOCKADDR_IN addr;
 
 //---Konstruktor, ustawia wartosci poczatkowe dla klas glownych
 cGame::cGame(){
@@ -85,14 +86,12 @@ DWORD cGame::sender(){
 
 		WaitForSingleObject(send_message, -1);
 		string question = this->message;
-		int iResult = send( SendSocket, question.c_str(), question.length()+1, 0 );
+		//int iResult = send( SendSocket, question.c_str(), question.length()+1, 0 );
+		int iResult = sendto(this->SendSocket, "hello", 5, 0, (struct sockaddr *) &addr, sizeof(addr));
+
 		//sprawdzenie polaczenia z serwerem
 		if (iResult == SOCKET_ERROR) {
 			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
-			closesocket(SendSocket);
-			closesocket(RecieveSocket);
-			WSACleanup();
-			//throw 2; 
 		}
 		this->message.clear();
 		//askServer(Assets::DELTA);
@@ -211,12 +210,45 @@ void cGame::parse_response(string s){
 }
 
 bool cGame::connectToServer(){	   
-	WSADATA wsaData;
+	WSADATA wsda;		// Structure to store info
+						// returned from WSAStartup
+
+   struct hostent *host;	// Used to store information
+	 						// retreived about the server
+   
+
     struct addrinfo *result = NULL, *ptr = NULL, hints;
     int iResult;
 
-	WSAStartup(MAKEWORD(2,2), &wsaData);
-    ZeroMemory( &hints, sizeof(hints) );
+	WSAStartup(MAKEWORD(1,1), &wsda);
+	// Create a UDP socket
+   printf("Creating socket...");
+   this->RecieveSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+   this->SendSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+   // Error?
+   if(SendSocket == SOCKET_ERROR)
+   {
+      printf("Error\nCall to socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); failed with:\n%d\n", WSAGetLastError());
+      //exit(1);
+   }
+
+    memset((char *) &addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(27013);
+    addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	char message[255];
+       printf("Enter message : ");
+        gets(message);
+ 
+        //send the message
+        if (sendto(SendSocket, message, strlen(message) , 0 , (struct sockaddr *) &addr, sizeof(addr)) == SOCKET_ERROR)
+        {
+            printf("sendto() failed with error code : %d" , WSAGetLastError());
+           // exit(EXIT_FAILURE);
+        }
+   ///////////////////////
+   /*
+	ZeroMemory( &hints, sizeof(hints) );
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
@@ -262,7 +294,9 @@ bool cGame::connectToServer(){
         WSACleanup();
         return false;
     }
-	send_message=CreateEvent(0,1,0,0); /*No security descriptor, Manual Reset, initially 0, no name*/
+	*/
+	send_message=CreateEvent(0,1,0,0); 
+	
 	DWORD ThreadID;
 	DWORD ThreadID2;
 	CreateThread(NULL, 0, startSending, (void*) this, 0, &ThreadID);
@@ -351,7 +385,7 @@ void cGame::doUpdate(const UpdateState &us){
 	
 	if (delta > 10){
 		delta = 0;
-		askServer(Assets::DELTA);
+		//askServer(Assets::DELTA);
 		//SetEvent(send_message);
 		//TO DO TESTU
 		//players[0]->addBomb(0,300,300,4,1500);

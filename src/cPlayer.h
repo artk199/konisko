@@ -29,10 +29,11 @@ class cPlayer : public Actor, public cSerializable{
 		void addBomb(int id, int x, int y, int range=1, int destroying_time=3000); // - Dodaje nowa bombe dla gracza pod jej adresem ID
 
 	private:
+			// The host's address
 		spSprite sprite;
 		Vector2 pos, poprzpoz;
 		int kierunek; // 0 gora 1 prawo 2 dol 3 lewo
-
+		
 		string nick;
 		int id;
 		bool visible;
