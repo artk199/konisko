@@ -3,10 +3,10 @@
 #include <cstdlib>
 #include <string>
 #include <winsock2.h>
-#include "cPlayer.h"
 #include <process.h> 
 
 class cLevel;
+class cPlayer;
 
 #define N_OF_PLAYERS 4
 
@@ -15,8 +15,11 @@ using namespace std;
 struct connection{
 	char nazwa[128];
 	int id;
-	SOCKET ClientSocket;
+	SOCKET SendSocket;
+	SOCKET RecieveSocket;
 	HANDLE watek;
+	string message;
+	HANDLE send_message;
 	int dana;
 };
 
@@ -31,19 +34,20 @@ class cGame{
 		bool odbierzDane(string dane, connection *c, int &dana, int &n_of_conn);//---Odebranie komunikatow od klienta
 		void waitForPlayers();
 		void loadPlayers();
-		void sendToClient(SOCKET c, REQUESTS q, string par="");
-
+		void sendToClient(connection* c, REQUESTS q, string par="");
+		void send_data();
+		int numberOfPlayersToStart;
 	private:
 		cPlayer* players[N_OF_PLAYERS];
 		cLevel* lvl;
 		int chosen_map;
-		int numberOfPlayersToStart;
+		
 		int numberOfPlayers;
 
-		HANDLE send_message;
 		HANDLE amount_of_players_reached;
 		HANDLE all_players_ready;
-
+		HANDLE wyslij_delte;
 		friend void __cdecl manageGame( void * Args ); // - Watek zarzadzajacy gra
+		friend void __cdecl cos_do( void * Args ); // - Watek zarzadzajacy gra
 };
 

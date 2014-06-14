@@ -23,11 +23,13 @@ public:
 	std::string getSerialized(){return this->serializabled;};
 	void setBomb(int);
 	void BOOM(std::pair<int,int>,int);
+	void addGame(cGame*);
 private:
 	std::string serializabled;
 	cMap* map;
 	cPlayer* players[4];
 	int connected_players;
 	LVL_STATE lvl_state;
+	cGame* game;
 };
 

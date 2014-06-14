@@ -8,14 +8,14 @@
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <iostream>
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
 // #pragma comment (lib, "Mswsock.lib")
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
+string DEFAULT_PORT = "27015";
 #define MAX_CONN 5
 
 int n_of_conn = 0;
@@ -28,27 +28,61 @@ cGame game;
 DWORD WINAPI odbieraj(void* a){
 	connection* c = (connection*)a;
 	char buf[80];
-	char sendbuf[255];
 	c->dana = 0;
-	while (recv (c->ClientSocket, buf, 80, 0) > 0)
+
+	while (recv (c->RecieveSocket, buf, 80, 0) > 0)
 		game.odbierzDane(buf,c,dana,n_of_conn);
+	
 	n_of_conn--;
-	c->ClientSocket = INVALID_SOCKET;
+	c->RecieveSocket = INVALID_SOCKET;
+	c->SendSocket = INVALID_SOCKET;
+	closesocket(c->RecieveSocket);
+	closesocket(c->SendSocket);
 	printf("ZAKONCZONO POLACZENIE %d\n",c->id);
 	
 	return 0;
 }
+DWORD WINAPI wysylaj(void* x){
+
+	connection *c = (connection *) x;
+
+	//wyslanie zapytania
+	
+	while(true){
+		WaitForSingleObject(c->send_message, -1);
+		string question = c->message;
+		int iResult = send( c->SendSocket, question.c_str(), question.length()+1, 0 );
+		//sprawdzenie polaczenia z serwerem
+		if (iResult == SOCKET_ERROR) {
+			printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
+			closesocket(c->SendSocket);
+			closesocket(c->RecieveSocket);
+			WSACleanup();
+			//throw 2; 
+		}
+		//c->message = "";
+		ResetEvent(c->send_message);
+	}
+	return 0;
+};
 int __cdecl main(void) 
 {
+	std::cout<<"podaj port: ";
+	std::cin>>DEFAULT_PORT;
+	//std::cout<<"podaj ilosc graczy do startu: ";
+	//std::cin>>game.numberOfPlayersToStart;
 	for(int i=0;i<MAX_CONN;i++){
-		connections[i].ClientSocket = INVALID_SOCKET;
+		connections[i].SendSocket = INVALID_SOCKET;
+		connections[i].RecieveSocket = INVALID_SOCKET;
 	}
 	dana = 0;
     WSADATA wsaData;
     int iResult;
 
     SOCKET ListenSocket = INVALID_SOCKET;
-    SOCKET ClientSocket = INVALID_SOCKET;
+
+    SOCKET SendSocket = INVALID_SOCKET;
+	SOCKET RecieveSocket = INVALID_SOCKET;
 
     struct addrinfo *result = NULL;
     struct addrinfo hints;
@@ -71,7 +105,7 @@ int __cdecl main(void)
     hints.ai_flags = AI_PASSIVE;
 
     // Resolve the server address and port
-    iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+	iResult = getaddrinfo(NULL, DEFAULT_PORT.c_str(), &hints, &result);
 
     // Create a SOCKET for connecting to server
     ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
@@ -91,8 +125,9 @@ int __cdecl main(void)
 						DWORD id;
     // Accept a client socket
 	while(1){
-		ClientSocket = accept(ListenSocket, NULL, NULL);
-		if (ClientSocket == INVALID_SOCKET) {
+		RecieveSocket = accept(ListenSocket, NULL, NULL);
+		SendSocket = accept(ListenSocket, NULL, NULL);
+		if (SendSocket== INVALID_SOCKET ||  RecieveSocket == INVALID_SOCKET) {
 			printf("accept failed with error: %d\n", WSAGetLastError());
 			closesocket(ListenSocket);
 			WSACleanup();
@@ -106,14 +141,17 @@ int __cdecl main(void)
 			//Szukam wolnego miejsca w tablicy
 			for (int i=0;i<MAX_CONN;i++){
 				//Znaleziono, dodaje po³aczenie
-				if(connections[i].ClientSocket == INVALID_SOCKET){
+				if(connections[i].RecieveSocket == INVALID_SOCKET){
 
 					//Zwiêkszenie licznika;
 					n_of_conn++;
 					//Dodanie po³¹czenia
-					connections[i].ClientSocket = ClientSocket;
+					connections[i].SendSocket = SendSocket;
+					connections[i].RecieveSocket = RecieveSocket;
 					connections[i].id = i;
+					connections[i].send_message =  CreateEvent(NULL, false, false, NULL);
 					printf("Polaczono! czekam na wiadomosci\n");
+
 					connections[i].watek = CreateThread(
 						NULL,						// atrybuty bezpieczeñstwa
 						0,							// inicjalna wielkoœæ stosu
@@ -127,6 +165,14 @@ int __cdecl main(void)
 						// ustawienie priorytetu
 						SetThreadPriority( connections[i].watek, THREAD_PRIORITY_NORMAL );
 					}
+
+					connections[i].watek = CreateThread(
+						NULL,						// atrybuty bezpieczeñstwa
+						0,							// inicjalna wielkoœæ stosu
+						wysylaj,					// funkcja w¹tku
+						(void *)&connections[i],	// dane dla funkcji w¹tku
+						0,							// flagi utworzenia
+						&id );
 					printf( "Hello world\n" );
 					break;
 				}

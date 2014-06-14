@@ -48,7 +48,8 @@ class cGame: public Actor{
 		//Dane
 		float delta;
 		spcPlayer _player;
-		SOCKET ConnectSocket;
+		SOCKET RecieveSocket;
+		SOCKET SendSocket;
 		int przes;
 		vector <spcPlayer> players;//wektor z graczami
 		//

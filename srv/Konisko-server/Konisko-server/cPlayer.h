@@ -3,6 +3,8 @@
 #include "cConnection.h"
 #include "cMap.h"
 #include <vector>
+#include "cGame.h"
+
 class cLevel;
 class cBomb;
 
@@ -18,8 +20,8 @@ class cPlayer
 		~cPlayer(void);
 		void setNick(string nick);
 		string getNick(){return nick;};
-		void setConnection(cConnection* c);
-		cConnection * getConnection();
+		void setConnection(connection* c);
+		connection * getConnection();
 		void setLvl(cLevel* l){this->lvl = l;};
 		void update(double delta);
 		double getPosX(){return pos.first;};
@@ -39,7 +41,7 @@ class cPlayer
 		string nick;
 	
 		//Dane o po³¹czeniu
-		cConnection* connection;
+		connection* c;
 		bool ready;
 		int ilosc_bomb;
 		int max_bomb;

@@ -39,9 +39,6 @@
     <ClInclude Include="cPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cConnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cBomb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cBomb.cpp">

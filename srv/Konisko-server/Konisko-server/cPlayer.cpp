@@ -97,12 +97,12 @@ void cPlayer::changeDirection(E_DIRECTION direction){
 	this->direction = direction;
 }
 
-void cPlayer::setConnection(cConnection* connection){
-	this->connection = connection;
+void cPlayer::setConnection(connection* c1){
+	this->c = c1;
 }
 
-cConnection * cPlayer::getConnection(){
-	return connection;
+connection * cPlayer::getConnection(){
+	return c;
 }
 
 std::string cPlayer::serialize(){

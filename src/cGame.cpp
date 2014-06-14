@@ -77,17 +77,12 @@ static DWORD WINAPI startRecieving(void* param){
 DWORD cGame::sender(){   
 	int iResult;
 	while(1){
-		if(ConnectSocket == INVALID_SOCKET) break;
+		if(SendSocket == INVALID_SOCKET) break;
 		WaitForSingleObject(send_message, -1);
 		if(klawisz!=0){
 			askServer(Assets::KEY_PRESSED, to_string(long double(klawisz)));
 			klawisz=0;
 			continue;
-		}
-		//zapytanie o przesuniecie gracza
-		if (przes != 0){
-			askServer(Assets::PLAYER_POSITION, to_string(long double(przes)));
-			przes = 0;
 		}
 		askServer(Assets::DELTA);
 		ResetEvent(send_message);
@@ -99,7 +94,7 @@ DWORD cGame::sender(){
 DWORD cGame::reciever(){   
 	int iResult;
 	char buf[512];
-	while (recv (ConnectSocket, buf, 512, 0 ) > 0){
+	while (recv (RecieveSocket, buf, 512, 0 ) > 0){
 		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
 		//rozpoznanie typu komunikatu
 		switch(com){
@@ -219,42 +214,57 @@ bool cGame::connectToServer(){
     // Attempt to connect to an address until one succeeds
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
         // Create a SOCKET for connecting to server
-        ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, 
+        SendSocket = socket(ptr->ai_family, ptr->ai_socktype, 
             ptr->ai_protocol);
-        if (ConnectSocket == INVALID_SOCKET) {
+        RecieveSocket = socket(ptr->ai_family, ptr->ai_socktype, 
+            ptr->ai_protocol);
+        if (SendSocket == INVALID_SOCKET || RecieveSocket == INVALID_SOCKET) {
             printf("socket failed with error: %ld\n", WSAGetLastError());
             WSACleanup();
             return false;
         }
 
         // Connect to server.
-        iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (iResult == SOCKET_ERROR) {
-            closesocket(ConnectSocket);
-            ConnectSocket = INVALID_SOCKET;
+        iResult = connect( SendSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        
+		if (iResult == SOCKET_ERROR) {
+            closesocket(SendSocket);
+            SendSocket = INVALID_SOCKET;
             continue;
         }
-        break;
+        // Connect to server.
+        iResult = connect( RecieveSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        
+		if (iResult == SOCKET_ERROR) {
+            closesocket(RecieveSocket);
+            RecieveSocket = INVALID_SOCKET;
+            continue;
+        }
+        
+		break;
     }
 
     freeaddrinfo(result);
 
-    if (ConnectSocket == INVALID_SOCKET) {
+    if (SendSocket == INVALID_SOCKET) {
         printf("Unable to connect to server!\n");
         WSACleanup();
         return false;
     }
 	send_message=CreateEvent(0,1,0,0); /*No security descriptor, Manual Reset, initially 0, no name*/
 	DWORD ThreadID;
+	DWORD ThreadID2;
 	CreateThread(NULL, 0, startSending, (void*) this, 0, &ThreadID);
-	CreateThread(NULL, 0, startRecieving, (void*) this, 0, &ThreadID);
+	CreateThread(NULL, 0, startRecieving, (void*) this, 0, &ThreadID2);
 	return true;
 };
 
 void cGame::disconnect(){
 	askServer(Assets::PLAYER_QUIT);
-	closesocket(ConnectSocket);
-	ConnectSocket = INVALID_SOCKET;
+	closesocket(SendSocket);
+	closesocket(RecieveSocket);
+	SendSocket = INVALID_SOCKET;
+	RecieveSocket = INVALID_SOCKET;
 	WSACleanup();
 }
 
@@ -369,11 +379,12 @@ void cGame::askServer(Assets::REQUESTS q, string parametr){
 	string question = "";
 	question += q;
 	if(parametr!="") question+=parametr;
- 	int iResult = send( ConnectSocket, question.c_str(), question.length()+1, 0 );
+ 	int iResult = send( SendSocket, question.c_str(), question.length()+1, 0 );
 	//sprawdzenie polaczenia z serwerem
 	if (iResult == SOCKET_ERROR) {
 		printf("blad podczas wysylania, koncze: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
+		closesocket(SendSocket);
+		closesocket(RecieveSocket);
 		WSACleanup();
 		//throw 2; 
 	}

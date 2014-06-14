@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cBomb.h" />
-    <ClInclude Include="cConnection.h" />
     <ClInclude Include="cGame.h" />
     <ClInclude Include="cLevel.h" />
     <ClInclude Include="cMap.h" />
@@ -90,7 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cBomb.cpp" />
-    <ClCompile Include="cConnection.cpp" />
     <ClCompile Include="cGame.cpp" />
     <ClCompile Include="cLevel.cpp" />
     <ClCompile Include="cMap.cpp" />

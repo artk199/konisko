@@ -16,6 +16,10 @@ cLevel::~cLevel(void)
 {
 }
 
+
+void cLevel::addGame(cGame* g){
+	this->game = g;
+}
 //-- Dodanie gracza
 void cLevel::addPlayer(cPlayer* player){
 	
@@ -43,8 +47,6 @@ void cLevel::setMap(cMap* map){
 		players[i]->attachToMap(map);
 }
 
-void cLevel::setBomb(int id){
-}
 //--Pêtla g³ówna gry
 void cLevel::start(){
 	
@@ -76,6 +78,7 @@ void cLevel::start(){
 		}
 
 		this->serializabled = this->serialize();
+		//this->game->send_data();
 		//std::cout<<delta<<"\n"<<serializabled<<std::endl;
 	
 	}
@@ -89,6 +92,7 @@ std::string cLevel::serialize(){
 		r += players[i]->serialize() + "\n";
 	
 	return r;
+
 }
 
 void cLevel::BOOM(std::pair<int,int> poz,int moc){
