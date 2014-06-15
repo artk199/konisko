@@ -27,7 +27,7 @@ void __cdecl manageGame( void * x ){
 	
 	//Stworzenie poziomu
 	game->lvl = new cLevel();
-	
+	game->lvl->addGame(game);
 	//Dodanie graczy
 	for(int i=0;i<game->numberOfPlayers;i++)
 		game->lvl->addPlayer(game->players[i]);
@@ -69,8 +69,6 @@ cGame::cGame(void)
 
 	//utworzenie watku zarzadzajacego gra
 	HANDLE hThread =( HANDLE ) _beginthread(manageGame, 0, this );
-
-
 }
 
 cGame::~cGame(void)
@@ -103,21 +101,8 @@ void cGame::loadPlayers(){
 
 //---Wysyla do klienta odpowiedz z mozliwoscia dodania parametru
 void cGame::sendToClient(connection* c, REQUESTS q, string par){
-	/*if(!message.empty()){
-		if(message.c_str()[0] == DELTA){
-			return;
-		}else{
-			while(!message.empty()){
-				printf("Czekam na wylasnie: \n", message);
-				Sleep(10);
-			}
-		}
-	}	//wyslanie zapytania
-	*/
 	message = "";
-	
 	message += q;
-
 	if(par!="") message+=par;
 
 	SetEvent(send_message);

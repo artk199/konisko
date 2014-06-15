@@ -8,7 +8,7 @@ cMap::cMap(){
 	//wczytanie zawartosci mapy
 	int maxy=0, maxx=0;
 
-	mapString ="XXXXXXXXXXX\nX         X\nX    X    X\nX    X    X\nX         X\nXXXXXXXXXXX";
+	mapString ="XXXXXXXXXXX\nX         X\nX    Y    X\nX    Y    X\nX    Y    X\nXXXXXXXXXXX";
 	
 	
 	for(int i = 0 ;i < 6 ; i++){
@@ -16,15 +16,22 @@ cMap::cMap(){
 		for(int j = 0 ; j < 11 ;j++){
 			if(mapString[i*11+j+i] == 'X'){
 				spcTile nowy = new cTile("wall1",Vector2(j*64+przes.x,i*64+przes.y),this);
+				nowy->setDestroyable(false);
+				nowy->setWalkable(false);
+				tiles[i].push_back(nowy);
+			}
+			else if(mapString[i*11+j+i] == 'Y'){
+				spcTile nowy = new cTile("wall2",Vector2(j*64+przes.x,i*64+przes.y),this);
 				nowy->setDestroyable(true);
 				nowy->setWalkable(false);
 				tiles[i].push_back(nowy);
-			}else{
+			}
+			else{
 				spcTile nowy = new cTile("grass1",Vector2(j*64+przes.x,i*64+przes.y),this);
 				nowy->setDestroyable(true);
 				nowy->setWalkable(true);
 				tiles[i].push_back(nowy);
-			}	
+			}
 
 		}
 	}
@@ -56,3 +63,8 @@ cMap::cMap(){
 
 void cMap::clear(){
 };
+
+//---Niszczy dana komorke na mapie
+void cMap::destroy(int y, int x){
+	tiles[y][x]->destroy();
+}; 

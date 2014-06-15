@@ -34,6 +34,10 @@ void cTile::_init(){
 	sprite->attachTo(_view);*/
 };
 
+void cTile::destroy(){
+	sprite->setResAnim(Assets::gameResources.getResAnim("grass2"));
+};
+
 //---FUNKCJE DOSTEPU
 void cTile::setWalkable(bool s){walkable = s;};
 void cTile::setDestroyable(bool s){destroyable = s;};

@@ -13,6 +13,7 @@ class cMap: public Actor{
 		cMap();
 		void clear();
 
+		void destroy(int y, int x); // - Niszczy dana komorke na mapie
 		//map<pair<int,int>, spcTile> tiles; // kontener ze wszystkimi polami
 	private:
 		std::vector<std::vector<spcTile>> tiles;

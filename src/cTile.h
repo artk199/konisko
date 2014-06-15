@@ -21,6 +21,7 @@ class cTile: public cUnit{
 		bool isDestroyable();
 		spSprite getSprite();
 
+		void destroy();
 	protected:
 		spSprite sprite;
 		Vector2 pos;

@@ -50,10 +50,9 @@ void cLeftPanel::addBackground(spColorRectSprite &rect, Color kolor, int alpha){
 //---Dodaje informacje o graczach w panelu
 void cLeftPanel::addPlayersInfo(){
 	int ilosc = players->size();
-	int przes=50;
 	int ktory = 0;
 	for(int i=0; i<ilosc; i++){
-		przes+=ktory*50;
+		int przes=ktory*50+50;
 
 		if(players->at(i)->getID()>=0){
 			spTextActor t = cUI::createText(players->at(i)->getNick());

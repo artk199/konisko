@@ -51,6 +51,7 @@ class cGame: public Actor{
 		struct sockaddr_in si_other;
 		int serverSocket;
 		int slen;
+		bool connect_false;
 		///////server udp////////
 
 		string message;

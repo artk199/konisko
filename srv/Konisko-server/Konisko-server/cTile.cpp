@@ -1,5 +1,5 @@
 #include "cTile.h"
-
+#include "cGame.h"
 
 cTile::cTile(void)
 {
@@ -7,10 +7,21 @@ cTile::cTile(void)
 
 cTile::cTile(int type)
 {
-	if(type == 1)
-		walkable = true;
-	else
-		walkable = false;
+
+	switch (type){
+		case 1:
+			walkable = true;
+			destroyable = false;
+		break;
+		case 2:
+			walkable = false;
+			destroyable = false;
+		break;
+		case 3:
+			walkable = false;
+			destroyable = true;
+		break;
+	}
 }
 
 
@@ -30,3 +41,28 @@ bool cTile::isWalkable(){
 bool cTile::isDestroyable(){
 	return destroyable;
 };
+
+ // zwraca true, jezeli ogien ma isc dalej
+bool cTile::destroy(cGame *g){
+	//mo¿na zniszczyc
+	if(destroyable){
+		destroyable = false;
+		walkable = true;
+
+		string poz;
+		poz+=to_string(long double(pozy))+"\t";
+		poz+=to_string(long double(pozx))+"\t";
+		g->sendToClient(NULL,DESTROY,poz);
+		return false;	
+	}
+	//trafiono na sciane
+	if(!walkable){
+		return false;
+	}
+	return true;
+};
+
+void cTile::setPos(int x, int y){
+	pozx = x;
+	pozy = y;
+}

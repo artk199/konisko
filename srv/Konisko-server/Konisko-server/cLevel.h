@@ -31,5 +31,8 @@ private:
 	int connected_players;
 	LVL_STATE lvl_state;
 	cGame* game;
+
+	void destroyTile(int x, int y, int direction, int range); // daje true jesli ogien ma leciec dalej
+
 };
 

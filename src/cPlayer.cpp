@@ -17,6 +17,8 @@ cPlayer::cPlayer(){
 	velocity = 128;
 	id=-1;
 
+	sprite->setManageResAnim(true);
+
 	//dodanie 10 pustych bomb
 	for(int i=0; i<10; i++)		bombs.push_back(NULL);
 };
@@ -77,8 +79,6 @@ void cPlayer::init(){
 
 //---Aktualizuje bomby i wybucha te, na ktore przyszedl juz czas, by oposcic ten ziemski padol
 void cPlayer::updateBombs(int dt){
-
-
 	for(int i=0; i<10; i++)
 		if(bombs[i]!=NULL){
 			// jezeli zostal przekroczony czas, bomba wybucha

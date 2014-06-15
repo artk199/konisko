@@ -92,22 +92,34 @@ std::string cLevel::serialize(){
 		r += players[i]->serialize() + "\n";
 	
 	return r;
-
 }
 
 void cLevel::BOOM(std::pair<int,int> poz,int moc){
-	for(int i=-moc;i<=moc;i++){
-		for(int j=0;j<connected_players;j++){
-			if(std::abs((poz.first*64+64*i) - players[j]->getPosX())<64
-			&& std::abs(poz.second*64 - players[j]->getPosY())<64
-				){
-					players[j]->setPos(96,96);
-			}
-			if(std::abs(poz.first*64 - players[j]->getPosX())<64
-			&& std::abs((poz.second*64+64*i) - players[j]->getPosY())<64
-				){
-					players[j]->setPos(96,96);
-			}
+	//niszczenie kafelek na okolo bomby
+	destroyTile(poz.first, poz.second, 0, moc);
+	destroyTile(poz.first, poz.second, 1, moc);
+	destroyTile(poz.first, poz.second, 2, moc);
+	destroyTile(poz.first, poz.second, 3, moc);
+}
+
+// 0 - up, 1 - right, 2 - down, 3 - left
+void cLevel::destroyTile(int x, int y, int direction, int range){
+	range--;
+
+	//niszczenie graczy
+	for(int j=0;j<connected_players;j++)
+		if(x==floor(players[j]->getPosX()/64) && y==floor(players[j]->getPosY()/64))
+			players[j]->setPos(96,96);	
+
+	if(range>=0){
+		//niszczenie komorek
+		switch(direction){
+			case 0:y--;break;
+			case 1:x++;break;
+			case 2:y++;break;
+			case 3:x--;break;
 		}
+		if(map->destroyTile(x,y,this->game))
+			destroyTile(x,y,direction,range);
 	}
 }

@@ -56,6 +56,7 @@ cGame::cGame(){
 	mainPlayerID=-1;
 
 	message.clear();
+	connect_false= true;
 };
 
 //---Metody odpowiedzialne za po³¹czenie z serwerem
@@ -75,11 +76,15 @@ DWORD cGame::sender(){
 		string question = this->message;
 		if (sendto(serverSocket, question.c_str(), question.length()+1 , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
 		{
-			printf("sendto() failed with error code : %d" , WSAGetLastError());
+			connect_false=true;
+			return 0;
+			//printf("sendto() failed with error code : %d" , WSAGetLastError());
 			//exit(EXIT_FAILURE);
 		}
-		this->message.clear();
-		ResetEvent(send_message);
+		else{
+			this->message.clear();
+			ResetEvent(send_message);
+		}
 	}
 	return 0;
 }
@@ -93,77 +98,96 @@ DWORD cGame::reciever(){
 		//odebranie informacji z serwera
 		if (recvfrom(serverSocket, buf, 512, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
         {
-            printf("recvfrom() failed with error code : %d" , WSAGetLastError());
+			connect_false=true;
+			return 0;
+            //printf("recvfrom() failed with error code : %d" , WSAGetLastError());
         }
-		std::cout<<buf<<endl;
-		Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
-		//rozpoznanie typu komunikatu
-		switch(com){
-			case Assets::KONIEC:
-				printf("koncze polaczenie\n");
-				return 0;
-			break;
-			case Assets::ILOSC_GRACZY:{
-				string par="";
-				for(int i=1; i<strlen(buf); i++) par+=buf[i];
-			break;}
-			case Assets::DELTA:{
-				string par="";
-				for(int i=1; i<strlen(buf); i++) par+=buf[i];
-				//cout<<par<<endl;
-				parse_response(par);
-			break;}
-			case Assets::START_GAME:{
-				printf("mozna startowac");
-				//znalezienie przycisku umozliwiajacego dolaczenie do gry
-				spcButton b=menu->getChildT<cButton>("bt_start", oxygine::ep_ignore_error);
-				if(b!=NULL) b->onOff(true);
+		// z powodzeniem odebrano pakiet
+		else{
+			//std::cout<<buf<<endl;
+			Assets::REQUESTS com = (Assets::REQUESTS)buf[0];
+			//rozpoznanie typu komunikatu
+			switch(com){
+				case Assets::KONIEC:
+					printf("koncze polaczenie\n");
+					return 0;
+				break;
+				case Assets::ILOSC_GRACZY:{
+					string par="";
+					for(int i=1; i<strlen(buf); i++) par+=buf[i];
+				break;}
+				case Assets::DELTA:{
+					string par="";
+					for(int i=1; i<strlen(buf); i++) par+=buf[i];
+					//cout<<par<<endl;
+					parse_response(par);
+				break;}
+				case Assets::START_GAME:{
+					printf("mozna startowac");
+					//znalezienie przycisku umozliwiajacego dolaczenie do gry
+					spcButton b=menu->getChildT<cButton>("bt_start", oxygine::ep_ignore_error);
+					if(b!=NULL) b->onOff(true);
 
-			break;}
-			//nadanie graczowi ID przydzielonego z serwera
-			case Assets::SET_PLAYER_ID:{ 
-				//pobranie z parametru id gracza
-				string par="";
-				for(int i=1; i<strlen(buf); i++) par+=buf[i];
-				int  id = atoi(par.c_str());
+				break;}
+				//nadanie graczowi ID przydzielonego z serwera
+				case Assets::SET_PLAYER_ID:{ 
+					//pobranie z parametru id gracza
+					string par="";
+					for(int i=1; i<strlen(buf); i++) par+=buf[i];
+					int  id = atoi(par.c_str());
 
-				mainPlayerID=id;
-				printf("ID GRACZA USTAWIONO NA %d\n",id);
-			break;}
-			//dolaczyl nowy gracz, nalezy go dodac
-			case Assets::PLAYER_JOINED:{
-				int ile_graczy = buf[1] - '0';
+					mainPlayerID=id;
+					printf("ID GRACZA USTAWIONO NA %d\n",id);
+				break;}
+				//dolaczyl nowy gracz, nalezy go dodac
+				case Assets::PLAYER_JOINED:{
+					int ile_graczy = buf[1] - '0';
 
-				int i=2;
-				//pobieranie nicka i id kolejnych graczy
-				for(int n=0; n<ile_graczy; n++){
-					string id, nick;
-					for(i; i<strlen(buf) && buf[i]!='\t'; i++) nick+=buf[i];
-					for(i=i+1; i<strlen(buf) && buf[i]!='\t'; i++) id+=buf[i];
-					i++;
+					int i=2;
+					//pobieranie nicka i id kolejnych graczy
+					for(int n=0; n<ile_graczy; n++){
+						string id, nick;
+						for(i; i<strlen(buf) && buf[i]!='\t'; i++) nick+=buf[i];
+						for(i=i+1; i<strlen(buf) && buf[i]!='\t'; i++) id+=buf[i];
+						i++;
 
-					int ID=atoi(id.c_str());
+						int ID=atoi(id.c_str());
 			
-					// to jest nowy gracz
-					if(players[ID]->getID()!=ID){
-						players[ID]->setID(ID);
-						players[ID]->setNick(nick);
+						// to jest nowy gracz
+						if(players[ID]->getID()!=ID){
+							players[ID]->setID(ID);
+							players[ID]->setNick(nick);
 
-						int pozy=100+60*ID;
-						int pozx=150;
+							int pozy=100+60*ID;
+							int pozx=150;
 
-						bool edytowalny = false;
-						if(ID==mainPlayerID) edytowalny = true;
+							bool edytowalny = false;
+							if(ID==mainPlayerID) edytowalny = true;
 
-						//dodanie nowego dziecka tylko jezeli nie zostalo juz dodane
-						menu->addChild(new cCheckBox(pozx,pozy,&players[ID]->getReady(),players[ID]->getNick(),edytowalny,"player_"+to_string(long double(ID))+"_ready"));
-						printf("Dodano gracza %s - %s\n", nick.c_str(), id.c_str());
-					}	
-				}		
-			break;}
-			//nieznane polecenie
-			default:
-				printf("Nieprawidlowy komunikat: %s\n",buf);
+							//dodanie nowego dziecka tylko jezeli nie zostalo juz dodane
+							menu->addChild(new cCheckBox(pozx,pozy,&players[ID]->getReady(),players[ID]->getNick(),edytowalny,"player_"+to_string(long double(ID))+"_ready"));
+							printf("Dodano gracza %s - %s\n", nick.c_str(), id.c_str());
+						}	
+					}		
+				break;}
+				//zniszczenie pola na mapie
+				case Assets::DESTROY:{
+					int i;
+					string px, py;
+					for(i=1; i<strlen(buf) && buf[i]!='\t'; i++) py+=buf[i];
+					for(i=i+1; i<strlen(buf) && buf[i]!='\t'; i++) px+=buf[i];
+
+					int x=atoi(px.c_str()), y=atoi(py.c_str());
+
+					if(level->map!=NULL)
+						level->map->destroy(y,x);
+					
+					//printf("Mam zniszczyc pole nr %d, %d\n",y, x);
+				break;}
+				//nieznane polecenie
+				default:
+					printf("Nieprawidlowy komunikat: %s\n",buf);
+			}
 		}
 	}
 
@@ -205,20 +229,13 @@ bool cGame::connectToServer(){
     WSADATA wsa;
 	slen = sizeof(si_other);
     //Initialise winsock
-    printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
-    {
-        printf("Failed. Error Code : %d",WSAGetLastError());
-        exit(EXIT_FAILURE);
-    }
-    printf("Initialised.\n");
-     
+        return false;
+    
+
     //create socket
     if ( (serverSocket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
-    {
-        printf("socket() failed with error code : %d" , WSAGetLastError());
-        exit(EXIT_FAILURE);
-    }
+		return false;
      
     //setup address structure
     memset((char *) &si_other, 0, sizeof(si_other));
@@ -229,18 +246,17 @@ bool cGame::connectToServer(){
 	string pyt;
 	pyt+=Assets::CONNECT;
 	if (sendto(serverSocket, pyt.c_str(), pyt.length()+1 , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
-	{
-		printf("sendto() failed with error code : %d" , WSAGetLastError());
-		exit(EXIT_FAILURE);
-	}
+		return false;
 
 	message.clear();
 
 	send_message=CreateEvent(0,1,0,0); 
 	DWORD ThreadID;
 	DWORD ThreadID2;
+
 	CreateThread(NULL, 0, startSending, (void*) this, 0, &ThreadID);
 	CreateThread(NULL, 0, startRecieving, (void*) this, 0, &ThreadID2);
+	connect_false=false;
 	return true;
 };
 
@@ -357,7 +373,7 @@ bool cGame::tryConnectToServer(){
 
 //---Wysyla zapytanie na serwer (wyslanie parametru opcjonalne)
 void cGame::askServer(Assets::REQUESTS q, string parametr){
-	if(serverSocket == INVALID_SOCKET) return;
+	if(serverSocket == INVALID_SOCKET || connect_false) return;
 	//wyslanie zapytania
 	/*while(!this->message.empty()){
 		printf("Czekam na wyslanie: %s\n",this->message);

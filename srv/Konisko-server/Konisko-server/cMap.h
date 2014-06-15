@@ -14,6 +14,8 @@ public:
 	void update(double delta);
 	bool isMoveable(double x, double y);
 	std::pair<int,int> getPositionOnMap(double,double);
+
+	bool destroyTile(int x, int y, cGame *g); // daje true jesli ogien ma leciec dalej
 private:
 	std::vector<std::vector<cTile*>> tiles;
 	std::string mapString;

@@ -32,7 +32,7 @@ void __cdecl odbieraj(void *a){
 	//keep listening for data
     while(1)
     {
-        printf("Waiting for data...");
+        //printf("Waiting for data...");
         fflush(stdout);
          
         //clear the buffer by filling null, it might have previously received data
@@ -41,7 +41,7 @@ void __cdecl odbieraj(void *a){
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == SOCKET_ERROR)
         {
-            printf("recvfrom() failed with error code : %d" , WSAGetLastError());
+            //printf("recvfrom() failed with error code : %d" , WSAGetLastError());
             exit(EXIT_FAILURE);
         }
 
@@ -49,8 +49,8 @@ void __cdecl odbieraj(void *a){
 		//SetEvent(game.send_message);
          
         //print details of the client/peer and the data received
-        printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-        printf("Data: %s\n" , buf);
+       // printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
+        //printf("Data: %s\n" , buf);
 
     }
 }
@@ -66,7 +66,7 @@ void __cdecl wysylaj(void* x){
 		for(auto it=game.clients.cbegin();it!=game.clients.cend();it++){
 			if (sendto(s, buf.c_str(), buf.length(), 0, (struct sockaddr*) &(it->first), slen) == SOCKET_ERROR)
 			{
-				printf("sendto() failed with error code : %d" , WSAGetLastError());
+				//printf("sendto() failed with error code : %d" , WSAGetLastError());
 				//exit(EXIT_FAILURE);
 			}
 			//printf("Wyslalem do %d: ",it->first.sin_addr);
@@ -102,21 +102,21 @@ int __cdecl main(void)
      
 
     //Initialise winsock
-    printf("\nInitialising Winsock...");
+   // printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
     {
         printf("Failed. Error Code : %d",WSAGetLastError());
         exit(EXIT_FAILURE);
     }
-    printf("Initialised.\n");
-    
+    //printf("Initialised.\n");
+   
 	
     //Create a socket
     if((s = socket(AF_INET , SOCK_DGRAM , 0 )) == INVALID_SOCKET)
     {
-        printf("Could not create socket : %d" , WSAGetLastError());
+      // printf("Could not create socket : %d" , WSAGetLastError());
     }
-    printf("Socket created.\n");
+    //printf("Socket created.\n");
 	game.s = s;
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
@@ -126,10 +126,10 @@ int __cdecl main(void)
     //Bind
     if( bind(s ,(struct sockaddr *)&server , sizeof(server)) == SOCKET_ERROR)
     {
-        printf("Bind failed with error code : %d" , WSAGetLastError());
+        //printf("Bind failed with error code : %d" , WSAGetLastError());
         exit(EXIT_FAILURE);
     }
-    puts("Bind done");
+    //puts("Bind done");
 	
 
 	HANDLE hThread =( HANDLE ) _beginthread(odbieraj, 0,0 );

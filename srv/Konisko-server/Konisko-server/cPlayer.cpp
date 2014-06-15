@@ -12,6 +12,7 @@ cPlayer::cPlayer(void)
 	this->max_bomb = 1;
 	for (int i=0;i<max_bomb;i++)
 		bombs.push_back(NULL);
+
 }
 
 
@@ -31,24 +32,20 @@ void cPlayer::setPos(double x, double y){
 	pos = std::pair<double,double>(x,y);
 }
 void cPlayer::move(double delta){
-	double  newX = 0,
-			newY = 0;
+	double  newX = this->pos.first,
+			newY = this->pos.second;
 	switch (direction){
-	case TOP:
-		newX = this->pos.first;
-		newY = this->pos.second - delta * this->velocity;
+		case TOP:
+			newY = this->pos.second - delta * this->velocity;
 		break;
-	case BOT:
-		newX = this->pos.first;
-		newY = this->pos.second + delta * this->velocity;
+		case BOT:
+			newY = this->pos.second + delta * this->velocity;
 		break;
-	case LEFT:
-		newX = this->pos.first - delta * this->velocity;
-		newY = this->pos.second;
+		case LEFT:
+			newX = this->pos.first - delta * this->velocity;
 		break;
-	case RIGHT:
-		newX = this->pos.first + delta * this->velocity;
-		newY = this->pos.second;
+		case RIGHT:
+			newX = this->pos.first + delta * this->velocity;
 		break;
 	}
 
