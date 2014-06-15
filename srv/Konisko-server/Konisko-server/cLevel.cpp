@@ -116,8 +116,10 @@ void cLevel::destroyTile(int x, int y, int direction, int range){
 
 	//niszczenie graczy
 	for(int j=0;j<connected_players;j++)
-		if(x==floor(players[j]->getPosX()/64) && y==floor(players[j]->getPosY()/64))
+		if(x==floor(players[j]->getPosX()/64) && y==floor(players[j]->getPosY()/64)){
 			players[j]->setPos(96,96);	
+			game->sendToClient(NULL, PLAYER_DEAD, to_string(long double(j)));
+		}
 
 	if(range>=0){
 		//niszczenie komorek

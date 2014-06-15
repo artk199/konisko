@@ -184,6 +184,28 @@ DWORD cGame::reciever(){
 					
 					//printf("Mam zniszczyc pole nr %d, %d\n",y, x);
 				break;}
+				case Assets::PLAYER_DEAD:{
+					string id;
+					for(int i=1; i<strlen(buf); i++) id+=buf[i];
+
+					printf("%s\n",id.c_str());
+					int ID = atoi(id.c_str());
+
+					string info;
+					switch(rand()%5){
+						case 0:info="Player "+ players[ID]->getNick()+" is now dead!";break;
+						case 1:info=players[ID]->getNick()+" just died!";break;
+						case 2:info=players[ID]->getNick()+" said goodbye to his mere life!";break;
+						case 3:info="Player "+ players[ID]->getNick()+" stepped in a mine!";break;
+						default:info="Too bad, "+ players[ID]->getNick()+" will no longer breath!";
+					}
+					int pozy=100;
+
+					spTextActor b=level->getChildT<TextActor>("shakingtext", oxygine::ep_ignore_error);
+					if(b!=NULL) pozy+=50;
+
+					level->addChild(cUI::addShakingText(Assets::windowSize.x/2, pozy, info,Color::Red));		
+				break;}
 				//nieznane polecenie
 				default:
 					printf("Nieprawidlowy komunikat: %s\n",buf);

@@ -4,7 +4,7 @@
 cBomb::cBomb(void)
 {
 	this->time = 2.9;
-	this->power = 2;
+	this->power = 1;
 
 }
 
@@ -35,6 +35,7 @@ std::pair<int,int> cBomb::getPosition(){
 }
 string cBomb::serialize(){
 	string r = "";
-	r="bomb\t"+std::to_string((long double)id)+"\t"+std::to_string((long double)pos.first)+"\t"+std::to_string((long double)pos.second)+"\n";
+	//if(this->time < 2)
+		r="bomb\t"+std::to_string((long double)id)+"\t"+std::to_string((long double)pos.first)+"\t"+std::to_string((long double)pos.second)+"\n";
 	return r;
 }

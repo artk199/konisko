@@ -66,6 +66,6 @@ spTextActor cUI::addShakingText(int x, int y, string text, Color kolor){
 	tween->add(TextActor::TweenAlpha(0),100);
 	tween->setDetachActor(true);
 	nap->addTween(tween);
-		
+	nap->setName("shakingtext");
 	return nap;
 };

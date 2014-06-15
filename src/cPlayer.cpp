@@ -113,6 +113,6 @@ void cPlayer::addBomb(int id,int x, int y, int range, int destroying_time){
 		bombs[id] = new cBomb(x,y);
 		bombs[id]->attachTo(this);
 		bombs[id]->setDestroyTime(destroying_time);
-		bombs[id]->setRange(2);
+		bombs[id]->setRange(1);
 	}
 };

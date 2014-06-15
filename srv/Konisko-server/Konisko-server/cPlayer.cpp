@@ -114,7 +114,7 @@ void cPlayer::update(double delta){
 		if(bombs[i] != NULL){
 			bombs[i]->update(delta);
 			if(bombs[i]->isDestroyed()){
-				lvl->BOOM(bombs[i]->getPosition(),2);
+				lvl->BOOM(bombs[i]->getPosition(),1);
 				delete bombs[i];
 				bombs[i] = NULL;
 			}
