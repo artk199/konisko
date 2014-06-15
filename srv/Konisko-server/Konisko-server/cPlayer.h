@@ -36,6 +36,8 @@ class cPlayer
 		string serialize();
 		int id;
 		void addBomb();
+
+		bool isAnyBombThere(int y, int x); // - Informuje czy ktorakolwiek bomba gracza znajduje sie na tym polu
 	private:
 		//Nick gracza
 		string nick;

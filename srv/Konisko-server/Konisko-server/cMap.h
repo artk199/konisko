@@ -3,7 +3,7 @@
 #include <vector>
 #include "cTile.h"
 
-
+class cGame;
 class cMap
 {
 public:
@@ -16,8 +16,10 @@ public:
 	std::pair<int,int> getPositionOnMap(double,double);
 
 	bool destroyTile(int x, int y, cGame *g); // daje true jesli ogien ma leciec dalej
+	void setGame(cGame *g);
 private:
 	std::vector<std::vector<cTile*>> tiles;
 	std::string mapString;
+	cGame *game;
 };
 

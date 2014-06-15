@@ -120,3 +120,13 @@ std::string cPlayer::serialize(){
 	return s;
 }
 
+//---Informuje czy ktorakolwiek bomba gracza znajduje sie na tym polu
+bool cPlayer::isAnyBombThere(int y, int x){
+	for(int i=0; i<bombs.size(); i++){
+		if(bombs[i]!=NULL){
+			pair<int,int> pos = bombs[i]->getPosition();
+			if(x==pos.first && y == pos.second) return true;
+		}
+	}
+	return false;
+};

@@ -45,12 +45,14 @@ class cGame{
 		string message;
 		SOCKET s;
 
-	private:
 		cPlayer* players[N_OF_PLAYERS];
+		int numberOfPlayers;
+	private:
+
 		cLevel* lvl;
 		int chosen_map;
 		
-		int numberOfPlayers;
+		
 
 		HANDLE amount_of_players_reached;
 		HANDLE all_players_ready;

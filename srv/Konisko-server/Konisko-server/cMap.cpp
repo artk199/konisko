@@ -1,8 +1,8 @@
 #include "cMap.h"
 #include <iostream>
-
+#include "cGame.h"
 #define TILE_SIZE 64
-
+#include "cPlayer.h"
 
 cMap::cMap(void)
 {
@@ -45,9 +45,21 @@ cMap::~cMap(void)
 
 bool cMap::isMoveable(double x, double y){
 	//std::cout<<floor(x/TILE_SIZE)<<" "<<floor(y/TILE_SIZE)<<std::endl;
-
 	int py =std::floor(y/TILE_SIZE) ;
 	int px = std::floor(x/TILE_SIZE);
+
+	// sprawdzenie, czy na tym polu znajduje sie bomba
+	for(int i=0; i<game->numberOfPlayers; i++){
+		if(game->players[i]!=NULL && game->players[i]->isAnyBombThere(py,px)){
+			int ppx = floor(game->players[i]->getPosX()/TILE_SIZE);
+			int ppy = floor(game->players[i]->getPosY()/TILE_SIZE);
+			//jezeli gracz znajduje sie na bombie, moze z niej zejsc
+			if(px!=ppx && py!=ppy) 
+				return false;
+		}
+	}
+	
+
 	if(y>=0 && py < tiles.size()
 	&& x>=0 && px < tiles[0].size())
 		return tiles[py][px]->isWalkable();
@@ -93,3 +105,4 @@ bool cMap::destroyTile(int x, int y, cGame *g){
 		return tiles[y][x]->destroy(g);
 }; 
 
+void cMap::setGame(cGame *g){game=g;}

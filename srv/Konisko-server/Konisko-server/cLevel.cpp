@@ -43,6 +43,7 @@ void cLevel::setMap(cMap* map){
 	}
 
 	this->map = map;
+	map->setGame(game);
 	for(int i=0;i<connected_players;i++)
 		players[i]->attachToMap(map);
 }
