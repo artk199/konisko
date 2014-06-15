@@ -2,9 +2,10 @@
 #include "cBomb.h"
 #include "cLevel.h"
 
-cPlayer::cPlayer(void)
+cPlayer::cPlayer(int ID)
 {
-	this->pos = std::pair<double,double>(160,96);
+	this->id=ID;
+	
 	this->direction = LEFT;
 	this->new_direction = LEFT;
 	this->velocity = 128;
@@ -31,6 +32,7 @@ std::pair<double,double> cPlayer::getNextPos(double delta){
 
 void cPlayer::setPos(double x, double y){
 	pos = std::pair<double,double>(x,y);
+	//printf("Pozycja %d: [%f, %f]\n", id, y,x);
 }
 
 double cPlayer::round(double x1){	
@@ -102,6 +104,8 @@ void cPlayer::move(double delta){
 		this->pos.second = round(this->pos.second);
 		direction = STAND;
 	}
+
+	//printf("Pozycja %d: [%f, %f]\n", id, pos.second,pos.first);
 }
 
 void cPlayer::update(double delta){

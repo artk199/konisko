@@ -8,9 +8,9 @@ cMap::cMap(void)
 {
 }
 
-cMap::cMap(int type)
+cMap::cMap(int type, cGame *g)
 {
-	mapString ="XXXXXXXXXXXXXXX\nX  YYYYYYYYY  X\nX XYXYXYXYXYX X\nX YYYYYYYYYYY X\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nX YYXYXYXYXYY X\nXXXXXXXXXXXXXXX\n";
+	mapString ="XXXXXXXXXXXXXXX\nX  YYYYYYYYY  X\nX XYXYXYXYXYX X\nXYYYYYYYYYYYYYX\nXYXYXYXYXYXYXYX\nXYYYYYYYYYYYYYX\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nX  YXYXYXYXY  X\nXXXXXXXXXXXXXXX\n";
 	
 	int y=0, x=0;
 	tiles.push_back(std::vector<cTile*>());
@@ -34,20 +34,27 @@ cMap::cMap(int type)
 			x++;
 		}	
 	}
-
-/*	
-	std::vector<std::vector<cTile*>>::iterator it = tiles.begin();
-	std::vector<std::vector<cTile*>>::iterator end = tiles.end();
-	while(it != end){
-		std::vector<cTile*>::iterator it2 = (*it).begin();
-		std::vector<cTile*>::iterator end2 = (*it).end();
-		while(it2 != end2){
-			(*it2) = new cTile();
-			it2++;
+	
+	game = g;
+	//ustawienie pozycji graczy
+	for(int i=0; i<game->numberOfPlayers; i++){
+		if(game->players[i]!=NULL){
+			switch(game->players[i]->id){
+				case 0:
+					game->players[i]->setPos(96,96);
+				break;
+				case 1:
+					game->players[i]->setPos((tiles[0].size()-2)*64+32,96);
+				break;
+				case 2:
+					game->players[i]->setPos((tiles[0].size()-2)*64+32,(tiles.size()-3)*64+32);		
+				break;
+				case 3:
+					game->players[i]->setPos(96,(tiles.size()-3)*64+32);
+				break;
+			}
 		}
-		it++;
 	}
-*/
 }
 
 cMap::~cMap(void)
@@ -126,3 +133,11 @@ bool cMap::destroyTile(int x, int y, cGame *g){
 void cMap::setGame(cGame *g){game=g;}
 
 std::string cMap::getMap(){return mapString;};
+
+//---Zwraca wielkosc mapy w <y,x>
+pair<int, int> cMap::getSize(){
+	pair <int, int>size;
+	size.first = tiles.size();
+	size.second = tiles[0].size();
+	return size;
+};

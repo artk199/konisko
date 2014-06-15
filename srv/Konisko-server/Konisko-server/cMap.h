@@ -8,7 +8,7 @@ class cMap
 {
 public:
 	cMap(void);
-	cMap(int type);
+	cMap(int type, cGame *g);
 	~cMap(void);
 	bool canMove(double,double);
 	void update(double delta);
@@ -19,6 +19,7 @@ public:
 	void setGame(cGame *g);
 
 	std::string getMap();
+	std::pair<int, int> getSize(); //- Zwraca wielkosc mapy w <y,x>
 private:
 	std::vector<std::vector<cTile*>> tiles;
 	std::string mapString;

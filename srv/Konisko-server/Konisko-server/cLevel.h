@@ -19,7 +19,7 @@ public:
 	void start();
 	void addPlayer(cPlayer *player);
 	void setMap(cMap* map);
-	std::string serialize();
+	std::string serialize(double dt);
 	std::string getSerialized(){return this->serializabled;};
 	void setBomb(int);
 	void BOOM(std::pair<int,int>,int);
@@ -31,6 +31,7 @@ private:
 	int connected_players;
 	LVL_STATE lvl_state;
 	cGame* game;
+	double delt;
 
 	void destroyTile(int x, int y, int direction, int range); // daje true jesli ogien ma leciec dalej
 

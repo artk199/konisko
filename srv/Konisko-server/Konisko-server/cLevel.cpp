@@ -9,6 +9,7 @@ cLevel::cLevel(void)
 {
 	connected_players = 0;
 	lvl_state = PREPARATION;
+	delt=0;
 }
 
 
@@ -78,20 +79,26 @@ void cLevel::start(){
 			players[i]->update(delta);
 		}
 
-		this->serializabled = this->serialize();
+		this->serializabled = this->serialize(delta);
 
 	
 	}
 
 }
 
-std::string cLevel::serialize(){
+std::string cLevel::serialize(double dt){
 	std::string r = "";
 
 	for(int i=0;i<connected_players;i++)
 		r += players[i]->serialize() + "\n";
 	
-	r+="object\tmap\n"+map->getMap()+"\n";
+	//aktualizowanie mapy 
+	//delt+=dt;
+	//printf("Delta: %f\n",delt);
+	//if(delt>=0.1){
+		r+="object\tmap\n"+map->getMap()+"\n";
+	//	delt=0;
+	//}
 	return r;
 }
 

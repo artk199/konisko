@@ -16,7 +16,7 @@ enum E_PLAYER_STATE{PLANTING,GOING,DEAD};
 class cPlayer
 {
 	public:
-		cPlayer(void);
+		cPlayer(int ID);
 		~cPlayer(void);
 		void setNick(string nick);
 		string getNick(){return nick;};

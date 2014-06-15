@@ -33,7 +33,7 @@ void cPlayer::setPosition(double x, double y){
 	pos.y = y;
 
 	sprite->setPosition(pos.x-32,pos.y-32);
-	std::cout<<pos.x<<" "<<pos.y<<endl;
+	//std::cout<<pos.x<<" "<<pos.y<<endl;
 	poprzpoz = pos;
 }
 

@@ -32,7 +32,7 @@ void __cdecl manageGame( void * x ){
 	for(int i=0;i<game->numberOfPlayers;i++)
 		game->lvl->addPlayer(game->players[i]);
 
-	game->lvl->setMap(new cMap(game->chosen_map));
+	game->lvl->setMap(new cMap(game->chosen_map, game));
 	HANDLE hThread2 =( HANDLE ) _beginthread(cos_do, 0, game );
 	game->lvl->start();
 
@@ -59,7 +59,7 @@ cGame::cGame(void)
 	send_message =  CreateEvent(NULL, false, false, NULL);
 	//Czekaj na po³¹czenie 2 graczy
 	this->chosen_map = 1;
-	numberOfPlayersToStart = 1;
+	numberOfPlayersToStart = 4;
 	numberOfPlayers = 0;
 	
 	for(int i=0; i<N_OF_PLAYERS; i++) players[i] = NULL;
@@ -163,9 +163,8 @@ bool cGame::odbierzDane(string dane,  sockaddr_in c){
 			clients[c] = id;
 
 			//dodanie nowego gracza
-			players[id] = new cPlayer();
+			players[id] = new cPlayer(id);
 			players[id]->setNick(nick);
-			players[id]->id = id;
 			//players[id]->setConnection(c);
 
 			numberOfPlayers++;

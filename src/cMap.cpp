@@ -8,7 +8,7 @@ cMap::cMap(){
 	//wczytanie zawartosci mapy
 	int maxy=0, maxx=0;
 
-	mapString ="XXXXXXXXXXXXXXX\nX  YYYYYYYYY  X\nX XYXYXYXYXYX X\nX YYYYYYYYYYY X\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nX YYXYXYXYXYY X\nXXXXXXXXXXXXXXX\n";
+	mapString ="XXXXXXXXXXXXXXX\nX  YYYYYYYYY  X\nX XYXYXYXYXYX X\nXYYYYYYYYYYYYYX\nXYXYXYXYXYXYXYX\nXYYYYYYYYYYYYYX\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nX  YXYXYXYXY  X\nXXXXXXXXXXXXXXX\n";
 	
 	int y=0, x=0;
 	tiles.push_back(std::vector<spcTile>());
@@ -85,9 +85,13 @@ void cMap::updateMap(string newmap){
 			//jest roznica w polach
 			if(mapString[i]!=newmap[i]){
 				int x, y;
-				y=floor(1.0*i/tiles[0].size());
+				y=floor(1.0*i/(tiles[0].size()+1));
 				x=i-y*tiles[0].size()-y;
-				tiles[y][x]->destroy();
+
+				if(y>=0 && y<tiles.size() && x>=0 && x<tiles[0].size())
+					tiles[y][x]->destroy();
+				else
+					printf("BLAD PRZY tiles[%d][%d]!\n",y,x);
 
 				mapString[i] = newmap[i];
 			}
