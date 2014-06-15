@@ -66,7 +66,7 @@ void cLevel::start(){
 		double start = omp_get_wtime();
 		
 		
-		Sleep(30);
+		Sleep(10);
 		double end = omp_get_wtime();
 		//Zmierzony czas w sekundach
 		delta = end - start;
@@ -79,8 +79,7 @@ void cLevel::start(){
 		}
 
 		this->serializabled = this->serialize();
-		//this->game->send_data();
-		//std::cout<<delta<<"\n"<<serializabled<<std::endl;
+
 	
 	}
 

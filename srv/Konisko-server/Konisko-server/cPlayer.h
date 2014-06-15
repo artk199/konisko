@@ -39,6 +39,7 @@ class cPlayer
 
 		bool isAnyBombThere(int y, int x); // - Informuje czy ktorakolwiek bomba gracza znajduje sie na tym polu
 	private:
+		double round(double x);
 		//Nick gracza
 		string nick;
 	
@@ -53,6 +54,7 @@ class cPlayer
 		cMap* map;
 		cLevel* lvl;
 		E_DIRECTION direction;
+		E_DIRECTION new_direction;
 		std::vector<cBomb*> bombs;
 
 };

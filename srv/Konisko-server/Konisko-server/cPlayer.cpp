@@ -6,6 +6,7 @@ cPlayer::cPlayer(void)
 {
 	this->pos = std::pair<double,double>(160,96);
 	this->direction = LEFT;
+	this->new_direction = LEFT;
 	this->velocity = 128;
 	this->nick = "NICK";
 	this->ilosc_bomb = 0;
@@ -31,9 +32,54 @@ std::pair<double,double> cPlayer::getNextPos(double delta){
 void cPlayer::setPos(double x, double y){
 	pos = std::pair<double,double>(x,y);
 }
+
+double cPlayer::round(double x1){	
+	double x = x1 + 32;
+	double result = x;
+	double odleglosc = abs(fmod(x,64.0));
+	if(odleglosc < 10.f || (64 - odleglosc) < 10.f ){
+		double number = x/64;
+		int temp = number < 0.0 ? ceil(number - 0.5) : floor(number + 0.5);
+		result = 64 * temp;
+	}
+	return result - 32;
+}
 void cPlayer::move(double delta){
+
+
 	double  newX = this->pos.first,
 			newY = this->pos.second;
+	if(direction != new_direction){
+			switch (new_direction){
+				case TOP:
+					newY = this->pos.second - delta * this->velocity;
+				break;
+				case BOT:
+					newY = this->pos.second + delta * this->velocity;
+				break;
+				case LEFT:
+					newX = this->pos.first - delta * this->velocity;
+				break;
+				case RIGHT:
+					newX = this->pos.first + delta * this->velocity;
+				break;
+			}
+			if(new_direction == TOP || new_direction == BOT){
+				newX = round(newX);
+			}else{
+				newY = round(newY);
+			}
+			if(map->canMove(newX,newY)){
+				direction = new_direction;
+				this->pos.first = newX;
+				this->pos.second = newY;
+				return;
+			}
+	}
+
+	newX = this->pos.first;
+	newY = this->pos.second;
+
 	switch (direction){
 		case TOP:
 			newY = this->pos.second - delta * this->velocity;
@@ -48,11 +94,12 @@ void cPlayer::move(double delta){
 			newX = this->pos.first + delta * this->velocity;
 		break;
 	}
-
 	if (map->canMove(newX,newY)){
 		this->pos.first = newX;
 		this->pos.second = newY;
 	}else{
+		this->pos.first = round(this->pos.first);
+		this->pos.second = round(this->pos.second);
 		direction = STAND;
 	}
 }
@@ -93,7 +140,7 @@ void cPlayer::addBomb(){
 }
 
 void cPlayer::changeDirection(E_DIRECTION direction){
-	this->direction = direction;
+	this->new_direction = direction;
 }
 
 void cPlayer::setConnection(connection* c1){
