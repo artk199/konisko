@@ -52,7 +52,7 @@ bool cTile::destroy(cGame *g){
 		string poz;
 		poz+=to_string(long double(pozy))+"\t";
 		poz+=to_string(long double(pozx))+"\t";
-		g->sendToClient(NULL,DESTROY,poz);
+		//g->sendToClient(NULL,DESTROY,poz);
 		return false;	
 	}
 	//trafiono na sciane

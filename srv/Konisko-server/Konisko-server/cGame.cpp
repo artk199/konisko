@@ -229,7 +229,7 @@ bool cGame::odbierzDane(string dane,  sockaddr_in c){
 				players[id]->addBomb();
 				break;
 			}
-			printf("KLAWISZ!\n");
+			//printf("KLAWISZ!\n");
 			break;}
 		default: printf("Odebralem zle polecenie: %s!\n",dane.c_str());
 	}

@@ -198,6 +198,8 @@ void cGame::parse_response(string s){
 	cSerializable* object = NULL;
 	istringstream iss(s);
 	istringstream iss2;
+	bool map = false;
+	string mapa;
 	//cout<<s<<endl;
     do
     {
@@ -205,6 +207,7 @@ void cGame::parse_response(string s){
 		getline(iss,line);
         iss2 = istringstream(line);
 		iss2 >> sub;
+
 		if(sub == "object"){
 			iss2 >> sub;	
 			object = NULL;
@@ -214,6 +217,9 @@ void cGame::parse_response(string s){
 				if(id >= 0 && id < this->num_of_players)
 					object = players[id].get();
 			}
+			else if(sub == "map"){
+				map=true;
+			}
 			continue;
 		}
 		if(object != NULL){
@@ -221,8 +227,16 @@ void cGame::parse_response(string s){
 				object->deserialize(line);
 				//std::cout<<line<<"\n";
 			}	
+			map=false;
+		}
+		if(map){
+			mapa+=line+'\n';
 		}
     } while (iss);
+
+	//mapa ulegla zmianie
+	if(this->level->map!=NULL && mapa.length()>0)
+		this->level->map->updateMap(mapa);
 }
 
 bool cGame::connectToServer(){	   

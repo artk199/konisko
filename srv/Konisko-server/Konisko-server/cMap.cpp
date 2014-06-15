@@ -10,20 +10,31 @@ cMap::cMap(void)
 
 cMap::cMap(int type)
 {
-	mapString ="XXXXXXXXXXX\nX         X\nX    Y    X\nX    Y    X\nX    Y    X\nXXXXXXXXXXX";
+	mapString ="XXXXXXXXXXXXXXX\nX  YYYYYYYYY  X\nX XYXYXYXYXYX X\nX YYYYYYYYYYY X\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nXYXYXYXYXYXYXYX\nX YYYYYYYYYYY X\nX YYXYXYXYXYY X\nXXXXXXXXXXXXXXX\n";
 	
-	for(int i = 0 ;i < 6 ; i++){
-		tiles.push_back(std::vector<cTile*>());
-		for(int j = 0 ; j < 11 ;j++){
-			if(mapString[i*11+j+i] == 'X')
-				tiles[i].push_back(new cTile(2));	
-			else if(mapString[i*11+j+i] == 'Y')
-				tiles[i].push_back(new cTile(3));		
-			else
-				tiles[i].push_back(new cTile(1));		
-			tiles[i][j]->setPos(j,i);
+	int y=0, x=0;
+	tiles.push_back(std::vector<cTile*>());
+	for(int i =0; i<mapString.length(); i++){
+		//wykryto nowa linie
+		if(mapString[i]=='\n'){
+			tiles.push_back(std::vector<cTile*>());
+			y++;
+			x=0;
 		}
+		else{
+			//rozpoznanie pola
+			if(mapString[i] == 'X')
+				tiles[y].push_back(new cTile(2));		
+			else if(mapString[i] == 'Y')
+				tiles[y].push_back(new cTile(3));			
+			else
+				tiles[y].push_back(new cTile(1));	
+
+			tiles[y][x]->setPos(x,y);
+			x++;
+		}	
 	}
+
 /*	
 	std::vector<std::vector<cTile*>>::iterator it = tiles.begin();
 	std::vector<std::vector<cTile*>>::iterator end = tiles.end();
@@ -102,7 +113,16 @@ std::pair<int,int> cMap::getPositionOnMap(double posx, double posy){
 // daje true jesli ogien ma leciec dalej
 bool cMap::destroyTile(int x, int y, cGame *g){
 	if(y>=0 && x>=0 && y<tiles.size() && x<tiles[0].size())
-		return tiles[y][x]->destroy(g);
+		if(tiles[y][x]->destroy(g))
+			return true;	
+		//szansa ze cos uleglo zniszczeniu
+		else{
+			if(mapString[y*tiles[0].size()+x+y]=='Y')
+				mapString[y*tiles[0].size()+x+y] = ' ';
+			return false;
+		}
 }; 
 
 void cMap::setGame(cGame *g){game=g;}
+
+std::string cMap::getMap(){return mapString;};

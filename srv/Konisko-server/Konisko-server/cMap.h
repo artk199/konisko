@@ -17,6 +17,8 @@ public:
 
 	bool destroyTile(int x, int y, cGame *g); // daje true jesli ogien ma leciec dalej
 	void setGame(cGame *g);
+
+	std::string getMap();
 private:
 	std::vector<std::vector<cTile*>> tiles;
 	std::string mapString;

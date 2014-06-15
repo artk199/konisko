@@ -92,6 +92,7 @@ std::string cLevel::serialize(){
 	for(int i=0;i<connected_players;i++)
 		r += players[i]->serialize() + "\n";
 	
+	r+="object\tmap\n"+map->getMap()+"\n";
 	return r;
 }
 
